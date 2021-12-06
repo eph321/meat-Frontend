@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import NewTableScreen from "./screens/NewTableScreen";
 
 
 // création du menu
@@ -21,6 +22,7 @@ export default function App() {
             <Stack.Screen name="Login" component={LoginScreen}/>
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
+           
           </Stack.Navigator>
         </NavigationContainer>
 

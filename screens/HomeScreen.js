@@ -9,6 +9,7 @@ function HomeScreen(props) {
             <Button title="Go to login"
                     onPress={() => props.navigation.navigate('Login')}
             />
+            
         </View>
 
     );
