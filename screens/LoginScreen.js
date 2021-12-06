@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import  {StyleSheet, ImageBackground} from "react-native";
+import  {StyleSheet, ImageBackground,View,Image} from "react-native";
 import { Button, Input } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -10,7 +10,13 @@ function LoginScreen(props) {
     const [password, setPassword ] = useState("");
 
     return (
-        <ImageBackground source={require('../assets/loginBackground.jpg')} style={styles.container}>
+        <View>
+            <Image
+                style={styles.container}
+                source={require('../assets/loginBackground.jpg')}
+                resizeMode={"cover"}
+            />
+
             <Input
                 containerStyle={{  width: '70%' }}
                 inputStyle={{ marginLeft: 10 }}
@@ -52,7 +58,9 @@ function LoginScreen(props) {
                 buttonStyle={{ backgroundColor: "#009788" }}
                 onPress={() => {  props.navigation.navigate('Register') }}
             />
-        </ImageBackground>
+        </View>
+
+
 
     )
 

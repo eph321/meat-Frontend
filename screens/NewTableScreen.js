@@ -1,53 +1,52 @@
-import React, { useState } from "react";
-import { View, Text } from "react-native";
-import { Button, Input } from 'react-native-elements';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, ScrollView, BottomSheet, ListItem } from 'react-native';
+import { Button, TextInput, Dialog, Portal } from "react-native-paper"
 
-function NewTableScreen() {
+
+function NewTableScreen(props) {
+
+    const [title, setTitle] = useState('');
+    const [restaurantName, setRestaurantName] = useState('');
+    const [restaurantAddress, setRestaurantAddress] = useState('');
+    const [description, setDescription] = useState('')
+
+    const [culinaryListIsVisible, setCulinaryListIsVisible] = useState(false)
+    const hideCulinaryListDialog = () => setCulinaryListIsVisible(false);
+
     const [culinaryChoice, setCulinaryChoice] = useState("")
     const [ageRangeChoice, setAgeRangeChoice] = useState("")
 
 
-        // Pour le calendrier Datepicker
+    // Pour le calendrier Datepicker
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
 
     // Liste déroulante choix cuisine
+    /* const [culinaryListValue, setCulinaryListValue] = useState(null) */
 
-    const culinaryCascaderOptions = [
-        {
-            value: 'Italien',
-            label: 'Italien',
-            children: [
-                {
-                    value: 'Pastas',
-                    label: 'Pastas',
-                    children: [
-                        {
-                            value: 'Végé',
-                            label: 'Végé',
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            value: 'Japonais',
-            label: 'Japonais',
-            children: [
-                {
-                    value: 'Ramen',
-                    label: 'Ramen',
-                },
-                {
-                    value: 'Sushis',
-                    label: 'Sushis',
-                },
-            ],
-        },
-    ];
 
-    function onCulinaryChange(value) {
-        setCulinaryChoice(value)
-    }
+
+
+    /* REACT NATIVE ELEMENTS - LISTE DEROULANTE
+     const culinaryPreferencesList = [
+         { title: "Italien" },
+         { title: "Japonais" },
+         { title: "Fast-food" },
+         {
+             title: 'Cancel',
+             containerStyle: { backgroundColor: 'red' },
+             titleStyle: { color: 'white' },
+             onPress: () => setIsVisible(false),
+         }
+     ];
+ 
+     const culinaryPreferences = culinaryPreferencesList.map((e, i) => (
+         <ListItem key={i} containerStyle={e.containerStyle} onPress={() => setIsVisible(false)}>
+             <ListItem.Content>
+                 <ListItem.Title style={e.titleStyle}>{e.title}</ListItem.Title>
+             </ListItem.Content>
+         </ListItem>
+     )) */
+
 
     // Liste déroulante trannche d'age
     const ageRangeOptions = [
@@ -67,52 +66,126 @@ function NewTableScreen() {
 
 
 
+
+
+
     return (
 
-        <View>
-            <View>
-                <Button>HomeScreen</Button>
-                <Button>MyEventsScreen</Button>
-                <Button>ProfileScreen</Button>
+        <ScrollView style={{ flex: 1, marginTop: 50 }}>
+            <View style={{ flexDirection: "row", alignContent: "flex-start" }}>
+                <Button
+                    title="Home"
+                    mode="contained"
+                    onPress={() => props.navigation.navigate("Home")}
+                >
+                    Home
+                </Button>
+
+                <Button
+                    title="My Events"
+                    mode="contained"
+                    onPress={() => props.navigation.navigate("MyEvents")}
+                >
+                    My Events
+                </Button>
+                <Button
+                    title="My Profile"
+                    mode="contained"
+                    onPress={() => props.navigation.navigate("Profile")}
+                >
+                    Profile
+                </Button>
             </View>
 
-            <View>
+            <View
+                style={styles.container}
+            >
                 {/* <DatePicker defaultValue={moment('01/01/2021', dateFormatList[0])} format={dateFormatList} /> */}
-                <Input placeholder="Titre : Les amis, envie d'un rôti jeudi à midi ?" />
-                <Input placeholder="Nom du restaurant" />
-                <Input placeholder="Adresse du restaurant" />
-                {/* <Cascader
-                    defaultValue={['Italien', 'Japonais']}
-                    options={culinaryCascaderOptions}
-                    onChange={onCulinaryChange} 
-                />*/}
+                <TextInput
+                    style={{ alignSelf: "center", width: '70%' }}
+                    mode="outlined"
+                    label="Titre"
+                    value={title}
+                    onChangeText={text => setTitle(text)}
+                />
+                <TextInput
+                    style={{ alignSelf: "center", width: '70%' }}
+                    mode="outlined"
+                    label="Nom du restaurant"
+                    value={restaurantName}
+                    onChangeText={text => setRestaurantName(text)}
+                />
+                <TextInput
+                    style={{ alignSelf: "center", width: '70%' }}
+                    mode="outlined"
+                    label="Adresse du restaurant"
+                    value={restaurantAddress}
+                    onChangeText={text => setRestaurantAddress(text)}
+                />
 
-                <Input placeholder="Présentation de l'évènement" />
-               {/*  <Cascader
-                    defaultValue={['18-25 ans', '25-35 ans']}
-                    options={ageRangeOptions}
-                    onChange={onAgeRangeChange}
-                /> */}
+                {/*         REACT NATIVE ELEMENTS - Liste déroulante
+                <View style={{ flex: 1 }}>
+                   <Button title="Quel type de cuisine ?" onPress={() => setIsVisible(true) } />
+                    <BottomSheet
+                        isVisible={isVisible}
+                        containerStyle={{ backgroundColor: 'rgba(0.5, 0.25, 0, 0.2)' }}
+                    >
+                        {culinaryPreferences}
+                    </BottomSheet>
+                </View> */}
 
-            <Text>Meaters:
-                <Button>-</Button>
-                <Button>+</Button>
-            </Text>
+<Button mode="outlined" onPress={() => setCulinaryListIsVisible(true) }> Quel type de cuisine ?</Button>
 
-            <Text>Budget:
-                <Button>-</Button>
-                <Button>+</Button>
-            </Text>
+                <Portal>
+                    <Dialog visible={culinaryListIsVisible} onDismiss={hideCulinaryListDialog}>
+                        <Dialog.ScrollArea>
+                            <ScrollView  style={{height:"90%"}} contentContainerStyle={{ paddingHorizontal: 24 }}>
+                                <Text>This is a scrollable area</Text>
+                            </ScrollView>
+                        </Dialog.ScrollArea>
+                    </Dialog>
+                </Portal>
 
 
-            <Button> </Button>
+
+
+                <TextInput
+                    style={{ alignSelf: "center", width: '70%' }}
+                    mode="outlined"
+                    label="Description"
+                    placeholder="Présentation de l'évènement"
+                    value={description}
+                    onChangeText={text => setDescription(text)}
+                />
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <Text>Meaters:</Text>
+                    <Button compact mode="contained">-</Button>
+                    <Button compact mode="contained">+</Button>
+                </View>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Text>Budget:</Text>
+                    <Button compact mode="contained">-</Button>
+                    <Button compact mode="contained">+</Button>
+                </View>
+
+
 
             </View>
 
 
-        </View>
+        </ScrollView>
 
     )
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+})
+
 export default NewTableScreen
+
+
