@@ -30,8 +30,7 @@ function RegisterScreenC(props) {
     const [userDesc,setUserDesc] = useState("");
     const [inputProgress,setInputProgress] = useState(0);
 
-    return (<View style={{flex:1,justifyContent: 'center',}}>
-
+    return (<View style={{flex:10,justifyContent: 'center',}}>
                 <Appbar style={styles.bottom}>
                     <Appbar.Content title="Informations détaillées" style={{textAlign:'center'}}/>
                 </Appbar>
@@ -95,7 +94,7 @@ const styles = StyleSheet.create({
         left: 0,
         height:"10%",
         width:"100%",
-        top: 20,
+        top: 0,
         alignItems: 'center',
         justifyContent:"center",
         textAlign:'center',
