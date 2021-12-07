@@ -11,6 +11,10 @@ function HomeScreen(props) {
             <Button title="Go to table"
                     onPress={() => props.navigation.navigate('NewTable')}
             />
+             <Button title="Go to join"
+                    onPress={() => props.navigation.navigate('JoinTable')}
+            />
+            
             
         </View>
 
