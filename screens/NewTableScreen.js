@@ -1,6 +1,32 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, BottomSheet, ListItem } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
 import { Button, TextInput, Dialog, Portal } from "react-native-paper"
+
+// Préférence culinaire Liste
+
+const culinaryPreferencesList = [
+    { id: 1, title: "Italien" },
+    { id: 2, title: "Japonais" },
+    { id: 3, title: "Fast-food" },
+]
+
+const Item = ({ item, onPress, backgroundColor, textColor }) => (
+    <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
+        <Text style={[styles.title, textColor]}>{item.title}</Text>
+    </TouchableOpacity>
+);
+
+// Liste déroulante trannche d'age
+const ageRangeList = [
+    {
+        title: "18-25 ans",
+        id: "18-25"
+    },
+    {
+        title: "25-35 ans",
+        id: "25-35"
+    },
+]
 
 
 function NewTableScreen(props) {
@@ -9,12 +35,13 @@ function NewTableScreen(props) {
     const [restaurantName, setRestaurantName] = useState('');
     const [restaurantAddress, setRestaurantAddress] = useState('');
     const [description, setDescription] = useState('')
+    const [table, setTable] = useState("")
 
     const [culinaryListIsVisible, setCulinaryListIsVisible] = useState(false)
     const hideCulinaryListDialog = () => setCulinaryListIsVisible(false);
 
-    const [culinaryChoice, setCulinaryChoice] = useState("")
-    const [ageRangeChoice, setAgeRangeChoice] = useState("")
+    const [ageRangeIsVisible, setAgeRangeIsVisible] = useState(false)
+    const hideAgeRangeListDialog = () => setAgeRangeIsVisible(false);
 
 
     // Pour le calendrier Datepicker
@@ -24,49 +51,42 @@ function NewTableScreen(props) {
     /* const [culinaryListValue, setCulinaryListValue] = useState(null) */
 
 
+    // Préférence culinaire Liste
+
+    const [selectedCulinaryId, setSelectedCulinaryId] = useState(null);
+
+    const renderCulinaryItem = ({ item }) => {
+        const backgroundColor = item.id === selectedCulinaryId ? "#6e3b6e" : "#f9c2ff";
+        const color = item.id === selectedCulinaryId ? 'white' : 'black';
+
+        return (
+            <Item
+                item={item}
+                onPress={() => setSelectedCulinaryId(item.id)}
+                backgroundColor={{ backgroundColor }}
+                textColor={{ color }}
+            />
+        );
+    };
 
 
-    /* REACT NATIVE ELEMENTS - LISTE DEROULANTE
-     const culinaryPreferencesList = [
-         { title: "Italien" },
-         { title: "Japonais" },
-         { title: "Fast-food" },
-         {
-             title: 'Cancel',
-             containerStyle: { backgroundColor: 'red' },
-             titleStyle: { color: 'white' },
-             onPress: () => setIsVisible(false),
-         }
-     ];
- 
-     const culinaryPreferences = culinaryPreferencesList.map((e, i) => (
-         <ListItem key={i} containerStyle={e.containerStyle} onPress={() => setIsVisible(false)}>
-             <ListItem.Content>
-                 <ListItem.Title style={e.titleStyle}>{e.title}</ListItem.Title>
-             </ListItem.Content>
-         </ListItem>
-     )) */
+    // Choix tranche d'âge
 
+    const [selectedAgeRangeId, setSelectedAgeRangeId] = useState(null);
 
-    // Liste déroulante trannche d'age
-    const ageRangeOptions = [
-        {
-            value: "18-25 ans",
-            label: "18-25"
-        },
-        {
-            value: "25-35 ans",
-            label: "25-35"
-        },
-    ]
+    const renderAgeRangeItem = ({ item }) => {
+        const backgroundColor = item.id === selectedAgeRangeId ? "#6e3b6e" : "#f9c2ff";
+        const color = item.id === selectedAgeRangeId ? 'white' : 'black';
 
-    function onAgeRangeChange(value) {
-        setAgeRangeChoice(value)
-    }
-
-
-
-
+        return (
+            <Item
+                item={item}
+                onPress={() => setSelectedAgeRangeId(item.id)}
+                backgroundColor={{ backgroundColor }}
+                textColor={{ color }}
+            />
+        );
+    };
 
 
     return (
@@ -123,31 +143,24 @@ function NewTableScreen(props) {
                     onChangeText={text => setRestaurantAddress(text)}
                 />
 
-                {/*         REACT NATIVE ELEMENTS - Liste déroulante
-                <View style={{ flex: 1 }}>
-                   <Button title="Quel type de cuisine ?" onPress={() => setIsVisible(true) } />
-                    <BottomSheet
-                        isVisible={isVisible}
-                        containerStyle={{ backgroundColor: 'rgba(0.5, 0.25, 0, 0.2)' }}
-                    >
-                        {culinaryPreferences}
-                    </BottomSheet>
-                </View> */}
-
-<Button mode="outlined" onPress={() => setCulinaryListIsVisible(true) }> Quel type de cuisine ?</Button>
+                <Button mode="outlined" onPress={() => setCulinaryListIsVisible(true)}> Quel type de cuisine ?</Button>
 
                 <Portal>
                     <Dialog visible={culinaryListIsVisible} onDismiss={hideCulinaryListDialog}>
                         <Dialog.ScrollArea>
-                            <ScrollView  style={{height:"90%"}} contentContainerStyle={{ paddingHorizontal: 24 }}>
-                                <Text>This is a scrollable area</Text>
+                            <ScrollView style={{ height: "90%" }} contentContainerStyle={{ paddingHorizontal: 24 }}>
+                                <SafeAreaView style={styles.container}>
+                                    <FlatList
+                                        data={culinaryPreferencesList}
+                                        renderItem={renderCulinaryItem}
+                                        keyExtractor={(item) => item.id}
+                                        extraData={selectedCulinaryId}
+                                    />
+                                </SafeAreaView>
                             </ScrollView>
                         </Dialog.ScrollArea>
                     </Dialog>
                 </Portal>
-
-
-
 
                 <TextInput
                     style={{ alignSelf: "center", width: '70%' }}
@@ -157,18 +170,39 @@ function NewTableScreen(props) {
                     value={description}
                     onChangeText={text => setDescription(text)}
                 />
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                    <Text>Meaters:</Text>
-                    <Button compact mode="contained">-</Button>
-                    <Button compact mode="contained">+</Button>
-                </View>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text>Budget:</Text>
-                    <Button compact mode="contained">-</Button>
-                    <Button compact mode="contained">+</Button>
+
+                <Button mode="outlined" onPress={() => setAgeRangeIsVisible(true)}> Age ?</Button>
+                <Portal>
+                    <Dialog visible={ageRangeIsVisible} onDismiss={hideAgeRangeListDialog}>
+                        <Dialog.ScrollArea>
+                            <ScrollView style={{ height: "90%" }} contentContainerStyle={{ paddingHorizontal: 24 }}>
+                                <SafeAreaView style={styles.container}>
+                                    <FlatList
+                                        data={ageRangeList}
+                                        renderItem={renderAgeRangeItem}
+                                        keyExtractor={(item) => item.id}
+                                        extraData={selectedAgeRangeId}
+                                    />
+                                </SafeAreaView>
+                            </ScrollView>
+                        </Dialog.ScrollArea>
+                    </Dialog>
+                </Portal>
+
+                <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
+                        <Text>Meaters:</Text>
+                        <Button compact mode="contained">-</Button>
+                        <Button compact mode="contained">+</Button>
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
+                        <Text>Budget:</Text>
+                        <Button compact mode="contained">-</Button>
+                        <Button compact mode="contained">+</Button>
+                    </View>
                 </View>
 
-
+                <Button mode="contained" onPress={() => setTable}>Créer la table</Button>
 
             </View>
 
@@ -183,6 +217,14 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    item: {
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+    },
+    title: {
+        fontSize: 32,
     },
 })
 
