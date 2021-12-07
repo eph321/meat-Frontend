@@ -6,7 +6,12 @@ import { AntDesign } from '@expo/vector-icons';
 
 function ProfileScreen(props) {
 
-    return (   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#9b59b6'}}>
+    return (  
+            
+            
+            
+            
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#9b59b6'}}>
             <Button
             icon={<AntDesign name="home" size={24} color="black" />}
                     onPress={() => props.navigation.navigate('MyAccount')}
