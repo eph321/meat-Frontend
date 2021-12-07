@@ -1,23 +1,27 @@
 import React, { useState ,useCallback} from 'react';
 
-import { StyleSheet, View} from 'react-native';
+import {Platform, StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text,RadioButton} from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { connect } from 'react-redux';
 
 
 function RegisterScreenB(props) {
-    const [inputEmail,setInputEmail] = useState("");
-    const [inputPassword,setInputPassword] = useState("");
+    const [firstName,setFirstName] =useState('');
+    const [lastName, setLastName] = useState('');
+    const [address, setAddress] = useState('');
+    const [phone, setPhone] = useState('');
+    const [gender, setGender] =useState("male")
+    const [dateOfBirth, setDateOfBirth] = useState(new Date(1598051730000));
     const [inputProgress,setInputProgress] = useState(0);
-    const [genderValue, setGenderValue] =useState("male")
-    const [date, setDate] = useState(new Date(1598051730000));
+
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
 
     const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
+        const currentDate = selectedDate || dateOfBirth;
         setShow(Platform.OS === 'ios');
-        setDate(currentDate);
+        setDateOfBirth(currentDate);
     };
 
     const showMode = (currentMode) => {
@@ -45,15 +49,18 @@ function RegisterScreenB(props) {
                 style={{marginTop: 80, textAlign:'center',width:'70%',alignSelf:"center" }}
                 mode="outlined"
                 label="Prénom"
-                onChangeText={(val)=> {setInputEmail(val);setInputProgress(inputProgress + 0.01)}}
+                onChangeText={(val)=> {setFirstName(val);setInputProgress(inputProgress + 0.01)}}
                 placeholder ="Félix"
                 activeOutlineColor={"#FF3D00"}
                 outlineColor={'#0E9BA4'}
             />
+
+
+
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
                        label="Nom de famille"
-                       onChangeText={(val)=> {setInputPassword(val);setInputProgress(inputProgress + 0.01)}}
+                       onChangeText={(val)=> {setLastName(val);setInputProgress(inputProgress + 0.01)}}
                        placeholder ="The Cat"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
@@ -61,7 +68,7 @@ function RegisterScreenB(props) {
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
                        label="Adresse Postale"
-                       onChangeText={(val)=> {setInputEmail(val); setInputProgress(inputProgress + 0.01)}}
+                       onChangeText={(val)=> {setAddress(val); setInputProgress(inputProgress + 0.01)}}
                        placeholder ="56 boulevard Pereire, 75017 Paris"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
@@ -69,7 +76,7 @@ function RegisterScreenB(props) {
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
                        label="Numéro de mobile"
-                       onChangeText={(val)=> {setInputEmail(val); setInputProgress(inputProgress + 0.01)}}
+                       onChangeText={(val)=> {setPhone(val); setInputProgress(inputProgress + 0.01)}}
                        placeholder ="+33 6 23 45 67 89"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
@@ -79,14 +86,14 @@ function RegisterScreenB(props) {
                 <View>
                     <Button
                         mode="outlined"
-                        color={'#FFC960' }
-                        style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#FFFFFF",color:'#FFC960' }}
-                        onPress={showDatepicker} icon="calendar" ><Text  Style={{color:'#FFC960'}}>Date de naissance</Text></Button>
+                        color={"#0E9BA4"}
+                        style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#FFFFFF",color:"#0E9BA4" }}
+                        onPress={showDatepicker} icon="calendar" ><Text  Style={{color:"#0E9BA4"}}>Date de naissance</Text></Button>
                 </View>
                 {show && (
                     <DateTimePicker
                         testID="dateTimePicker"
-                        value={date}
+                        value={dateOfBirth}
                         mode={mode}
                         is24Hour={true}
                         display="default"
@@ -96,22 +103,22 @@ function RegisterScreenB(props) {
             </View>
 
                 <RadioButton.Group
-                    genderValue={genderValue}
-                    onValueChange={newValue => setGenderValue(newValue)}
+                    value={gender}
+                    onValueChange={newValue => setGender(newValue)}
                     >
                     <View style={{flexDirection:"row",justifyContent:"space-between",width:"70%",alignItems:"center",marginLeft:60}}>
                     <View >
-                        <RadioButton genderValue="male" />
+                        <RadioButton value="male" />
                         <Text>Homme</Text>
 
                     </View>
                     <View >
 
-                        <RadioButton genderValue="female" />
+                        <RadioButton value="female" />
                         <Text>Femme</Text>
                     </View>
                     <View>
-                        <RadioButton genderValue="non-binary" />
+                        <RadioButton value="non-binary" />
                         <Text>Non Binaire</Text>
                     </View>
                     </View>
@@ -119,7 +126,7 @@ function RegisterScreenB(props) {
 
             <Button
                 style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
-                mode="contained" onPress={() => props.navigation.navigate('RegisterC')}>
+                mode="contained" onPress={() =>{ props.navigation.navigate('RegisterC');props.sendPersonalData({firstName : firstName, lastName:lastName, address:address, phone:phone, gender:gender, dateOfBirth:dateOfBirth}) }}>
                 <Text Style={{color:'#FFC960'}}>Press me</Text>
             </Button>
 
@@ -130,6 +137,7 @@ function RegisterScreenB(props) {
         </View>
     );
 }
+
 
 const styles = StyleSheet.create({
     bottom: {
@@ -150,6 +158,17 @@ const styles = StyleSheet.create({
     }});
 
 
-export default RegisterScreenB;
+function mapDispatchToProps(dispatch){
+    return {
+        sendPersonalData: function (personalData){
+            dispatch({type: 'registerB',personalData})
+        }
 
+    }
+}
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(RegisterScreenB);
 
