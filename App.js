@@ -5,7 +5,7 @@ import { NavigationContainer} from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 import {TextInput, Provider as PaperProvider, DefaultTheme} from 'react-native-paper'
 import { Provider as StoreProvider } from 'react-redux';
-
+import { createStore, combineReducers } from 'redux';
 
 import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -22,7 +22,6 @@ import MyBuddiesScreen from "./screens/MyBuddiesScreen";
 import MyMessagesScreen from "./screens/MyMessagesScreen";
 import ChatScreen from "./screens/ChatScreen";
 import MyEventsScreen from "./screens/MyEventsScreen";
-import CreateTableScreen from "./screens/CreateTableScreen";
 import MyAddressesScreen from "./screens/MyAddressesScreen";
 import userRegister from './reducers/userRegister'
 
@@ -34,8 +33,8 @@ const store = createStore(combineReducers({ userRegister }));
 
 export default function App() {
   return (
-      <StoreProvider store={store}
-        <PaperProvider  theme={DefaultTheme}>
+      <StoreProvider store={store}>
+        <PaperProvider theme={DefaultTheme}>
             <NavigationContainer>
               <Stack.Navigator screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="Login" component={LoginScreen}/>
@@ -54,12 +53,10 @@ export default function App() {
                 <Stack.Screen name="MyMessages" component={MyMessagesScreen} />
                 <Stack.Screen name="Chat" component={ChatScreen} />
                 <Stack.Screen name="MyEvents" component={MyEventsScreen} />
-                <Stack.Screen name="CreateTable" component={CreateTableScreen} />
               </Stack.Navigator>
             </NavigationContainer>
           </PaperProvider>
       </StoreProvider>
-
   );
 }
 
