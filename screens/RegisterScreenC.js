@@ -1,10 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 
-import { StyleSheet, View} from 'react-native';
+import {AsyncStorage, StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text} from "react-native-paper";
 import { connect } from 'react-redux';
 
+
 function RegisterScreenC(props) {
+
+
+    const signUpBackend = async () => {
+        var rawResponse = await fetch('http://192.168.1.246:3000/sign-up',{
+            method:'POST',
+            headers:{'Content-Type':'application/x-www-form-urlencoded'},
+            body: `lastname=${props.userToSend.lastName}&firstname=${props.userToSend.firstName}&password=${props.userToSend.inputPassword}&description=${userDesc}&email=${props.userToSend.email}&dateOfBirth=${props.userToSend.dateOfBirth}&gender=${props.userToSend.gender}&addresses=${props.userToSend.userAddress}&avatar=${props.userToSend.avatar}&phone=${props.userToSend.phone}&preference1=${userPreference1}&preference2=${userPreference2}&preference3=${userPreference3}`
+        });
+        var response = await rawResponse.json();
+        await AsyncStorage.setItem("userToken", JSON.stringify({token: response.newUserSave.token}))
+        console.log(response)
+        console.log(response.newUserSave.token)
+
+    }
+
+
+
+
     const [userPreference1,setUserPreference1] = useState("");
     const [userPreference2,setUserPreference2] = useState("");
     const [userPreference3,setUserPreference3] = useState("");
@@ -57,7 +76,7 @@ function RegisterScreenC(props) {
                 mode="contained" onPress={() =>{ props.navigation.navigate('Home');props.sendDetailedData({preference1:userPreference1,
                                                                                                                       preference2: userPreference2,
                                                                                                                       preference3: userPreference3,
-                                                                                                                      description:userDesc}); console.log(props.userToSend)}}>
+                                                                                                                      description:userDesc}); signUpBackend()}}>
                 <Text Style={{color:'#FFC960'}}>Press me</Text>
             </Button>
 
