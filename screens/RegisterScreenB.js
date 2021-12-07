@@ -1,13 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState ,useCallback} from 'react';
 
 import { StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text,RadioButton} from "react-native-paper";
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 function RegisterScreenB(props) {
     const [inputEmail,setInputEmail] = useState("");
     const [inputPassword,setInputPassword] = useState("");
     const [inputProgress,setInputProgress] = useState(0);
     const [genderValue, setGenderValue] =useState("male")
+    const [date, setDate] = useState(new Date(1598051730000));
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(false);
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShow(Platform.OS === 'ios');
+        setDate(currentDate);
+    };
+
+    const showMode = (currentMode) => {
+        setShow(true);
+        setMode(currentMode);
+    };
+
+    const showDatepicker = () => {
+        showMode('date');
+    };
+
+    const showTimepicker = () => {
+        showMode('time');
+    };
+
+
 
     return (<View style={{flex:1,justifyContent: 'space-evenly',}}>
 
@@ -48,14 +74,26 @@ function RegisterScreenB(props) {
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
             />
-            <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
-                       mode="outlined"
-                       label="Date de naissance"
-                       onChangeText={(val)=> {setInputEmail(val); setInputProgress(inputProgress + 0.01)}}
-                       placeholder ="JJ/MM/AAAA"
-                       activeOutlineColor={"#FF3D00"}
-                       outlineColor={'#0E9BA4'}
-            />
+
+            <View>
+                <View>
+                    <Button
+                        mode="outlined"
+                        color={'#FFC960' }
+                        style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#FFFFFF",color:'#FFC960' }}
+                        onPress={showDatepicker} icon="calendar" ><Text  Style={{color:'#FFC960'}}>Date de naissance</Text></Button>
+                </View>
+                {show && (
+                    <DateTimePicker
+                        testID="dateTimePicker"
+                        value={date}
+                        mode={mode}
+                        is24Hour={true}
+                        display="default"
+                        onChange={onChange}
+                    />
+                )}
+            </View>
 
                 <RadioButton.Group
                     genderValue={genderValue}
