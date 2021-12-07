@@ -34,8 +34,8 @@ const store = createStore(combineReducers({ userRegister }));
 
 export default function App() {
   return (
-      <StoreProvider store={store}
-        <PaperProvider  theme={DefaultTheme}>
+      <StoreProvider store={store}>
+        <PaperProvider theme={DefaultTheme}>
             <NavigationContainer>
               <Stack.Navigator screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="Login" component={LoginScreen}/>
