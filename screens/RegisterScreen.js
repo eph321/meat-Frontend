@@ -95,7 +95,7 @@ function RegisterScreen(props) {
                     />
                     <Button
                         style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
-                         mode="contained" onPress={() =>{ props.navigation.navigate('RegisterB');props.sendData({email:inputEmail,password:inputPassword,avatarData:tempAvatarUri}) }}>
+                         mode="contained" onPress={() =>{ props.navigation.navigate('RegisterB');props.sendData({email:inputEmail,password:inputPassword,avatar:tempAvatarUri}) }}>
                         <Text Style={{color:'#FFC960'}}>Press me</Text>
                     </Button>
 
