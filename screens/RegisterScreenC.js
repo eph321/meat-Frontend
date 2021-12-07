@@ -52,7 +52,7 @@ function RegisterScreenC(props) {
             />
             <Button
                 style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
-                 mode="contained" onPress={() => props.navigation.navigate('RegisterB')}>
+                 mode="contained" onPress={() => props.navigation.navigate('Home')}>
                 <Text Style={{color:'#FFC960'}}>Press me</Text>
             </Button>
 
