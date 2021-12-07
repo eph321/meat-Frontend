@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 
 import { StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text} from "react-native-paper";
+import { connect } from 'react-redux';
 
 function RegisterScreenC(props) {
-    const [inputEmail,setInputEmail] = useState("");
-    const [inputPassword,setInputPassword] = useState("");
+    const [userPreference1,setUserPreference1] = useState("");
+    const [userPreference2,setUserPreference2] = useState("");
+    const [userPreference3,setUserPreference3] = useState("");
     const [userDesc,setUserDesc] = useState("");
     const [inputProgress,setInputProgress] = useState(0);
 
@@ -19,7 +21,7 @@ function RegisterScreenC(props) {
                 style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center" }}
                 mode="outlined"
                 label="Préférences Culinaires 1"
-                onChangeText={(val)=> {setInputEmail(val);setInputProgress(inputProgress + 0.01)}}
+                onChangeText={(val)=> {setUserPreference1(val);setInputProgress(inputProgress + 0.01)}}
                 placeholder ="Italien..."
                 activeOutlineColor={"#FF3D00"}
                 outlineColor={'#0E9BA4'}
@@ -27,7 +29,7 @@ function RegisterScreenC(props) {
             <TextInput style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
                        label="Préférences Culinaires 2"
-                       onChangeText={(val)=> {setInputPassword(val);setInputProgress(inputProgress + 0.01)}}
+                       onChangeText={(val)=> {setUserPreference2(val);setInputProgress(inputProgress + 0.01)}}
                        placeholder ="Coréen"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
@@ -35,7 +37,7 @@ function RegisterScreenC(props) {
             <TextInput style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
                        label="Préférences Culinaires 3"
-                       onChangeText={(val)=> {setInputEmail(val); setInputProgress(inputProgress + 0.01)}}
+                       onChangeText={(val)=> {setUserPreference3(val); setInputProgress(inputProgress + 0.01)}}
                        placeholder ="Fast-Food"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
@@ -52,7 +54,10 @@ function RegisterScreenC(props) {
             />
             <Button
                 style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
-                 mode="contained" onPress={() => props.navigation.navigate('RegisterB')}>
+                mode="contained" onPress={() =>{ props.navigation.navigate('Home');props.sendDetailedData({preference1:userPreference1,
+                                                                                                                      preference2: userPreference2,
+                                                                                                                      preference3: userPreference3,
+                                                                                                                      description:userDesc}); console.log(props.userToSend)}}>
                 <Text Style={{color:'#FFC960'}}>Press me</Text>
             </Button>
 
@@ -63,6 +68,7 @@ function RegisterScreenC(props) {
         </View>
     );
 }
+
 
 const styles = StyleSheet.create({
     bottom: {
@@ -83,13 +89,23 @@ const styles = StyleSheet.create({
     }});
 
 
-export default RegisterScreenC;
-/*
 
-<TextInput
-    label="Email"
-    value={inputEmail}
-    onChangeText={text => setInputEmail(text)}
-    textAlign={'center'}
-    style={{top: 120, padding:10, borderColor:'#369', textAlign:'center'}}
-/>*/
+function mapDispatchToProps(dispatch){
+    return {
+        sendDetailedData: function (detailedData){
+            dispatch({type: 'registerC',detailedData})
+        }
+
+    }
+}
+
+function mapStateToProps(state) {
+    return {
+        userToSend: state.userRegister
+    }}
+
+    export default connect(
+        mapStateToProps,
+    mapDispatchToProps
+)(RegisterScreenC);
+

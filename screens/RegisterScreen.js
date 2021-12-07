@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 
 import {StyleSheet, View, TouchableOpacity, Platform} from 'react-native';
-import { TextInput,Appbar, Button,ProgressBar,Text,Avatar} from "react-native-paper";
+import {TextInput, Appbar, Button, ProgressBar, Text, Avatar, RadioButton} from "react-native-paper";
 import { connect } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
+
 
 
 
@@ -13,6 +14,7 @@ function RegisterScreen(props) {
     const [inputProgress,setInputProgress] = useState(0);
     const [image, setImage] = useState(null);
     const [visible, setVisible] = useState(true);
+
     // préparation de l'envoi dans le store
     const [tempAvatarUri,setTempAvatarUri] =useState("")
 
@@ -52,67 +54,57 @@ function RegisterScreen(props) {
 
 
     return (
-        <View style={{flex:1,justifyContent: 'space-evenly'}}>
+                <View style={{flex:1,justifyContent: 'space-evenly'}}>
 
-                <Appbar style={styles.bottom}>
-                    <Appbar.Content title="Créer mon compte" style={{textAlign:'center'}}/>
-                </Appbar>
+                        <Appbar style={styles.bottom}>
+                            <Appbar.Content title="Créer mon compte" style={{textAlign:'center'}}/>
+                        </Appbar>
 
-            <TouchableOpacity onPress={() =>{ pickImage(); setVisible(!visible)}} >
-                <View >{(visible)?
-                    <Avatar.Icon size={128} icon="camera" color={"#FF3D00"} style={{marginTop: 80,marginLeft: 60 }}/>
-                    :<Avatar.Image size={128} source={{ uri: image }} style={{marginTop: 80,marginLeft: 60 }}/>
-                }
+                    <TouchableOpacity onPress={() =>{ pickImage(); setVisible(!visible)}} >
+                        <View >{(visible)?
+                            <Avatar.Icon size={128} icon="camera" color={'#0E9BA4'} style={{marginTop: 80,marginLeft: 60,backgroundColor: "#FFFFFF"}}/>
+                            :<Avatar.Image size={128} source={{ uri: image }} style={{marginTop: 80,marginLeft: 60 }}/>
+                        }
+                        </View>
+                    </TouchableOpacity>
+
+                    <TextInput
+                        style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
+                        mode="outlined"
+                        label="Adresse mail"
+                        onChangeText={(val)=> {setInputEmail(val);setInputProgress(inputProgress + 0.01)}}
+                        placeholder ="M.eater_75%"
+                        activeOutlineColor={"#FF3D00"}
+                        outlineColor={'#0E9BA4'}
+                    />
+                    <TextInput style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
+                               mode="outlined"
+                               label="Mot de passe"
+                               onChangeText={(val)=> {setInputPassword(val);setInputProgress(inputProgress + 0.01)}}
+                               placeholder ="hello@matable.com"
+                               activeOutlineColor={"#FF3D00"}
+                               outlineColor={'#0E9BA4'}
+                    />
+                    <TextInput style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
+                               mode="outlined"
+                               label="Confirmation du mot de passe *"
+                               onChangeText={(val)=> {setInputEmail(val); setInputProgress(inputProgress + 0.01)}}
+                               placeholder ="***********"
+                               activeOutlineColor={"#FF3D00"}
+                               outlineColor={'#0E9BA4'}
+                    />
+                    <Button
+                        style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
+                         mode="contained" onPress={() =>{ props.navigation.navigate('RegisterB');props.sendData({email:inputEmail,password:inputPassword,avatar:tempAvatarUri}) }}>
+                        <Text Style={{color:'#FFC960'}}>Press me</Text>
+                    </Button>
+
+                    <ProgressBar
+                        style={{ marginTop: 25, textAlign:'center',width:'70%',alignSelf:"center" }}
+                        progress={inputProgress} color={"#0E9BA4"} />
+
                 </View>
-            </TouchableOpacity>
-
-            <TextInput
-
-                style={{textAlign:'center',width:'70%',alignSelf:"center" }}
-                mode="outlined"
-                label="Pseudo"
-                onChangeText={(val)=> {setInputEmail(val);setInputProgress(inputProgress + 0.01)}}
-                placeholder ="PacMan"
-                activeOutlineColor={"#FF3D00"}
-                outlineColor={'#0E9BA4'}
-            />
-            <TextInput
-                style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
-                mode="outlined"
-                label="Adresse mail"
-                onChangeText={(val)=> {setInputEmail(val);setInputProgress(inputProgress + 0.01)}}
-                placeholder ="M.eater_75%"
-                activeOutlineColor={"#FF3D00"}
-                outlineColor={'#0E9BA4'}
-            />
-            <TextInput style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
-                       mode="outlined"
-                       label="Mot de passe"
-                       onChangeText={(val)=> {setInputPassword(val);setInputProgress(inputProgress + 0.01)}}
-                       placeholder ="hello@matable.com"
-                       activeOutlineColor={"#FF3D00"}
-                       outlineColor={'#0E9BA4'}
-            />
-            <TextInput style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
-                       mode="outlined"
-                       label="Confirmation du mot de passe *"
-                       onChangeText={(val)=> {setInputEmail(val); setInputProgress(inputProgress + 0.01)}}
-                       placeholder ="***********"
-                       activeOutlineColor={"#FF3D00"}
-                       outlineColor={'#0E9BA4'}
-            />
-            <Button
-                style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
-                 mode="contained" onPress={() =>{ props.navigation.navigate('RegisterB');props.sendData({email:inputEmail,password:inputPassword,avatarData:tempAvatarUri}) }}>
-                <Text Style={{color:'#FFC960'}}>Press me</Text>
-            </Button>
-
-            <ProgressBar
-                style={{ marginTop: 25, textAlign:'center',width:'70%',alignSelf:"center" }}
-                progress={inputProgress} color={"#0E9BA4"} />
-
-        </View>
-    )
+     )
 }
 
 

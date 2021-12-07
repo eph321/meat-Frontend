@@ -1,68 +1,86 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
 import { Button, TextInput, Dialog, Portal } from "react-native-paper"
+import DateTimePicker from '@react-native-community/datetimepicker';
+
+const franckIP = "192.168.1.41"
 
 // Préférence culinaire Liste
 
-const culinaryPreferencesList = [
+const restaurantTypeList = [
     { id: 1, title: "Italien" },
     { id: 2, title: "Japonais" },
     { id: 3, title: "Fast-food" },
-]
+];
 
+// Liste déroulante trannche d'age
+const ageRangeList = [
+    { id: "18-25", title: "18-25 ans" },
+    { id: "25-35", title: "25-35 ans" },
+];
+
+// Affichage des boutons dans les portals (modal) de liste de choix (type de cuisine et tranche d'âge)
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
     <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
         <Text style={[styles.title, textColor]}>{item.title}</Text>
     </TouchableOpacity>
 );
 
-// Liste déroulante trannche d'age
-const ageRangeList = [
-    {
-        title: "18-25 ans",
-        id: "18-25"
-    },
-    {
-        title: "25-35 ans",
-        id: "25-35"
-    },
-]
-
-
 function NewTableScreen(props) {
 
+    // ETATS INPUTS
+
+    const [restaurantType, setRestaurantType] = useState("");
+    const [ageRange, setAgeRange] = useState("");
     const [title, setTitle] = useState('');
     const [restaurantName, setRestaurantName] = useState('');
     const [restaurantAddress, setRestaurantAddress] = useState('');
-    const [description, setDescription] = useState('')
-    const [table, setTable] = useState("")
-
-    const [culinaryListIsVisible, setCulinaryListIsVisible] = useState(false)
-    const hideCulinaryListDialog = () => setCulinaryListIsVisible(false);
-
-    const [ageRangeIsVisible, setAgeRangeIsVisible] = useState(false)
-    const hideAgeRangeListDialog = () => setAgeRangeIsVisible(false);
-
+    const [description, setDescription] = useState('');
 
     // Pour le calendrier Datepicker
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
 
-    // Liste déroulante choix cuisine
-    /* const [culinaryListValue, setCulinaryListValue] = useState(null) */
+    // Date Picker
+
+    const [date, setDate] = useState(new Date(1598051730000));
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(false);
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShow(Platform.OS === 'ios');
+        setDate(currentDate);
+    };
+
+    const showMode = (currentMode) => {
+        setShow(true);
+        setMode(currentMode);
+    };
+
+    const showDatepicker = () => {
+        showMode('date');
+    };
+
+    const showTimepicker = () => {
+        showMode('time');
+    };
 
 
     // Préférence culinaire Liste
 
-    const [selectedCulinaryId, setSelectedCulinaryId] = useState(null);
+    const [restaurantTypeIsVisible, setRestaurantTypeIsVisible] = useState(false);
+    const hideRestaurantTypeDialog = () => setRestaurantTypeIsVisible(false);
 
-    const renderCulinaryItem = ({ item }) => {
-        const backgroundColor = item.id === selectedCulinaryId ? "#6e3b6e" : "#f9c2ff";
-        const color = item.id === selectedCulinaryId ? 'white' : 'black';
+    const [selectedRestaurantTypeId, setSelectedRestaurantTypeId] = useState(null);
+
+    const renderRestaurantTypeItem = ({ item }) => {
+        const backgroundColor = item.id === selectedRestaurantTypeId ? "#6e3b6e" : "#f9c2ff";
+        const color = item.id === selectedRestaurantTypeId ? 'white' : 'black';
 
         return (
             <Item
                 item={item}
-                onPress={() => setSelectedCulinaryId(item.id)}
+                onPress={() => setSelectedRestaurantTypeId(item.id), setRestaurantType(item.title)}
                 backgroundColor={{ backgroundColor }}
                 textColor={{ color }}
             />
@@ -71,6 +89,9 @@ function NewTableScreen(props) {
 
 
     // Choix tranche d'âge
+
+    const [ageRangeIsVisible, setAgeRangeIsVisible] = useState(false)
+    const hideAgeRangeListDialog = () => setAgeRangeIsVisible(false);
 
     const [selectedAgeRangeId, setSelectedAgeRangeId] = useState(null);
 
@@ -81,7 +102,7 @@ function NewTableScreen(props) {
         return (
             <Item
                 item={item}
-                onPress={() => setSelectedAgeRangeId(item.id)}
+                onPress={() => setSelectedAgeRangeId(item.id), setAgeRange(item.title)}
                 backgroundColor={{ backgroundColor }}
                 textColor={{ color }}
             />
@@ -89,9 +110,21 @@ function NewTableScreen(props) {
     };
 
 
+// Création de la table
+const createTable = async () => {
+    await fetch(`http://${franckIP}:3000/add-table`, {
+        method:'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: `date=${date}&title=${title}&placename=${restaurantName}&placeaddress=${restaurantAddress}&placetype=${restaurantType}&description=${description}&age=${ageRange}`
+    })
+}
+
+
+
     return (
 
         <ScrollView style={{ flex: 1, marginTop: 50 }}>
+
             <View style={{ flexDirection: "row", alignContent: "flex-start" }}>
                 <Button
                     title="Home"
@@ -120,7 +153,26 @@ function NewTableScreen(props) {
             <View
                 style={styles.container}
             >
-                {/* <DatePicker defaultValue={moment('01/01/2021', dateFormatList[0])} format={dateFormatList} /> */}
+
+                <View>
+                    <Button
+                        mode="outlined"
+                        color={'#FFC960'}
+                        style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#FFFFFF", color: '#FFC960' }}
+                        onPress={showDatepicker} icon="calendar" ><Text Style={{ color: '#FFC960' }}>Choisissez une date</Text>
+                    </Button>
+                    {show && (
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            value={date}
+                            mode={mode}
+                            is24Hour={true}
+                            display="default"
+                            onChange={onChange}
+                        />
+                    )}
+                </View>
+
                 <TextInput
                     style={{ alignSelf: "center", width: '70%' }}
                     mode="outlined"
@@ -143,18 +195,18 @@ function NewTableScreen(props) {
                     onChangeText={text => setRestaurantAddress(text)}
                 />
 
-                <Button mode="outlined" onPress={() => setCulinaryListIsVisible(true)}> Quel type de cuisine ?</Button>
+                <Button mode="outlined" onPress={() => setRestaurantTypeIsVisible(true)}> Quel type de cuisine ?</Button>
 
                 <Portal>
-                    <Dialog visible={culinaryListIsVisible} onDismiss={hideCulinaryListDialog}>
+                    <Dialog visible={restaurantTypeIsVisible} onDismiss={hideRestaurantTypeDialog}>
                         <Dialog.ScrollArea>
                             <ScrollView style={{ height: "90%" }} contentContainerStyle={{ paddingHorizontal: 24 }}>
                                 <SafeAreaView style={styles.container}>
                                     <FlatList
-                                        data={culinaryPreferencesList}
-                                        renderItem={renderCulinaryItem}
+                                        data={restaurantTypeList}
+                                        renderItem={renderRestaurantTypeItem}
                                         keyExtractor={(item) => item.id}
-                                        extraData={selectedCulinaryId}
+                                        extraData={selectedRestaurantTypeId}
                                     />
                                 </SafeAreaView>
                             </ScrollView>
@@ -202,10 +254,9 @@ function NewTableScreen(props) {
                     </View>
                 </View>
 
-                <Button mode="contained" onPress={() => setTable}>Créer la table</Button>
+                <Button mode="contained" onPress={() => createTable()}>Créer la table</Button>
 
             </View>
-
 
         </ScrollView>
 
