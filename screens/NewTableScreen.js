@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, SafeAreaView, FlatList, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { Button, TextInput, Dialog, Portal } from "react-native-paper"
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const franckIP = "192.168.1.41"
 
@@ -37,9 +39,6 @@ function NewTableScreen(props) {
     const [restaurantAddress, setRestaurantAddress] = useState('');
     const [description, setDescription] = useState('');
 
-    // Pour le calendrier Datepicker
-    const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
-
     // Date Picker
 
     const [date, setDate] = useState(new Date(1598051730000));
@@ -64,7 +63,6 @@ function NewTableScreen(props) {
     const showTimepicker = () => {
         showMode('time');
     };
-
 
     // Préférence culinaire Liste
 
@@ -109,20 +107,68 @@ function NewTableScreen(props) {
         );
     };
 
+    // Capacity
 
-// Création de la table
-const createTable = async () => {
-    await fetch(`http://${franckIP}:3000/add-table`, {
-        method:'POST',
-        headers: {'Content-Type':'application/x-www-form-urlencoded'},
-        body: `date=${date}&title=${title}&placename=${restaurantName}&placeaddress=${restaurantAddress}&placetype=${restaurantType}&description=${description}&age=${ageRange}`
-    })
-}
+    const [capacity, setCapacity] = useState(1)
+
+    var setTableCapacity = (countCapacity) => {
+        if (countCapacity < 1) {
+            countCapacity = 1
+        }
+        if (countCapacity > 6) {
+            countCapacity = 6
+        }
+        setCapacity(countCapacity)
+    }
+
+    const tabCapacity = []
+    for (let i = 0; i < 6; i++) {
+        var seatColor = "black"
+        if (i < capacity) {
+            seatColor = "#FFC960"
+        }
+        var capacityCount = i + 1
+        tabCapacity.push(<MaterialCommunityIcons key={i} onPress={() => setTableCapacity(capacityCount)} name="seat" size={24} color={seatColor} />)
+    }
 
 
+    //Budget
+
+    const [budget, setBudget] = useState(1)
+
+    var setTableBudget = (countBudget) => {
+        if (countBudget < 1) {
+            countBudget = 1
+        }
+        if (countBudget > 4) {
+            countBudget = 4
+        }
+        setBudget(countBudget)
+    }
+
+    const tabBudget = []
+    for (let i = 0; i < 4; i++) {
+        var signColor = "black"
+        if (i < budget) {
+            signColor = "#FFC960"
+        }
+        tabBudget.push(<MaterialIcons key={i} name="euro" size={24} color={signColor} />)
+    }
+
+    // Création de la table
+    const createTable = async () => {
+        await fetch(`http://${franckIP}:3000/add-table`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `date=${date}&title=${title}&placename=${restaurantName}&placeaddress=${restaurantAddress}&placetype=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}`
+        })
+    }
 
     return (
-
+        /*   <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.container}
+        > */
         <ScrollView style={{ flex: 1, marginTop: 50 }}>
 
             <View style={{ flexDirection: "row", alignContent: "flex-start" }}>
@@ -150,16 +196,16 @@ const createTable = async () => {
                 </Button>
             </View>
 
-            <View
-                style={styles.container}
-            >
+            <View style={styles.container}>
 
                 <View>
                     <Button
                         mode="outlined"
                         color={'#FFC960'}
                         style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#FFFFFF", color: '#FFC960' }}
-                        onPress={showDatepicker} icon="calendar" ><Text Style={{ color: '#FFC960' }}>Choisissez une date</Text>
+                        onPress={showDatepicker} icon="calendar"
+                    >
+                        <Text Style={{ color: '#FFC960' }}>Choisissez une date</Text>
                     </Button>
                     {show && (
                         <DateTimePicker
@@ -195,7 +241,7 @@ const createTable = async () => {
                     onChangeText={text => setRestaurantAddress(text)}
                 />
 
-                <Button mode="outlined" onPress={() => setRestaurantTypeIsVisible(true)}> Quel type de cuisine ?</Button>
+                <Button mode="outlined" onPress={() => setRestaurantTypeIsVisible(true)}> Quel type de cuisine ? </Button>
 
                 <Portal>
                     <Dialog visible={restaurantTypeIsVisible} onDismiss={hideRestaurantTypeDialog}>
@@ -219,6 +265,10 @@ const createTable = async () => {
                     mode="outlined"
                     label="Description"
                     placeholder="Présentation de l'évènement"
+                    multiline={true}
+                    dense={true}
+                    right={<TextInput.Affix text="/280" />}
+                    maxLength={280}
                     value={description}
                     onChangeText={text => setDescription(text)}
                 />
@@ -244,13 +294,16 @@ const createTable = async () => {
                 <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
                         <Text>Meaters:</Text>
-                        <Button compact mode="contained">-</Button>
-                        <Button compact mode="contained">+</Button>
+                        {tabCapacity}
+                        <Button compact mode="contained" onPress={() => setTableCapacity(capacity - 1)}>-</Button>
+                        <Button compact mode="contained" onPress={() => setTableCapacity(capacity + 1)}>+</Button>
                     </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
+                    <View style={{ flexDirection: "row", alignSelf: "flex-start", alignItems: "center", justifyContent: "flex-end" }}>
                         <Text>Budget:</Text>
-                        <Button compact mode="contained">-</Button>
-                        <Button compact mode="contained">+</Button>
+                        {tabBudget}
+                        <Button compact mode="contained" onPress={() => setTableBudget(budget - 1)}>-</Button>
+                        <Button compact mode="contained" onPress={() => setTableBudget(budget + 1)}>+</Button>
+
                     </View>
                 </View>
 
@@ -259,7 +312,7 @@ const createTable = async () => {
             </View>
 
         </ScrollView>
-
+        /* </KeyboardAvoidingView> */
     )
 }
 
