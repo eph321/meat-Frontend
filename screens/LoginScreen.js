@@ -2,7 +2,8 @@ import React, {useState} from 'react'
 
 import  {StyleSheet,View,Image, Text} from "react-native";
 import {SocialIcon} from 'react-native-elements'
-import {TextInput, Button, Paragraph} from "react-native-paper";
+import {TextInput, Button, Paragraph, IconButton} from "react-native-paper";
+
 
 
 function LoginScreen(props) {
@@ -42,6 +43,12 @@ function LoginScreen(props) {
 
     return (
         <View style={styles.container}>
+            <IconButton
+                icon="home"
+                color={'#0E9BA4'}
+                size={25}
+                onPress={() => props.navigation.navigate('Home')}
+            />
 
             <Image
                 style={styles.imageLogin}
