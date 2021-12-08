@@ -6,6 +6,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const franckIP = "192.168.1.41"
+const StephIP = "192.168.1.9"
+
 
 // Préférence culinaire Liste
 
@@ -161,7 +163,7 @@ function NewTableScreen(props) {
 
     // Création de la table
     const createTable = async () => {
-        await fetch(`http://${franckIP}:3000/add-table`, {
+        await fetch(`http://${StephIP}:3000/add-table`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}`
