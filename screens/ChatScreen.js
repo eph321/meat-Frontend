@@ -1,7 +1,8 @@
 import React, { useState,useEffect } from 'react';
 import {KeyboardAvoidingView, ScrollView, StyleSheet, View} from 'react-native';
-import {Appbar,IconButton, RadioButton,List, Text, TextInput} from "react-native-paper";
+import {Appbar, IconButton, RadioButton, List, Button, TextInput, Text,Chip,Card,Title,Paragraph,Badge} from "react-native-paper";
 import socketIOClient from "socket.io-client";
+
 
 var socket = socketIOClient("http://192.168.1.246:3000");
 
@@ -11,7 +12,7 @@ function ChatScreen(props) {
 
 
     const handlePress = () => {
-        socket.emit("sendMessage", JSON.stringify({content: emotify(currentMessage), author: props.pseudoToDisplay}));
+        socket.emit("sendMessage", JSON.stringify({content: currentMessage, author: props.pseudoToDisplay}));
         setCurrentMessage("");
     }
 
@@ -28,14 +29,23 @@ function ChatScreen(props) {
 
     }, [listMessages]);
 
-    // const displayMessage = (message,i) => {
-    //     return <List.Item key={i}>
-    //         <ListItem.Content>
-    //             <ListItem.Title>{message.content}</ListItem.Title>
-    //             <ListItem.Subtitle>{message.author}</ListItem.Subtitle>
-    //         </ListItem.Content>
-    //     </List.Item>;
-    // }
+    const displayMessage = (message,i) => {
+        if ( i % 2 === 0){
+            return <List.Item key={i} style={{backgroundColor:"rgba(14, 155, 164, 0.22)",width:"70%",marginHorizontal:20,marginVertical:5}}
+                              title={message.author}
+
+                              description={message.content}/>
+        }else {
+            return <List.Item key={i} style={{backgroundColor:"rgba(255, 201, 96, 0.22)",width:"70%",alignSelf:"flex-end",marginHorizontal:20,marginVertical:5}}
+                              title={message.author}
+                              description={message.content}/>
+        }
+        
+    }
+   const tabTest = [{author:"arthur",content:"Oui, j’ai beaucoup aimé l’ambiance, c’était cool de faire partie de ce goupe de M.eaters."},
+       {author:"axel",content:"D’ailleurs, je tenais à te remercier pour ta bonne humeur, j’ai beaucoup rigolé "},
+       {author:"arthur",content:"J’espère qu’on aura l’occasion de le refaire!"},
+       {author:"axel",content:"Je crée une table pour la semaine prochaine. "},]
 
 
 
@@ -76,42 +86,40 @@ function ChatScreen(props) {
                 <View style={{flex:1}}>
 
                     <ScrollView style={{flex:1, marginTop: 50}}>
-                        <List.Item
-                            title="First Item"
-                            description="Item description"
-                            left={props => <List.Icon {...props} icon="folder" />}
-                        />
+
+
+                        {tabTest.map((el,i)=> displayMessage(el,i))}
+
+
+
+
                         {/*{listMessages.map((message,i) => displwayMessage(message,i))}*/}
                     </ScrollView>
 
                     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                        <TextInput
-                            style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
-                            mode="outlined"
-                            label="Adresse mail"
-                            onChangeText={(message)=>setCurrentMessage(message)}
-                            placeholder ="M.eater_75%"
-                            activeOutlineColor={"#FF3D00"}
-                            outlineColor={'#0E9BA4'}
-                            containerStyle = {{marginBottom: 5}}
-                            ref={messageInput}
-                            placeholder='Your message'
-                            value={currentMessage}
 
-                        />
-                        <Button
-                            icon={
-                                <Icon
-                                    name="envelope-o"
-                                    size={20}
-                                    color="#ffffff"
-                                />
-                            }
-                            title="Send"
-                            buttonStyle={{backgroundColor: "#eb4d4b"}}
-                            type="solid"
-                            onPress={()=> handlePress()}
-                        />
+
+                        <View style={{flexDirection:"row",justifyContent:"center"}}>
+                            <TextInput
+
+                                multiline={true}
+                                style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
+                                mode="outlined"
+                                label="Message"
+                                onChangeText={(message)=>setCurrentMessage(message)}
+                                activeOutlineColor={"#FF3D00"}
+                                outlineColor={'#0E9BA4'}
+                                containerStyle = {{marginBottom: 5}}
+                                placeholder='Ecrire ici...'
+                                value={currentMessage}
+                            />
+                            <IconButton
+                                icon="send"
+                                color={'#0E9BA4'}
+                                size={25}
+                                onPress={() => handlePress()}
+                            />
+                        </View>
                     </KeyboardAvoidingView>
 
                 </View>
@@ -134,7 +142,12 @@ const styles = StyleSheet.create({
         top: 0,
         justifyContent:"flex-start",
 
-    },
+    }, surface: {
+        width: "80%",
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        elevation: 10,
+    }
 });
 
 

@@ -59,6 +59,8 @@ function HomeScreen(props) {
             )
         }
 
+
+
         return (
             <Card key={i} style={{marginBottom:8}} onPress={() => console.log(e._id)}>
                 <Card.Content>
