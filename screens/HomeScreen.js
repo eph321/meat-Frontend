@@ -53,7 +53,7 @@ function HomeScreen(props) {
     var tableList = tableDataList.map((e, i) => {
 
         let capacityAvatar = []
-        for (let avatar = 1; avatar < e.capacity; avatar++) {
+        for (let avatar = 0; avatar < e.capacity; avatar++) {
             capacityAvatar.push(
                 <Ionicons name="person-circle-outline" size={24} color="black" />
             )
