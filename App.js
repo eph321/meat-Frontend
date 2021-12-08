@@ -32,8 +32,8 @@ const ThemeMeat = {
   roundness: 2,
   colors: {
     ...DefaultTheme.colors,
-    green999: '#0E9BA4',
-    yellow999: '#FFC960',
+    greenMeat: '#0E9BA4',
+    yellowMeat: '#FFC960',
   },
 };
 
