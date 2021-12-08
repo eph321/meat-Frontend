@@ -4,8 +4,9 @@ import { Text, Button, Appbar, TextInput, Card, Title, Paragraph } from "react-n
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { connect } from "react-redux"
 
 const franckIP = "192.168.1.41"
 
@@ -53,34 +54,35 @@ function HomeScreen(props) {
     var tableList = tableDataList.map((e, i) => {
 
         let capacityAvatar = []
-        for (let avatar = 1; avatar < e.capacity; avatar++) {
+        for (let avatar = 0; avatar < e.capacity; avatar++) {
             capacityAvatar.push(
-                <Ionicons name="person-circle-outline" size={24} color="black" />
+                <Ionicons key={avatar} name="person-circle-outline" size={24} color="black" />
             )
         }
 
+
         return (
-            <Card key={i} style={{marginBottom:8}} onPress={() => console.log(e._id)}>
+            <Card key={i} style={{ marginBottom: 8 }} onPress={() => { props.onCardClick(e._id); props.navigation.navigate("JoinTable") }}>
                 <Card.Content>
-                    <Title style={{alignSelf:"center"}}>{e.title}</Title>
-                    <Paragraph style={{alignSelf:"center"}}>{e.date}</Paragraph>
-                    <View style={{ flexDirection: "row", alignSelf:"center", marginBottom:4, marginTop:4 }}>
+                    <Title style={{ alignSelf: "center" }}>{e.title}</Title>
+                    <Paragraph style={{ alignSelf: "center" }}>{e.date}</Paragraph>
+                    <View style={{ flexDirection: "row", alignSelf: "center", marginBottom: 4, marginTop: 4 }}>
                         {capacityAvatar}
                     </View>
-                    <View style={{flexDirection:"row", justifyContent:"space-evenly"}}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
                         <MaterialCommunityIcons name="table-furniture" size={24} color="black" />
                         <View>
                             <Text>Restaurant</Text>
-                            <Paragraph style={{color:"#0E9BA4", fontWeight:"bold"}}>Nom du restaurant</Paragraph>
+                            <Paragraph style={{ color: "#0E9BA4", fontWeight: "bold" }}>Nom du restaurant</Paragraph>
                         </View>
-                        <View style={{flexDirection:"row"}}>
-                        <MaterialIcons name="restaurant" size={24} color="#0E9BA4" />
-                       <Paragraph> Type du Restaurant</Paragraph>
+                        <View style={{ flexDirection: "row" }}>
+                            <MaterialIcons name="restaurant" size={24} color="#0E9BA4" />
+                            <Paragraph> Type du Restaurant</Paragraph>
                         </View>
                     </View>
-                    <View style={{flexDirection:"row", alignItems:"center", alignSelf:"center", marginTop:3}}>
-                    <FontAwesome5 style={{marginRight:8}} name="walking" size={24} color="#0E9BA4" />
-                    <Text>à ... m</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", alignSelf: "center", marginTop: 3 }}>
+                        <FontAwesome5 style={{ marginRight: 8 }} name="walking" size={24} color="#0E9BA4" />
+                        <Text>à ... m</Text>
                     </View>
                 </Card.Content>
             </Card>
@@ -92,10 +94,10 @@ function HomeScreen(props) {
 
         <View style={{ flex: 1, justifyContent: 'space-evenly' }}>
             <View style={styles.viewHeader}>
-                <Appbar style={{ flex: 1, backgroundColor: "#FFC960", height:20 }}>
+                <Appbar style={{ flex: 1, backgroundColor: "#FFC960", height: 20 }}>
                     <Appbar.Content title="Home Page" style={{ textAlign: 'center' }} />
                 </Appbar>
-                <Appbar style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", justifyContent: "space-evenly", height:40 }}>
+                <Appbar style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", justifyContent: "space-evenly", height: 40 }}>
                     <Appbar.Action icon="home" onPress={() => props.navigation.navigate('Home')} />
                     <Appbar.Action icon="plus-circle" onPress={() => props.navigation.navigate('NewTable')} />
                     <Appbar.Action icon="calendar-month" onPress={() => props.navigation.navigate('MyEvents')} />
@@ -138,7 +140,7 @@ function HomeScreen(props) {
                     placeholder="Italien"
                 />
             </View>
-            <ScrollView>
+            <ScrollView style={{ flex: 2 }}>
 
                 {tableList}
 
@@ -168,11 +170,16 @@ const styles = StyleSheet.create({
     },
 });
 
-/* function mapDispatchToProps(dispatch){
-    onCardClick:{
-        dispatch
+function mapDispatchToProps(dispatch) {
+    return {
+        onCardClick: function (tableID) {
+            dispatch({ type: "saveTableID", tableID: tableID })
+        }
     }
-} */
+}
 
-export default HomeScreen;
+export default connect(
+    null,
+    mapDispatchToProps
+)(HomeScreen)
 
