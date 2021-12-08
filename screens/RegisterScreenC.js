@@ -112,6 +112,8 @@ function mapDispatchToProps(dispatch){
     return {
         sendDetailedData: function (detailedData){
             dispatch({type: 'registerC',detailedData})
+        },sendUserToken: function (userToken){
+            dispatch({type: 'registerToken',userToken})
         }
 
     }
