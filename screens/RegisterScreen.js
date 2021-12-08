@@ -70,15 +70,7 @@ function RegisterScreen(props) {
                         </View>
                     </TouchableOpacity>
 
-                    <TextInput
-                        style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
-                        mode="outlined"
-                        label="Adresse mail"
-                        onChangeText={(val)=> {setInputEmail(val);setInputProgress(inputProgress + 0.01)}}
-                        placeholder ="M.eater_75%"
-                        activeOutlineColor={"#FF3D00"}
-                        outlineColor={'#0E9BA4'}
-                    />
+
                     <TextInput style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
                                mode="outlined"
                                label="Mot de passe"

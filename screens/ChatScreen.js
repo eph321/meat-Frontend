@@ -93,7 +93,6 @@ function ChatScreen(props) {
                             placeholder ="M.eater_75%"
                             activeOutlineColor={"#FF3D00"}
                             outlineColor={'#0E9BA4'}
-                        <TextInput
                             containerStyle = {{marginBottom: 5}}
                             ref={messageInput}
                             placeholder='Your message'
