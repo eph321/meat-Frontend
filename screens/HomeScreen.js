@@ -55,7 +55,7 @@ function HomeScreen(props) {
         let capacityAvatar = []
         for (let avatar = 0; avatar < e.capacity; avatar++) {
             capacityAvatar.push(
-                <Ionicons name="person-circle-outline" size={24} color="black" />
+                <Ionicons key={avatar} name="person-circle-outline" size={24} color="black" />
             )
         }
 
@@ -138,7 +138,7 @@ function HomeScreen(props) {
                     placeholder="Italien"
                 />
             </View>
-            <ScrollView>
+            <ScrollView style={{flex:2}}>
 
                 {tableList}
 

@@ -6,6 +6,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import {TextInput, Provider as PaperProvider, DefaultTheme} from 'react-native-paper'
 import { Provider as StoreProvider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
+import { LogBox } from 'react-native';  
+LogBox.ignoreLogs(['Warning: ...']);
 
 import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";

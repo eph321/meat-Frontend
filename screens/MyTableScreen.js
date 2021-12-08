@@ -1,4 +1,3 @@
-import { AutoComplete, Row } from 'antd';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Title, Avatar, Button, Card, Paragraph, Subheading, Appbar } from 'react-native-paper';
