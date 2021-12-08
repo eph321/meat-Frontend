@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 import {Text, Button, Appbar,TextInput} from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-
 function HomeScreen(props) {
     // DATE PICKER - input "où"
     const [date, setDate] = useState(new Date(1598051730000));
@@ -87,7 +86,7 @@ function HomeScreen(props) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 0.5,
         alignItems: 'center',
         justifyContent: 'center',
     },viewHeader: {
@@ -98,6 +97,9 @@ const styles = StyleSheet.create({
         justifyContent:"flex-start",
 
 
+    },
+    input: {
+        flex: 0.1
     },
 });
 

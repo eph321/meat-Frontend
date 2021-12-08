@@ -1,6 +1,6 @@
 
-import React from 'react';
-import {Button, StyleSheet} from 'react-native';
+import React, { Component } from 'react';
+import {Button, StyleSheet, View, Text} from 'react-native';
 import { NavigationContainer} from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 import {TextInput, Provider as PaperProvider, DefaultTheme} from 'react-native-paper'
@@ -39,6 +39,8 @@ const ThemeMeat = {
 
 const Stack = createStackNavigator();
 const store = createStore(combineReducers({ userRegister }));
+
+
 
 export default function App() {
   return (
