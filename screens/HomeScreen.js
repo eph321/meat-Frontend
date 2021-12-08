@@ -44,12 +44,12 @@ const [tableDataList, setTableDataList] = useState([""])
     }
     ,[])
    
-    var tableList = tableDataList.map((e) => {
+    var tableList = tableDataList.map((e, i) => {
         return (
-                <Card>
+                <Card key={i}>
                     <Card.Content>
-                        <Title>Chez Toto</Title>
-                        <Paragraph>Mangez bien</Paragraph>
+                        <Title>{e.title}</Title>
+                        <Paragraph>{e.date}</Paragraph>
                     </Card.Content>
                 </Card>
         );
