@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
-import { Button, TextInput, Dialog, Portal } from "react-native-paper"
+import { Button, TextInput, Dialog, Portal, Appbar } from "react-native-paper"
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -164,11 +164,9 @@ function NewTableScreen(props) {
         await fetch(`http://${franckIP}:3000/add-table`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `date=${date}&title=${title}&placename=${restaurantName}&placeaddress=${restaurantAddress}&placetype=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}`
+            body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}`
         })
     }
-
-
 
     return (
         /*   <KeyboardAvoidingView
@@ -178,29 +176,18 @@ function NewTableScreen(props) {
 
         <ScrollView style={{ flex: 1, marginTop: 50 }}>
 
-            <View style={{ flexDirection: "row", alignContent: "flex-start" }}>
-                <Button
-                    title="Home"
-                    mode="contained"
-                    onPress={() => props.navigation.navigate("Home")}
-                >
-                    Home
-                </Button>
-
-                <Button
-                    title="My Events"
-                    mode="contained"
-                    onPress={() => props.navigation.navigate("MyEvents")}
-                >
-                    My Events
-                </Button>
-                <Button
-                    title="My Profile"
-                    mode="contained"
-                    onPress={() => props.navigation.navigate("Profile")}
-                >
-                    Profile
-                </Button>
+            <View style={styles.viewHeader}>
+                <Appbar style={{ flex: 1, backgroundColor: "#FFC960", height: 20 }}>
+                    <Appbar.Content title="Creer une table" style={{ textAlign: 'center' }} />
+                </Appbar>
+                <Appbar style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", justifyContent: "space-evenly", height: 40 }}>
+                    <Appbar.Action icon="home" onPress={() => props.navigation.navigate('Home')} />
+                    <Appbar.Action icon="plus-circle" onPress={() => props.navigation.navigate('NewTable')} />
+                    <Appbar.Action icon="calendar-month" onPress={() => props.navigation.navigate('MyEvents')} />
+                    <Appbar.Action icon="message-text" onPress={() => props.navigation.navigate('Chat')} />
+                    <Appbar.Action icon="account" onPress={() => props.navigation.navigate('MyAccount')}
+                    />
+                </Appbar>
             </View>
 
             <View
@@ -335,6 +322,13 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    viewHeader: {
+        flex: 2,
+        left: 0,
+        width: "100%",
+        top: 0,
+        justifyContent: "flex-start",
     },
     item: {
         padding: 20,
