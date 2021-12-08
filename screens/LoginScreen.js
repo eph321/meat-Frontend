@@ -9,10 +9,24 @@ function LoginScreen(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-
+    const isLogin = async () => {
+        var rawResponse = await fetch('http://192.168.1.246:3000/sign-in',{
+            method:'POST',
+            headers:{'Content-Type':'application/x-www-form-urlencoded'},
+            body: `email=${email}&password=${password}`
+        });
+        var response = await rawResponse.json();
+        if (response.login) { props.navigation.navigate('Home')
+        await AsyncStorage.setItem("userToken", JSON.stringify({token: response.searchUser.token}))
+        console.log(response)
+        console.log(response.searchUser.token)
+        } else {
+            // message d'erreur à afficher en cas de mdp et/ou id erronés
+        }
+    }
 
     
-    const [eye, setEye] = useState(false);
+   /*  const [eye, setEye] = useState(false);
     const eyeOpen = () => { <TextInput.Icon name="eye" color="#009788"/> };
     const eyeClosed = () => { <TextInput.Icon name="eye-off" color="#009788"/> };
 
@@ -23,7 +37,7 @@ function LoginScreen(props) {
         } else {
             return eyeClosed
         }
-    }
+    } */
     
 
     return (
@@ -56,7 +70,7 @@ function LoginScreen(props) {
             <Button style={styles.button}
                 mode="contained" 
                 labelStyle={{fontSize: 20, fontWeight: "bold", color: "#009788", paddingTop: 4}}
-                onPress={() => {props.navigation.navigate('Home')}}>
+                onPress={() => isLogin()}>
                 Connexion
             </Button>
 
