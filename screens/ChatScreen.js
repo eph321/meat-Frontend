@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import {KeyboardAvoidingView, ScrollView, StyleSheet, View} from 'react-native';
 import {Appbar, IconButton, RadioButton, List, Button, TextInput, Text,Chip,Card,Title,Paragraph,Badge} from "react-native-paper";
 import socketIOClient from "socket.io-client";
+import {connect} from "react-redux";
 
 
 var socket = socketIOClient("http://192.168.1.246:3000");
@@ -10,9 +11,9 @@ function ChatScreen(props) {
     const [currentMessage,setCurrentMessage] = useState("")
     const [listMessages,setListMessages] = useState([])
 
-
+    // props.userRegister.firstName
     const handlePress = () => {
-        socket.emit("sendMessage", JSON.stringify({content: currentMessage, author: props.pseudoToDisplay}));
+        socket.emit("sendMessage", JSON.stringify({content: currentMessage, author: props.userToSend.firstName }));
         setCurrentMessage("");
     }
 
@@ -80,6 +81,12 @@ function ChatScreen(props) {
                     size={25}
                     onPress={() =>  props.navigation.navigate('MyAccount')}
                 />
+                <IconButton
+                    icon="friend"
+                    color={'#0E9BA4'}
+                    size={25}
+                    onPress={() =>  props.navigation.navigate('BuddyProfile')}
+                />
             </View>
         </View>
             <View style={{flex:7, backgroundColor:"#F2F2F2"}}>
@@ -88,7 +95,7 @@ function ChatScreen(props) {
                     <ScrollView style={{flex:1, marginTop: 50}}>
 
 
-                        {tabTest.map((el,i)=> displayMessage(el,i))}
+                        {listMessages.map((el,i)=> displayMessage(el,i))}
 
 
 
@@ -152,4 +159,13 @@ const styles = StyleSheet.create({
 
 
 
-export default ChatScreen;
+function mapStateToProps(state) {
+    return {
+        userToSend: state.userRegister
+    }}
+
+export default connect(
+    mapStateToProps,
+    null
+)(ChatScreen);
+

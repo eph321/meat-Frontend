@@ -37,17 +37,18 @@ function RegisterScreen(props) {
             quality: 0.3,
         });
         if (!result.cancelled) {
+            console.log(result.uri)
 
             setImage(result.uri);
-            let dataAvatar = new FormData();
-            dataAvatar.append('avatar',{
+            let data = new FormData();
+            data.append('avatar',{
                 uri: result.uri,
                 type: 'image/jpeg',
                 name: 'avatar.jpg'});
 
-            var rawResponse = await fetch("http://192.168.1.246:3000/uploadAvatar",{
+            var rawResponse = await fetch("http://192.168.1.246:3000/upload-avatar",{
                 method: 'POST',
-                body: dataAvatar});
+                body: data});
             var response = await rawResponse.json();
             console.log(response)
             setTempAvatarUri(response);
@@ -70,12 +71,21 @@ function RegisterScreen(props) {
                         </View>
                     </TouchableOpacity>
 
+                    <TextInput style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
+                               mode="outlined"
+                               label="Email"
+                               onChangeText={(valEmail)=> {setInputEmail(valEmail);setInputProgress(inputProgress + 0.01)}}
+                               placeholder ="hello@matable.com"
+                               activeOutlineColor={"#FF3D00"}
+                               outlineColor={'#0E9BA4'}
+                    />
+
 
                     <TextInput style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
                                mode="outlined"
                                label="Mot de passe"
-                               onChangeText={(val)=> {setInputPassword(val);setInputProgress(inputProgress + 0.01)}}
-                               placeholder ="hello@matable.com"
+                               onChangeText={(valPassword)=> {setInputPassword(valPassword);setInputProgress(inputProgress + 0.01)}}
+                               placeholder ="***********"
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
                     />
@@ -89,7 +99,7 @@ function RegisterScreen(props) {
                     />
                     <Button
                         style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
-                         mode="contained" onPress={() =>{ props.navigation.navigate('RegisterB');props.sendData({email:inputEmail,inputPassword:inputPassword,avatar:tempAvatarUri}) }}>
+                         mode="contained" onPress={() =>{ props.navigation.navigate('RegisterB');props.sendData({inputEmail:inputEmail,inputPassword:inputPassword,inputAvatar:tempAvatarUri}) }}>
                         <Text Style={{color:'#FFC960'}}>Press me</Text>
                     </Button>
 
@@ -133,12 +143,3 @@ export default connect(
     null,
     mapDispatchToProps
 )(RegisterScreen);
-/*
-
-<TextInput
-    label="Email"
-    value={inputEmail}
-    onChangeText={text => setInputEmail(text)}
-    textAlign={'center'}
-    style={{top: 120, padding:10, borderColor:'#369', textAlign:'center'}}
-/>*/

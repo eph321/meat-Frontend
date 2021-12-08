@@ -12,12 +12,22 @@ function RegisterScreenC(props) {
         var rawResponse = await fetch('http://192.168.1.246:3000/sign-up',{
             method:'POST',
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
-            body: `lastname=${props.userToSend.lastName}&firstname=${props.userToSend.firstName}&password=${props.userToSend.inputPassword}&description=${userDesc}&email=${props.userToSend.email}&dateOfBirth=${props.userToSend.dateOfBirth}&gender=${props.userToSend.gender}&addresses=${props.userToSend.userAddress}&avatar=${props.userToSend.avatar}&phone=${props.userToSend.phone}&preference1=${userPreference1}&preference2=${userPreference2}&preference3=${userPreference3}`
+            body: `lastname=${props.userToSend.lastName}&firstname=${props.userToSend.firstName}&password=${props.userToSend.inputPassword}&description=${userDesc}&email=${props.userToSend.inputEmail}&dateofbirth=${props.userToSend.dateOfBirth}&gender=${props.userToSend.gender}&addresses=${props.userToSend.userAddress}&avatar=${props.userToSend.inputAvatar}&phone=${props.userToSend.inputPhone}&preference1=${userPreference1}&preference2=${userPreference2}&preference3=${userPreference3}`
+            
+            
+            
+            
+            
+            
+            
+            
+
         });
         var response = await rawResponse.json();
         await AsyncStorage.setItem("userToken", JSON.stringify({token: response.newUserSave.token}))
         console.log(response)
         console.log(response.newUserSave.token)
+        props.sendUserTokenRegister(response.newUserSave.token)
 
     }
 
@@ -112,7 +122,7 @@ function mapDispatchToProps(dispatch){
     return {
         sendDetailedData: function (detailedData){
             dispatch({type: 'registerC',detailedData})
-        },sendUserToken: function (userToken){
+        },sendUserTokenRegister: function (userToken){
             dispatch({type: 'registerToken',userToken})
         }
 

@@ -1,4 +1,4 @@
-import React, { useState ,useCallback} from 'react';
+import React, { useState } from 'react';
 
 import {Platform, StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text,RadioButton} from "react-native-paper";
@@ -50,7 +50,7 @@ function RegisterScreenB(props) {
                 style={{marginTop: 80, textAlign:'center',width:'70%',alignSelf:"center" }}
                 mode="outlined"
                 label="Prénom"
-                onChangeText={(val)=> {setFirstName(val);setInputProgress(inputProgress + 0.01)}}
+                onChangeText={(firstNameValue)=> {setFirstName(firstNameValue);setInputProgress(inputProgress + 0.01)}}
                 placeholder ="Félix"
                 activeOutlineColor={"#FF3D00"}
                 outlineColor={'#0E9BA4'}
@@ -61,7 +61,7 @@ function RegisterScreenB(props) {
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
                        label="Nom de famille"
-                       onChangeText={(val)=> {setLastName(val);setInputProgress(inputProgress + 0.01)}}
+                       onChangeText={(lastNameValue)=> {setLastName(lastNameValue);setInputProgress(inputProgress + 0.01)}}
                        placeholder ="The Cat"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
@@ -69,26 +69,16 @@ function RegisterScreenB(props) {
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
                        label="Adresse Postale"
-                       onChangeText={(val)=> {setUserAddress(val); setInputProgress(inputProgress + 0.01)}}
+                       onChangeText={(userAddressValue)=> {setUserAddress(userAddressValue); setInputProgress(inputProgress + 0.01)}}
                        placeholder ="56 boulevard Pereire, 75017 Paris"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
             />
-            <GooglePlacesAutocomplete
-                placeholder='Search'
-                onPress={(data, details = null) => {
-                    // 'details' is provided when fetchDetails = true
-                    console.log(data, details);
-                }}
-                query={{
-                    key: 'YOUR API KEY',
-                    language: 'en',
-                }}
-            />
+
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
                        label="Numéro de mobile"
-                       onChangeText={(val)=> {setPhone(val); setInputProgress(inputProgress + 0.01)}}
+                       onChangeText={(phoneValue)=> {setPhone(phoneValue); setInputProgress(inputProgress + 0.01)}}
                        placeholder ="+33 6 23 45 67 89"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
@@ -138,7 +128,7 @@ function RegisterScreenB(props) {
 
             <Button
                 style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
-                mode="contained" onPress={() =>{ props.navigation.navigate('RegisterC');props.sendPersonalData({firstName : firstName, lastName:lastName, userAddress:userAddress, phone:phone, gender:gender, dateOfBirth:dateOfBirth}) }}>
+                mode="contained" onPress={() =>{ props.navigation.navigate('RegisterC');props.sendPersonalData({firstName : firstName, lastName:lastName, userAddress:userAddress, inputPhone:phone, gender:gender, dateOfBirth:dateOfBirth}) }}>
                 <Text Style={{color:'#FFC960'}}>Press me</Text>
             </Button>
 

@@ -23,12 +23,13 @@ import MyAccountScreen from "./screens/MyAccountScreen";
 import MyBuddiesScreen from "./screens/MyBuddiesScreen";
 import MyMessagesScreen from "./screens/MyMessagesScreen";
 import ChatScreen from "./screens/ChatScreen";
+import BuddyScreen from "./screens/BuddyScreen";
 import MyEventsScreen from "./screens/MyEventsScreen";
 import MyAddressesScreen from "./screens/MyAddressesScreen";
 
 import userRegister from './reducers/userRegister'
 import tableId from "./reducers/event"
-
+import userToken from './reducers/userToken'
 
 // création du menu
 const ThemeMeat = {
@@ -42,7 +43,7 @@ const ThemeMeat = {
 };
 
 const Stack = createStackNavigator();
-const store = createStore(combineReducers({ userRegister, tableId }));
+const store = createStore(combineReducers({ userRegister, tableId,userToken}));
 
 
 
@@ -61,6 +62,7 @@ export default function App() {
                 <Stack.Screen name="JoinTable" component={JoinTableScreen} />
                 <Stack.Screen name="MyTable" component={MyTableScreen} />
                 <Stack.Screen name="NewTable" component={NewTableScreen} />
+                <Stack.Screen name="BuddyProfile" component={BuddyScreen} />
                 <Stack.Screen name="JoinProfile" component={ProfileScreen} />
                 <Stack.Screen name="MyAccount" component={MyAccountScreen} />
                 <Stack.Screen name="MyAddresses" component={MyAddressesScreen} />
