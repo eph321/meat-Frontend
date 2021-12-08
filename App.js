@@ -6,6 +6,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import {TextInput, Provider as PaperProvider, DefaultTheme} from 'react-native-paper'
 import { Provider as StoreProvider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
+import { LogBox } from 'react-native';  
+LogBox.ignoreLogs(['Warning: ...']);
 
 import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -23,7 +25,9 @@ import MyMessagesScreen from "./screens/MyMessagesScreen";
 import ChatScreen from "./screens/ChatScreen";
 import MyEventsScreen from "./screens/MyEventsScreen";
 import MyAddressesScreen from "./screens/MyAddressesScreen";
+
 import userRegister from './reducers/userRegister'
+import tableId from "./reducers/event"
 
 
 // création du menu
@@ -38,7 +42,7 @@ const ThemeMeat = {
 };
 
 const Stack = createStackNavigator();
-const store = createStore(combineReducers({ userRegister }));
+const store = createStore(combineReducers({ userRegister, tableId }));
 
 
 
