@@ -27,6 +27,15 @@ import userRegister from './reducers/userRegister'
 
 
 // création du menu
+const ThemeMeat = {
+  ...DefaultTheme,
+  roundness: 2,
+  colors: {
+    ...DefaultTheme.colors,
+    green999: '#0E9BA4',
+    yellow999: '#FFC960',
+  },
+};
 
 const Stack = createStackNavigator();
 const store = createStore(combineReducers({ userRegister }));
@@ -36,7 +45,7 @@ const store = createStore(combineReducers({ userRegister }));
 export default function App() {
   return (
       <StoreProvider store={store}>
-        <PaperProvider theme={DefaultTheme}>
+        <PaperProvider theme={ThemeMeat}>
             <NavigationContainer>
               <Stack.Navigator screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="Login" component={LoginScreen}/>
@@ -48,7 +57,7 @@ export default function App() {
                 <Stack.Screen name="JoinTable" component={JoinTableScreen} />
                 <Stack.Screen name="MyTable" component={MyTableScreen} />
                 <Stack.Screen name="NewTable" component={NewTableScreen} />
-                <Stack.Screen name="Profile" component={ProfileScreen} />
+                <Stack.Screen name="JoinProfile" component={ProfileScreen} />
                 <Stack.Screen name="MyAccount" component={MyAccountScreen} />
                 <Stack.Screen name="MyAddresses" component={MyAddressesScreen} />
                 <Stack.Screen name="MyBuddies" component={MyBuddiesScreen} />

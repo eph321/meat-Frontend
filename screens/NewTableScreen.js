@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, SafeAreaView, FlatList, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
 import { Button, TextInput, Dialog, Portal } from "react-native-paper"
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -39,6 +39,9 @@ function NewTableScreen(props) {
     const [restaurantAddress, setRestaurantAddress] = useState('');
     const [description, setDescription] = useState('');
 
+    // Pour le calendrier Datepicker
+    const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
+
     // Date Picker
 
     const [date, setDate] = useState(new Date(1598051730000));
@@ -63,6 +66,7 @@ function NewTableScreen(props) {
     const showTimepicker = () => {
         showMode('time');
     };
+
 
     // Préférence culinaire Liste
 
@@ -164,11 +168,14 @@ function NewTableScreen(props) {
         })
     }
 
+
+
     return (
         /*   <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.container}
-        > */
+  behavior={Platform.OS === "ios" ? "padding" : "height"}
+  style={styles.container}
+> */
+
         <ScrollView style={{ flex: 1, marginTop: 50 }}>
 
             <View style={{ flexDirection: "row", alignContent: "flex-start" }}>
@@ -196,16 +203,18 @@ function NewTableScreen(props) {
                 </Button>
             </View>
 
-            <View style={styles.container}>
+            <View
+                style={styles.container}
+            >
 
                 <View>
                     <Button
                         mode="outlined"
                         color={'#FFC960'}
                         style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#FFFFFF", color: '#FFC960' }}
-                        onPress={showDatepicker} icon="calendar"
-                    >
-                        <Text Style={{ color: '#FFC960' }}>Choisissez une date</Text>
+                        onPress={showDatepicker} icon="calendar" ><Text Style={{ color: '#FFC960' }}>Choisissez une date</Text>
+
+
                     </Button>
                     {show && (
                         <DateTimePicker
@@ -241,7 +250,9 @@ function NewTableScreen(props) {
                     onChangeText={text => setRestaurantAddress(text)}
                 />
 
-                <Button mode="outlined" onPress={() => setRestaurantTypeIsVisible(true)}> Quel type de cuisine ? </Button>
+                <Button mode="outlined" onPress={() => setRestaurantTypeIsVisible(true)}> Quel type de cuisine ?</Button>
+
+
 
                 <Portal>
                     <Dialog visible={restaurantTypeIsVisible} onDismiss={hideRestaurantTypeDialog}>
@@ -292,13 +303,15 @@ function NewTableScreen(props) {
                 </Portal>
 
                 <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
+                    <View style={{ flexDirection: "row", alignSelf: "flex-start", alignItems: "center", justifyContent: "flex-end" }}>
+
                         <Text>Meaters:</Text>
-                        {tabCapacity}
+                          {tabCapacity}
                         <Button compact mode="contained" onPress={() => setTableCapacity(capacity - 1)}>-</Button>
                         <Button compact mode="contained" onPress={() => setTableCapacity(capacity + 1)}>+</Button>
+
                     </View>
-                    <View style={{ flexDirection: "row", alignSelf: "flex-start", alignItems: "center", justifyContent: "flex-end" }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
                         <Text>Budget:</Text>
                         {tabBudget}
                         <Button compact mode="contained" onPress={() => setTableBudget(budget - 1)}>-</Button>
@@ -312,24 +325,25 @@ function NewTableScreen(props) {
             </View>
 
         </ScrollView>
-        /* </KeyboardAvoidingView> */
-    )
+            /* </KeyboardAvoidingView> */
+
+)
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    item: {
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
-    },
-    title: {
-        fontSize: 32,
-    },
+container: {
+flex: 1,
+alignItems: 'center',
+justifyContent: 'center',
+},
+item: {
+padding: 20,
+marginVertical: 8,
+marginHorizontal: 16,
+},
+title: {
+fontSize: 32,
+},
 })
 
 export default NewTableScreen

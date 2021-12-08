@@ -12,17 +12,17 @@ function ProfileScreen(props) {
             
             
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#9b59b6'}}>
-            <Button
+            <Button title="Go to Home"
             icon={<AntDesign name="home" size={24} color="black" />}
                     onPress={() => props.navigation.navigate('MyAccount')}
             />
-            <Button icon={<AntDesign name="calendar" size={24} color="black" />}
+            <Button title="Go to My Addresses" icon={<AntDesign name="calendar" size={24} color="black" />}
                     onPress={() => props.navigation.navigate('MyAddresses')}
             />
-            <Button icon={<AntDesign name="pluscircle" size={24} color="black" />}
+            <Button title="Go to My Buddies" icon={<AntDesign name="pluscircle" size={24} color="black" />}
                     onPress={() => props.navigation.navigate('MyBuddies')}
             />
-            <Button icon={<AntDesign name="user" size={24} color="black" />}
+            <Button  title="Go to Profile" icon={<AntDesign name="user" size={24} color="black" />}
                     onPress={() => props.navigation.navigate('Profile')}
             />
         </View>

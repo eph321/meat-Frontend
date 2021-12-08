@@ -3,13 +3,14 @@ import React, { useState ,useCallback} from 'react';
 import {Platform, StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text,RadioButton} from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { connect } from 'react-redux';
 
 
 function RegisterScreenB(props) {
     const [firstName,setFirstName] =useState('');
     const [lastName, setLastName] = useState('');
-    const [address, setAddress] = useState('');
+    const [userAddress, setUserAddress] = useState('');
     const [phone, setPhone] = useState('');
     const [gender, setGender] =useState("male")
     const [dateOfBirth, setDateOfBirth] = useState(new Date(1598051730000));
@@ -68,10 +69,21 @@ function RegisterScreenB(props) {
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
                        label="Adresse Postale"
-                       onChangeText={(val)=> {setAddress(val); setInputProgress(inputProgress + 0.01)}}
+                       onChangeText={(val)=> {setUserAddress(val); setInputProgress(inputProgress + 0.01)}}
                        placeholder ="56 boulevard Pereire, 75017 Paris"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
+            />
+            <GooglePlacesAutocomplete
+                placeholder='Search'
+                onPress={(data, details = null) => {
+                    // 'details' is provided when fetchDetails = true
+                    console.log(data, details);
+                }}
+                query={{
+                    key: 'YOUR API KEY',
+                    language: 'en',
+                }}
             />
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
@@ -126,7 +138,7 @@ function RegisterScreenB(props) {
 
             <Button
                 style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
-                mode="contained" onPress={() =>{ props.navigation.navigate('RegisterC');props.sendPersonalData({firstName : firstName, lastName:lastName, address:address, phone:phone, gender:gender, dateOfBirth:dateOfBirth}) }}>
+                mode="contained" onPress={() =>{ props.navigation.navigate('RegisterC');props.sendPersonalData({firstName : firstName, lastName:lastName, userAddress:userAddress, phone:phone, gender:gender, dateOfBirth:dateOfBirth}) }}>
                 <Text Style={{color:'#FFC960'}}>Press me</Text>
             </Button>
 
@@ -145,7 +157,7 @@ const styles = StyleSheet.create({
         left: 0,
         height:"10%",
         width:"100%",
-        top: 20,
+        top: 0,
         alignItems: 'center',
         justifyContent:"center",
         textAlign:'center',

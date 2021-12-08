@@ -37,6 +37,7 @@ function RegisterScreen(props) {
             quality: 0.3,
         });
         if (!result.cancelled) {
+
             setImage(result.uri);
             let dataAvatar = new FormData();
             dataAvatar.append('avatar',{
@@ -44,10 +45,11 @@ function RegisterScreen(props) {
                 type: 'image/jpeg',
                 name: 'avatar.jpg'});
 
-            var rawResponse = await fetch("172.17.150:3000/uploadAvatar",{
+            var rawResponse = await fetch("http://192.168.1.246:3000/uploadAvatar",{
                 method: 'POST',
                 body: dataAvatar});
             var response = await rawResponse.json();
+            console.log(response)
             setTempAvatarUri(response);
             }
         }
@@ -95,7 +97,7 @@ function RegisterScreen(props) {
                     />
                     <Button
                         style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
-                         mode="contained" onPress={() =>{ props.navigation.navigate('RegisterB');props.sendData({email:inputEmail,password:inputPassword,avatar:tempAvatarUri}) }}>
+                         mode="contained" onPress={() =>{ props.navigation.navigate('RegisterB');props.sendData({email:inputEmail,inputPassword:inputPassword,avatar:tempAvatarUri}) }}>
                         <Text Style={{color:'#FFC960'}}>Press me</Text>
                     </Button>
 
