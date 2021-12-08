@@ -13,7 +13,7 @@ const StephIP = "192.168.1.9"
 
 
 
-function JoinTableScreen() {
+function JoinTableScreen(props) {
 
     const [tableData, setTableData] = useState([''])
     useEffect( async() => {
@@ -30,22 +30,39 @@ function JoinTableScreen() {
 
       var tabCapacity = []
       for(let i = 0; i < tableInfo.capacity; i++) {
+
+        
         tabCapacity.push(<MaterialCommunityIcons key={i}  name="seat" size={24} color="black"/>)
 
 
       }
 
+      var bugdetInfo = []
+      for(let j = 0; j < tableInfo.budget; j ++) {
+          
+        bugdetInfo.push(<MaterialIcons key={j} name="euro" size={24} color="green" />) 
 
+      }
        
     //    var guestCount = tableInfo.guests.lenght + 1;
 
     return (  
         
      <View style={{flex:1, alignItems: 'center', justifyContent: 'center', backgroundColor:"white"}}>  
-     <Appbar style={{flex:1, position: 'absolute', left: 0, height:"10%", width:"100%", top: 0, alignItems: 'center', justifyContent:"center", textAlign:'center', backgroundColor:"#FFC960",}}>
-                    <Appbar.Content title="Rejoindre une Table" style={{textAlign:'center'}}/>
+     <View style={styles.viewHeader}>
+                <Appbar style={{ flex: 1, backgroundColor: "#FFC960", height: 20 }}>
+                    <Appbar.Content title="Rejoindre une Table" style={{ textAlign: 'center' }} />
                 </Appbar>
-        <View style={{flex : 1, marginTop : 60,alignItems: 'center', justifyContent: 'center', height: 10}}>
+                <Appbar style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", justifyContent: "space-evenly", height: 40 }}>
+                    <Appbar.Action icon="home" onPress={() => props.navigation.navigate('Home')} />
+                    <Appbar.Action icon="plus-circle" onPress={() => props.navigation.navigate('NewTable')} />
+                    <Appbar.Action icon="calendar-month" onPress={() => props.navigation.navigate('MyEvents')} />
+                    <Appbar.Action icon="message-text" onPress={() => props.navigation.navigate('Chat')} />
+                    <Appbar.Action icon="account" onPress={() => props.navigation.navigate('MyAccount')}
+                    />
+                </Appbar>
+            </View>
+        <View style={{flex : 1, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
         <Title>{tableInfo.title}</Title>
         <Subheading>{tableInfo.date}</Subheading>
         </View>
@@ -55,9 +72,10 @@ function JoinTableScreen() {
                         <Card.Content>
                             <Title>M.Eaters : 1/{tableInfo.capacity}</Title>
                             <View style={{flexDirection: "row"}}>{tabCapacity}</View>
-                            <Title>Budget : {tableInfo.budget}</Title>
+                            <Title>Budget : {bugdetInfo}</Title>
+                            
                             <Title ><FontAwesome5 name="walking" size={24} color="black" />  à 150 mètres</Title>
-                            <Title><MaterialIcons name="restaurant" size={24} color="black" />  Japonais</Title>
+                            <Title><MaterialIcons name="restaurant" size={24} color="black" />  {tableInfo.placeType}</Title>
                             <Title><FontAwesome name="birthday-cake" size={24} color="black" />  {tableInfo.age}</Title>
                         </Card.Content>
                 </Card>
@@ -74,7 +92,7 @@ function JoinTableScreen() {
                 </Card>
         </View>
         <View style={{flex : 2, alignItems: 'center', justifyContent: 'center'}}>
-        <Card style={{marginBottom : 5, marginTop : 10, width : 350, height : 100}}>
+        <Card style={{marginBottom : 5, marginTop : 40, width : 350, height : 100}}>
                 <Card.Content>
                     <Paragraph>{tableInfo.description}</Paragraph>
                 </Card.Content>
@@ -92,7 +110,22 @@ function JoinTableScreen() {
 }
 
 
-
+const styles = StyleSheet.create({
+    container: {
+        flex: 0.5,
+        alignItems: 'center',
+        justifyContent: 'center',
+    }, viewHeader: {
+        flex: 2,
+        left: 0,
+        width: "100%",
+        top: 0,
+        justifyContent: "flex-start",
+    },
+    input: {
+        flex: 0.1
+    },
+});
 
 export default JoinTableScreen;
 
