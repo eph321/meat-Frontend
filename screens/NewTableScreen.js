@@ -306,7 +306,7 @@ function NewTableScreen(props) {
                     <View style={{ flexDirection: "row", alignSelf: "flex-start", alignItems: "center", justifyContent: "flex-end" }}>
 
                         <Text>Meaters:</Text>
-                          {tabCapacity}
+                        {tabCapacity}
                         <Button compact mode="contained" onPress={() => setTableCapacity(capacity - 1)}>-</Button>
                         <Button compact mode="contained" onPress={() => setTableCapacity(capacity + 1)}>+</Button>
 
@@ -325,25 +325,25 @@ function NewTableScreen(props) {
             </View>
 
         </ScrollView>
-            /* </KeyboardAvoidingView> */
+        /* </KeyboardAvoidingView> */
 
-)
+    )
 }
 
 const styles = StyleSheet.create({
-container: {
-flex: 1,
-alignItems: 'center',
-justifyContent: 'center',
-},
-item: {
-padding: 20,
-marginVertical: 8,
-marginHorizontal: 16,
-},
-title: {
-fontSize: 32,
-},
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    item: {
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+    },
+    title: {
+        fontSize: 32,
+    },
 })
 
 export default NewTableScreen
