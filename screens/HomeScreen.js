@@ -7,21 +7,27 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
-import RNPickerSelect from 'react-native-picker-select';
+import { MultiSelect } from 'react-native-element-dropdown';
 
 const FranckLacapsuleIP = "http://172.17.1.118:3000"
+const FranckIP = "http://192.168.1.41:3000"
 const herokuIP = "https://polar-stream-28883.herokuapp.com"
 
 const restaurantTypeList = [
     { label: 'Italien', value: 'Italien' },
     { label: 'Japonais', value: 'Japonais' },
     { label: 'Fast-food', value: 'Fast-food' },
+    { label: 'Chinois', value: 'Chinois'},
+    { label: 'Mexicain', value: 'Mexicain'},
+    { label: 'Indien', value: 'Indien'},
+    { label: 'Coréen', value: 'Coréen'},
 ]
 
 function HomeScreen(props) {
 
     const [tableDataList, setTableDataList] = useState([""])
     const [restaurantType, setRestaurantType] = useState("");
+    const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
 
     // DATE PICKER - input "où"
     const [date, setDate] = useState(new Date(1598051730000));
@@ -52,20 +58,19 @@ function HomeScreen(props) {
     useEffect(async () => {
         var rawResponse = await fetch(`${herokuIP}/search-table`);
         var response = await rawResponse.json();
-
         setTableDataList(response.result)
-    },[])
+    }, [])
 
-/* if (restaurantType != nnull) {
-        useEffect(async () => {
-            var rawFilteredResponse = await fetch(`${FranckLacapsuleIP}/filter-table/${restaurantType}`);
-            var filteredResponse = await rawFilteredResponse.json();
-
-            console.log(rawFilteredResponse.result)
-            setTableDataList(filteredResponse.result)
-        }
-    ,[restaurantType]) 
-    } */
+    /* if (restaurantType != nnull) {
+            useEffect(async () => {
+                var rawFilteredResponse = await fetch(`${FranckLacapsuleIP}/filter-table/${restaurantType}`);
+                var filteredResponse = await rawFilteredResponse.json();
+    
+                console.log(rawFilteredResponse.result)
+                setTableDataList(filteredResponse.result)
+            }
+        ,[restaurantType]) 
+        } */
 
 
     var tableList = tableDataList.map((e, i) => {
@@ -152,13 +157,30 @@ function HomeScreen(props) {
                             onChange={onChange}
                         />
                     )}
-
                 </View>
-                <View style={{ alignContent: "center", marginTop: 12, marginBottom: 8 }}>
-                    <RNPickerSelect
-                        onValueChange={(value) => { setRestaurantType(value) }}
-                         placeholder={{ label: "Quel type de cuisine ?", value: null, color: "black" }}
-                        items={restaurantTypeList}
+                <View style={{ alignItems: "center", marginTop: 12, marginBottom: 8 }}>
+                    <MultiSelect
+                        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                        placeholderStyle={styles.placeholderStyle}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        inputSearchStyle={styles.inputSearchStyle}
+                        iconStyle={styles.iconStyle}
+                        search
+                        data={restaurantTypeList}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Quel type de cuisine ?"
+                        searchPlaceholder="Search..."
+                        value={restaurantType}
+                        onChange={item => {
+                            setRestaurantType(item);
+                            setIsFocus(false);
+                        }}
+                        renderLeftIcon={() => (
+                            <MaterialIcons style={styles.icon} name="restaurant" size={24} color="#0E9BA4" />
+
+                        )}
+                        selectedStyle={styles.selectedStyle}
                     />
                 </View>
 
@@ -189,9 +211,36 @@ const styles = StyleSheet.create({
         top: 0,
         justifyContent: "flex-start",
     },
-    input: {
-        flex: 0.1
-    },
+    dropdown: {
+        width: "70%",
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+        backgroundColor: "transparent",
+      },
+      placeholderStyle: {
+        fontSize: 16,
+        textAlign: "center",
+      },
+      selectedTextStyle: {
+        fontSize: 14,
+      },
+      iconStyle: {
+        width: 20,
+        height: 20,
+      },
+      inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+      },
+      icon: {
+        marginRight: 5,
+      },
+      selectedStyle: {
+        borderRadius: 12,
+      },
 });
 
 
