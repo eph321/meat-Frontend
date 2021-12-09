@@ -1,33 +1,29 @@
 import React, {useEffect, useState} from 'react';
 
-import {StyleSheet, View, TouchableOpacity, Platform, ScrollView} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 import {
-    TextInput,
     Appbar,
     Button,
-    ProgressBar,
     Text,
     Avatar,
-    RadioButton,
-    Chip,
-    Card,
+      Card,
     Title,
     Paragraph, IconButton
 } from "react-native-paper";
 import { connect } from 'react-redux';
-import * as ImagePicker from 'expo-image-picker';
+
 
 
 
 
 function BuddyScreen(props) {
-    const IP_LACAPSULE_ETIENNE = "172.17.1.60";
     const [userList, setUserList] = useState([]);
     const [buddyId,setBuddyId] = useState("");
+    const [buddyIndex,setBuddyIndex] = useState("");
 
     useEffect(async () => {
-            var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/search-users`);
-            var response = await rawResponse.json();
+            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/search-users`);
+            let response = await rawResponse.json();
             console.log("add user")
             console.log(response.result[0].firstname)
             setUserList(response.result)
@@ -35,21 +31,22 @@ function BuddyScreen(props) {
         , [])
 
 
-    const handleAddFriend = async ( friendId) => {
+
+    const handleAddFriend = async () => {
         await fetch(`https://polar-stream-28883.herokuapp.com/add-buddy`, {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `token=${props.userToSend}&id=${friendId}`
+            body: `token=${props.userToSend}&id=${userList[buddyIndex]._id}`
 
         })
         console.log(props.userToSend)
-        console.log(friendId);
+
     }
 
 
     const displayUser = (user, i) => {
 
-        return    <TouchableOpacity onPress={() => { handleAddFriend(user._id)}}>
+        return    <TouchableOpacity onPress={() => { console.log("clic sur user")}}>
         <View key={i} style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}} >
                         <View >
                             <Avatar.Icon size={32} icon="account" color={'#0E9BA4'} style={{backgroundColor: "#FFFFFF"}}/>
