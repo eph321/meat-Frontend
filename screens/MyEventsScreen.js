@@ -34,7 +34,7 @@ function MyEventsScreen(props) {
                         {/* TEST LISTE DEROULANTE */}
 
                         <View style={{ flex: 4, justifyContent: "center" }}>
-                                <RNPickerSelect
+                                <RNPickerSelect useNativeAndroidPickerStyle={true}
                                         onValueChange={(value) => { setSelected(value)}}
                                         items={typeList}
                                 />

@@ -157,7 +157,7 @@ function HomeScreen(props) {
                 <View style={{ alignContent: "center", marginTop: 12, marginBottom: 8 }}>
                     <RNPickerSelect
                         onValueChange={(value) => { setRestaurantType(value) }}
-                        placeholder={{ label: "Quel type de cuisine ?", value: null, color: "black" }}
+                         placeholder={{ label: "Quel type de cuisine ?", value: null, color: "black" }}
                         items={restaurantTypeList}
                     />
                 </View>
