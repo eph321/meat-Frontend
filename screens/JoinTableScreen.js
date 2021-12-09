@@ -24,7 +24,6 @@ function JoinTableScreen(props) {
            var responseRaw = await fetch(`http://${StephIpCapsule}:3000/join-table/${props.tableId}`)
         var response = await responseRaw.json();
             
-           console.log(response, "sisisiisi")
         
             setTableData(response.result)
           }
