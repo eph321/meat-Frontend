@@ -10,6 +10,7 @@ import {connect} from "react-redux";
 function LoginScreen(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState(true);
 
     const isLogin = async () => {
         var rawResponse = await fetch('http://192.168.1.246:3000/sign-in',{
@@ -24,7 +25,7 @@ function LoginScreen(props) {
         console.log(response.searchUser.token)
             props.sendUserToken(response.searchUser.token)
         } else {
-            // message d'erreur à afficher en cas de mdp et/ou id erronés
+            setError()
         }
     }
 
@@ -66,7 +67,7 @@ function LoginScreen(props) {
                 onChangeText={(val) => setEmail(val)}
             />
             
-            <TextInput style={styles.input, {width: "80%", marginBottom: 30}}
+            <TextInput style={styles.input, {width: "80%"}}
                 mode="outlined"
                 label="Mot de passe"
                 placeholder="********"
@@ -76,9 +77,12 @@ function LoginScreen(props) {
                 onChangeText={(val) => setPassword(val)}
             />
 
+            <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000', marginBottom: 30}}>*Identifiant et/ou mot de passe erroné.</Text>
+
+
             <Button style={styles.button}
                 mode="contained" 
-                labelStyle={{fontSize: 20, fontWeight: "bold", color: "#009788", paddingTop: 4}}
+                labelStyle={{fontSize: 20, fontWeight: "bold", color: "#009788", paddingTop: 3}}
                 onPress={() => props.navigation.navigate('Home')}>
                 Connexion
             </Button>
