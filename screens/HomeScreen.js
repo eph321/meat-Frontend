@@ -9,6 +9,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
 
 const franckIP = "192.168.1.41"
+const franckLaCapsuleIP = "172.17.1.118"
 
 function HomeScreen(props) {
 
@@ -42,7 +43,7 @@ function HomeScreen(props) {
     // Affichage des tables existantes 
 
     useEffect(async () => {
-        var rawResponse = await fetch(`http://${franckIP}:3000/search-table`);
+        var rawResponse = await fetch(`http://${franckLaCapsuleIP}:3000/search-table`);
         var response = await rawResponse.json();
 
         setTableDataList(response.result)
@@ -170,16 +171,24 @@ const styles = StyleSheet.create({
     },
 });
 
+
+
+function mapStateToProps(state) {
+    return {
+            tableId: state.tableId
+    }
+}
+
 function mapDispatchToProps(dispatch) {
     return {
-        onCardClick: function (tableID) {
-            dispatch({ type: "saveTableID", tableID: tableID })
+        onCardClick: function (tableId) {
+            dispatch({ type: "saveTableId", tableId: tableId })
         }
     }
 }
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(HomeScreen)
 

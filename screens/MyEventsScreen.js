@@ -3,7 +3,7 @@ import { StyleSheet, View, Button } from 'react-native';
 import { Appbar } from "react-native-paper";
 import RNPickerSelect from 'react-native-picker-select';
 
-
+import { connect } from "react-redux";
 
 function MyEventsScreen(props) {
 
@@ -31,14 +31,14 @@ function MyEventsScreen(props) {
                                 </Appbar>
                         </View>
 
-                                        {/* TEST LISTE DEROULANTE */}
+                        {/* TEST LISTE DEROULANTE */}
 
                         <View style={{ flex: 4, justifyContent: "center" }}>
                                 <RNPickerSelect
-                                        onValueChange={(value) =>{ setSelected(value), console.log(selected) }}
+                                        onValueChange={(value) => { setSelected(value)}}
                                         items={typeList}
                                 />
-                                <Button title="selected" onPress={()=> console.log(selected)}/>
+                                <Button title="selected" onPress={() => { console.log(selected);console.log(props.tableId) }} />
                         </View>
                 </View>
         );
@@ -59,5 +59,15 @@ const styles = StyleSheet.create({
         },
 });
 
+function mapStateToProps(state) {
+        return {
+                tableId: state.tableId
+        }
+}
 
-export default MyEventsScreen;
+
+
+export default connect(
+        mapStateToProps,
+        null
+    )( MyEventsScreen);

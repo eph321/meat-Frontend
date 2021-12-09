@@ -10,6 +10,7 @@ import { FontAwesome } from '@expo/vector-icons';
 
 const franckIP = "192.168.1.41"
 const StephIP = "192.168.1.9"
+const franckLaCapsuleIP = "172.17.1.118"
 
 
 
@@ -18,7 +19,7 @@ function JoinTableScreen(props) {
     const [tableData, setTableData] = useState([''])
     useEffect( async() => {
       
-           var responseRaw = await fetch(`http://${StephIP}:3000/search-table`)
+           var responseRaw = await fetch(`http://${franckLaCapsuleIP}:3000/search-table`)
            var response = await responseRaw.json();
             
             setTableData(response.result)
