@@ -1,6 +1,6 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 
-import  {StyleSheet,View,Image, Text} from "react-native";
+import {StyleSheet, View, Image, Text, AsyncStorage} from "react-native";
 import {SocialIcon} from 'react-native-elements'
 import {TextInput, Button, Paragraph, IconButton} from "react-native-paper";
 import {connect} from "react-redux";
@@ -10,6 +10,19 @@ import {connect} from "react-redux";
 function LoginScreen(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+
+    //Vérifie l'existence d'un userToken et redirige vers home si présence userToken
+    useEffect(()=>{
+        (async => { AsyncStorage.getItem("userToken", function(error, data) {
+            console.log(data);
+            let userData = JSON.parse(data);
+            console.log(userData);
+            if (userData){
+                props.navigation.navigate("Home")
+                props.sendUserToken(userData)}
+        })})()
+    },[])
 
     const isLogin = async () => {
         var rawResponse = await fetch('http://192.168.1.246:3000/sign-in',{
@@ -45,12 +58,6 @@ function LoginScreen(props) {
 
     return (
         <View style={styles.container}>
-            <IconButton
-                icon="home"
-                color={'#0E9BA4'}
-                size={25}
-                onPress={() => props.navigation.navigate('Home')}
-            />
 
             <Image
                 style={styles.imageLogin}
@@ -79,7 +86,7 @@ function LoginScreen(props) {
             <Button style={styles.button}
                 mode="contained" 
                 labelStyle={{fontSize: 20, fontWeight: "bold", color: "#009788", paddingTop: 4}}
-                onPress={() => isLogin()}>
+                onPress={() => props.navigation.navigate('Home')}>
                 Connexion
             </Button>
 
