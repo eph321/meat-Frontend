@@ -14,9 +14,8 @@ function JoinTableScreen(props) {
     const [tableData, setTableData] = useState([''])
     useEffect( async() => {
       
-           var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/search-table`)
+           var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
            var response = await responseRaw.json();
-            
         
             setTableData(response.result)
           }

@@ -7,11 +7,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { connect } from "react-redux";
 import RNPickerSelect from 'react-native-picker-select';
 
-const franckIP = "192.168.1.41"
-const StephIP = "192.168.1.9"
-const franckLaCapsuleIP = "172.17.1.118"
-const StephIpCapsule = "172.17.1.164"
-
 
 // Préférence culinaire Liste
 
