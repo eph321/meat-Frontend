@@ -9,10 +9,13 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
 import RNPickerSelect from 'react-native-picker-select';
 
+const FranckLacapsuleIP = "http://172.17.1.118:3000"
+const herokuIP = "https://polar-stream-28883.herokuapp.com"
+
 const restaurantTypeList = [
-    { label: 'Italien', value: 'italien' },
-    { label: 'Japonais', value: 'japonais' },
-    { label: 'Fast-food', value: 'fast-food' },
+    { label: 'Italien', value: 'Italien' },
+    { label: 'Japonais', value: 'Japonais' },
+    { label: 'Fast-food', value: 'Fast-food' },
 ]
 
 function HomeScreen(props) {
@@ -47,13 +50,22 @@ function HomeScreen(props) {
     // Affichage des tables existantes 
 
     useEffect(async () => {
-        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/search-table`);
+        var rawResponse = await fetch(`${herokuIP}/search-table`);
         var response = await rawResponse.json();
 
         setTableDataList(response.result)
-    }
-        , []) // tableDataList
+    },[])
 
+/* if (restaurantType != nnull) {
+        useEffect(async () => {
+            var rawFilteredResponse = await fetch(`${FranckLacapsuleIP}/filter-table/${restaurantType}`);
+            var filteredResponse = await rawFilteredResponse.json();
+
+            console.log(rawFilteredResponse.result)
+            setTableDataList(filteredResponse.result)
+        }
+    ,[restaurantType]) 
+    } */
 
 
     var tableList = tableDataList.map((e, i) => {
@@ -74,15 +86,17 @@ function HomeScreen(props) {
                     <View style={{ flexDirection: "row", alignSelf: "center", marginBottom: 4, marginTop: 4 }}>
                         {capacityAvatar}
                     </View>
-                    <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-                        <MaterialCommunityIcons name="table-furniture" size={24} color="black" />
-                        <View>
-                            <Text>Restaurant</Text>
-                            <Paragraph style={{ color: "#0E9BA4", fontWeight: "bold" }}>Nom du restaurant</Paragraph>
+                    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <MaterialCommunityIcons style={{ marginRight: 5 }} name="table-furniture" size={24} color="#0E9BA4" />
+                            <View>
+                                <Text>Restaurant</Text>
+                                <Paragraph style={{ color: "#0E9BA4", fontWeight: "bold" }}>{e.placeName}</Paragraph>
+                            </View>
                         </View>
-                        <View style={{ flexDirection: "row" }}>
-                            <MaterialIcons name="restaurant" size={24} color="#0E9BA4" />
-                            <Paragraph> Type du Restaurant</Paragraph>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <MaterialIcons style={{ marginRight: 5 }} name="restaurant" size={24} color="#0E9BA4" />
+                            <Paragraph>{e.placeType}</Paragraph>
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", alignSelf: "center", marginTop: 3 }}>
