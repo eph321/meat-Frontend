@@ -25,7 +25,7 @@ function BuddyScreen(props) {
     const [userList, setUserList] = useState([]);
 
     useEffect(async () => {
-            var rawResponse = await fetch(`http://${IP_LACAPSULE_ETIENNE}/search-users`);
+            var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/search-users`);
             var response = await rawResponse.json();
             console.log("add user")
             console.log(response.result[0].firstname)
