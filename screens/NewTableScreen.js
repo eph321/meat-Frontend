@@ -122,7 +122,7 @@ function NewTableScreen(props) {
 
     // Création de la table
     const createTable = async () => {
-        await fetch(`http://${StephIpCapsule}:3000/add-table`, {
+        await fetch(`https://polar-stream-28883.herokuapp.com/add-table`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}`
