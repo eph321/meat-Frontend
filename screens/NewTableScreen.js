@@ -4,29 +4,30 @@ import { Button, TextInput, Dialog, Portal, Appbar } from "react-native-paper"
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { connect } from "react-redux";
+import RNPickerSelect from 'react-native-picker-select';
 
 const franckIP = "192.168.1.41"
+const StephIP = "192.168.1.9"
+
 
 // Préférence culinaire Liste
 
 const restaurantTypeList = [
-    { id: 1, title: "Italien" },
-    { id: 2, title: "Japonais" },
-    { id: 3, title: "Fast-food" },
+    { label: 'Italien', value: 'italien' },
+    { label: 'Japonais', value: 'japonais' },
+    { label: 'Fast-food', value: 'fast-food' },
 ];
 
 // Liste déroulante trannche d'age
 const ageRangeList = [
-    { id: "18-25", title: "18-25 ans" },
-    { id: "25-35", title: "25-35 ans" },
+    { label: "18-25 ans", value: "18-25" },
+    { label: "25-35 ans", value: "25-35" },
+    { label: "35-45 ans", value: "35-45" },
+    { label: "45-55 ans", value: "45-55" },
+    { label: "+ 55ans", value: "55+" },
 ];
 
-// Affichage des boutons dans les portals (modal) de liste de choix (type de cuisine et tranche d'âge)
-const Item = ({ item, onPress, backgroundColor, textColor }) => (
-    <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
-        <Text style={[styles.title, textColor]}>{item.title}</Text>
-    </TouchableOpacity>
-);
 
 function NewTableScreen(props) {
 
@@ -38,6 +39,7 @@ function NewTableScreen(props) {
     const [restaurantName, setRestaurantName] = useState('');
     const [restaurantAddress, setRestaurantAddress] = useState('');
     const [description, setDescription] = useState('');
+    const planner = "ME" // props.userToken;
 
     // Pour le calendrier Datepicker
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
@@ -67,49 +69,6 @@ function NewTableScreen(props) {
         showMode('time');
     };
 
-
-    // Préférence culinaire Liste
-
-    const [restaurantTypeIsVisible, setRestaurantTypeIsVisible] = useState(false);
-    const hideRestaurantTypeDialog = () => setRestaurantTypeIsVisible(false);
-
-    const [selectedRestaurantTypeId, setSelectedRestaurantTypeId] = useState(null);
-
-    const renderRestaurantTypeItem = ({ item }) => {
-        const backgroundColor = item.id === selectedRestaurantTypeId ? "#6e3b6e" : "#f9c2ff";
-        const color = item.id === selectedRestaurantTypeId ? 'white' : 'black';
-
-        return (
-            <Item
-                item={item}
-                onPress={() => setSelectedRestaurantTypeId(item.id), setRestaurantType(item.title)}
-                backgroundColor={{ backgroundColor }}
-                textColor={{ color }}
-            />
-        );
-    };
-
-
-    // Choix tranche d'âge
-
-    const [ageRangeIsVisible, setAgeRangeIsVisible] = useState(false)
-    const hideAgeRangeListDialog = () => setAgeRangeIsVisible(false);
-
-    const [selectedAgeRangeId, setSelectedAgeRangeId] = useState(null);
-
-    const renderAgeRangeItem = ({ item }) => {
-        const backgroundColor = item.id === selectedAgeRangeId ? "#6e3b6e" : "#f9c2ff";
-        const color = item.id === selectedAgeRangeId ? 'white' : 'black';
-
-        return (
-            <Item
-                item={item}
-                onPress={() => setSelectedAgeRangeId(item.id), setAgeRange(item.title)}
-                backgroundColor={{ backgroundColor }}
-                textColor={{ color }}
-            />
-        );
-    };
 
     // Capacity
 
@@ -161,10 +120,10 @@ function NewTableScreen(props) {
 
     // Création de la table
     const createTable = async () => {
-        await fetch(`http://${franckIP}:3000/add-table`, {
+        await fetch(`http://${StephIP}:3000/add-table`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}`
+            body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}`
         })
     }
 
@@ -236,27 +195,14 @@ function NewTableScreen(props) {
                     value={restaurantAddress}
                     onChangeText={text => setRestaurantAddress(text)}
                 />
-
-                <Button mode="outlined" onPress={() => setRestaurantTypeIsVisible(true)}> Quel type de cuisine ?</Button>
-
-
-
-                <Portal>
-                    <Dialog visible={restaurantTypeIsVisible} onDismiss={hideRestaurantTypeDialog}>
-                        <Dialog.ScrollArea>
-                            <ScrollView style={{ height: "90%" }} contentContainerStyle={{ paddingHorizontal: 24 }}>
-                                <SafeAreaView style={styles.container}>
-                                    <FlatList
-                                        data={restaurantTypeList}
-                                        renderItem={renderRestaurantTypeItem}
-                                        keyExtractor={(item) => item.id}
-                                        extraData={selectedRestaurantTypeId}
-                                    />
-                                </SafeAreaView>
-                            </ScrollView>
-                        </Dialog.ScrollArea>
-                    </Dialog>
-                </Portal>
+                <View style={{ alignContent: "center", marginTop: 12, marginBottom: 8 }}>
+                    <RNPickerSelect
+                        onValueChange={(value) => { setRestaurantType(value) }}
+                        placeholder={{ label: "Quel type de cuisine ?", value: null, color: "black" }}
+                        /* style={{...styles.RNPicker}} */
+                        items={restaurantTypeList}
+                    />
+                </View>
 
                 <TextInput
                     style={{ alignSelf: "center", width: '70%' }}
@@ -271,23 +217,14 @@ function NewTableScreen(props) {
                     onChangeText={text => setDescription(text)}
                 />
 
-                <Button mode="outlined" onPress={() => setAgeRangeIsVisible(true)}> Age ?</Button>
-                <Portal>
-                    <Dialog visible={ageRangeIsVisible} onDismiss={hideAgeRangeListDialog}>
-                        <Dialog.ScrollArea>
-                            <ScrollView style={{ height: "90%" }} contentContainerStyle={{ paddingHorizontal: 24 }}>
-                                <SafeAreaView style={styles.container}>
-                                    <FlatList
-                                        data={ageRangeList}
-                                        renderItem={renderAgeRangeItem}
-                                        keyExtractor={(item) => item.id}
-                                        extraData={selectedAgeRangeId}
-                                    />
-                                </SafeAreaView>
-                            </ScrollView>
-                        </Dialog.ScrollArea>
-                    </Dialog>
-                </Portal>
+                <View style={{ alignContent: "center", marginTop: 12, marginBottom: 8 }}>
+                    <RNPickerSelect
+                        onValueChange={(value) => { setAgeRange(value), console.log(ageRange) }}
+                        placeholder={{ label: "Tranche d'âge (optionnel)", value: null, color: "black" }}
+                        /* style={{...styles.RNPicker}} */
+                        items={ageRangeList}
+                    />
+                </View>
 
                 <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
                     <View style={{ flexDirection: "row", alignSelf: "flex-start", alignItems: "center", justifyContent: "flex-end" }}>
@@ -338,8 +275,27 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 32,
     },
+    RNPicker: {
+        fontSize: 16,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 4,
+        color: 'black',
+        paddingRight: 30, // to ensure the text is never behind the icon
+    },
 })
 
-export default NewTableScreen
+function mapStateToProps(state) {
+    return {
+        userToken: state.userToken
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    null
+)(NewTableScreen)
 
 

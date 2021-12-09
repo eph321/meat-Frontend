@@ -3,6 +3,7 @@ import React, {useState} from 'react'
 import  {StyleSheet,View,Image, Text} from "react-native";
 import {SocialIcon} from 'react-native-elements'
 import {TextInput, Button, Paragraph, IconButton} from "react-native-paper";
+import {connect} from "react-redux";
 
 
 
@@ -21,6 +22,7 @@ function LoginScreen(props) {
         await AsyncStorage.setItem("userToken", JSON.stringify({token: response.searchUser.token}))
         console.log(response)
         console.log(response.searchUser.token)
+            props.sendUserToken(response.searchUser.token)
         } else {
             // message d'erreur à afficher en cas de mdp et/ou id erronés
         }
@@ -118,7 +120,20 @@ function LoginScreen(props) {
 
 }
 
-export default LoginScreen;
+
+function mapDispatchToProps(dispatch){
+    return {
+        sendUserToken: function (userToken){
+            dispatch({type: 'register',userToken})
+        }
+
+    }
+}
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(LoginScreen);
 
 
 const styles = StyleSheet.create({
