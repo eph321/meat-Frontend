@@ -77,7 +77,7 @@ function LoginScreen(props) {
             <Button style={styles.button}
                 mode="contained" 
                 labelStyle={{fontSize: 20, fontWeight: "bold", color: "#009788", paddingTop: 4}}
-                onPress={() => isLogin()}>
+                onPress={() => props.navigation.navigate('Home')}>
                 Connexion
             </Button>
 

@@ -57,7 +57,7 @@ function MyAccountScreen(props) {
                 </Appbar>
                 <Appbar style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",justifyContent:"space-around"}}>
                     <Appbar.Action icon="home" onPress={() => props.navigation.navigate('Home')} />
-                    <Appbar.Action icon="label" onPress={() => console.log('Pressed label')} />
+                    <Appbar.Action icon="label" onPress={() => props.navigation.navigate('MyBuddies')} />
                     <Appbar.Action icon="delete" onPress={() => console.log('Pressed delete')}
                     />
                 </Appbar>
@@ -72,7 +72,7 @@ function MyAccountScreen(props) {
                         icon="label"
                         color={Colors.green999}
                         size={25}
-                        onPress={() => console.log('Pressed')}
+                        onPress={() => props.navigation.navigate('MyBuddies')}
                     />
                     <IconButton
                         icon="delete"
