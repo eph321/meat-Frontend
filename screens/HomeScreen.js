@@ -176,8 +176,8 @@ const styles = StyleSheet.create({
 
 function mapDispatchToProps(dispatch) {
     return {
-        onCardClick: function (tableID) {
-            dispatch({ type: "saveTableID", tableID: tableID })
+        onCardClick: function (tableId) {
+            dispatch({ type: "saveTableId", tableId: tableId })
         }
     }
 }
