@@ -8,25 +8,14 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import {connect} from "react-redux";
 
-<<<<<<< HEAD
-=======
-const franckIP = "192.168.1.41"
-const StephIP = "192.168.1.9"
-const StephIpCapsule = "172.17.1.164"
-
-const franckLaCapsuleIP = "172.17.1.118"
-
-
->>>>>>> 9c48ab3ffb9d4436b9a4532d827f597709e26970
 
 function JoinTableScreen(props) {
 
     const [tableData, setTableData] = useState([''])
     useEffect( async() => {
       
-           var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/search-table`)
+           var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
            var response = await responseRaw.json();
-            
         
             setTableData(response.result)
           }

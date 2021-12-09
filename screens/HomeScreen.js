@@ -7,17 +7,18 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
+import RNPickerSelect from 'react-native-picker-select';
 
-const franckIP = "192.168.1.41"
-const StephIP = "192.168.1.9"
-const StephIpCapsule = "172.17.1.164"
-
-const franckLaCapsuleIP = "172.17.1.118"
+const restaurantTypeList = [
+    { label: 'Italien', value: 'italien' },
+    { label: 'Japonais', value: 'japonais' },
+    { label: 'Fast-food', value: 'fast-food' },
+]
 
 function HomeScreen(props) {
 
     const [tableDataList, setTableDataList] = useState([""])
-
+    const [restaurantType, setRestaurantType] = useState("");
 
     // DATE PICKER - input "où"
     const [date, setDate] = useState(new Date(1598051730000));
@@ -110,7 +111,7 @@ function HomeScreen(props) {
                     />
                 </Appbar>
             </View>
-            <View style={{ flex: 2, backgroundColor: "#F2F2F2", justifyContent: "flex-start", marginBottom : 150 }}>
+            <View style={{ flex: 2, backgroundColor: "#F2F2F2", justifyContent: "flex-start", marginBottom: 150 }}>
 
                 <Button
                     style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#0E9BA4", color: '#FFC960' }}
@@ -139,17 +140,21 @@ function HomeScreen(props) {
                     )}
 
                 </View>
-                <TextInput
-                    label="De quoi avez-vous envie ?"
-                    placeholder="Italien"
-                />
+                <View style={{ alignContent: "center", marginTop: 12, marginBottom: 8 }}>
+                    <RNPickerSelect
+                        onValueChange={(value) => { setRestaurantType(value) }}
+                        placeholder={{ label: "Quel type de cuisine ?", value: null, color: "black" }}
+                        items={restaurantTypeList}
+                    />
+                </View>
+
             </View>
-            <View style={{ flex: 3 , height: 100}}>
-            <ScrollView >
+            <View style={{ flex: 3, height: 100 }}>
+                <ScrollView >
 
-                {tableList}
+                    {tableList}
 
-            </ScrollView>
+                </ScrollView>
             </View>
 
         </View>
@@ -179,7 +184,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-            tableId: state.tableId
+        tableId: state.tableId
     }
 }
 
