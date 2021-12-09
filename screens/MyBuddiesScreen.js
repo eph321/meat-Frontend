@@ -19,9 +19,7 @@ function MyBuddiesScreen(props) {
                         <Appbar style={{ backgroundColor: "#FFC960", height: "100%"}}>
                                 <Appbar.Content title="Mes buddies" style={{paddingTop: "20%", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
                         </Appbar>
-                </View>
-                <View>
-                        <Appbar.Header style={{flex: 1, backgroundColor:"#F2F2F2", justifyContent:"space-around", marginVertical:"14%"}} labelStyle={{color: "#009788"}}>
+                        <Appbar.Header style={{flex: 1, backgroundColor:"#F2F2F2", width:"100%", justifyContent:"space-around"}} labelStyle={{color: "#009788"}}>
                                 <IconButton icon="home" color={'#0E9BA4'} size={25} onPress={() => props.navigation.navigate('Home')}/>
                                 <IconButton icon="plus-circle" color={'#0E9BA4'} size={25} onPress={() => props.navigation.navigate('MyAdresses')}/>
                                 <IconButton icon="calendar" color={'#0E9BA4'} size={25} onPress={() => props.navigation.navigate('MyEvents')}/>
@@ -30,10 +28,9 @@ function MyBuddiesScreen(props) {
                 </View>
 
                 <View >
+                        {/* BARRE DE RECHERCHE DE LA LISTE DE BUDDY
                         
-                        {/* BARRE DE RECHERCHE DE BUDDY A SUPPRIMER */}
-
-                        {/* <View style={{width: 330, marginTop: 60, marginRight: 20, marginLeft: 22, marginBottom: 40}}>
+                        <View style={{width: "100%", marginTop: 60, marginRight: 20, marginLeft: 22, marginBottom: 40}}>
                                 <TextInput
                                         outlineColor="#009788" activeOutlineColor="#009788"
                                         mode="outlined"
@@ -84,7 +81,7 @@ function MyBuddiesScreen(props) {
 
 const styles = StyleSheet.create({
     container: { 
-            flex: 0.18,
+            flex: 1,
             justifyContent: "center",
     },
 });

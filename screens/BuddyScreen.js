@@ -21,11 +21,14 @@ import * as ImagePicker from 'expo-image-picker';
 
 
 function BuddyScreen(props) {
+    const IP_LACAPSULE_ETIENNE = "172.17.1.60";
     const [userList, setUserList] = useState([]);
+    const [buddyId,setBuddyId] = useState("");
 
     useEffect(async () => {
-            var rawResponse = await fetch(`http://192.168.1.246:3000/search-users`);
+            var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/search-users`);
             var response = await rawResponse.json();
+            console.log("add user")
             console.log(response.result[0].firstname)
             setUserList(response.result)
         }
@@ -33,20 +36,25 @@ function BuddyScreen(props) {
 
 
     const handleAddFriend = async ( friendId) => {
-        await fetch('http://192.168.1.246:3000/add-buddy', {
+        await fetch(`https://polar-stream-28883.herokuapp.com/add-buddy`, {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: 'name=john&username=doe&email=john@gmail.com'
-        });
+            body: `token=${props.userToSend}&id=${friendId}`
+
+        })
+        console.log(props.userToSend)
+        console.log(friendId);
     }
 
 
     const displayUser = (user, i) => {
-        return    <View key={i} style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}}>
+
+        return    <TouchableOpacity onPress={() => { handleAddFriend(user._id)}}>
+        <View key={i} style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}} >
                         <View >
                             <Avatar.Icon size={32} icon="account" color={'#0E9BA4'} style={{backgroundColor: "#FFFFFF"}}/>
                         </View>
-                        <View style={{backgroundColor:"rgba(255, 201, 96, 0.22)",width:"70%",alignSelf:"flex-end",marginHorizontal:20,marginVertical:5}} onPress={() => { props.onCardClick(user._id)}}>
+                        <View style={{backgroundColor:"rgba(255, 201, 96, 0.22)",width:"70%",alignSelf:"flex-end",marginHorizontal:20,marginVertical:5}} >
                             <Card.Content>
 
                                 <Title>{user.firstname}</Title>
@@ -57,6 +65,7 @@ function BuddyScreen(props) {
                             </Card.Content>
                         </View>
                     </View>
+        </TouchableOpacity>
             }
 
     return (<View style={{flex:1,justifyContent: 'space-evenly'}}>
@@ -106,22 +115,19 @@ function BuddyScreen(props) {
 </View>)
 }
 
-function mapDispatchToProps(dispatch){
-return {
-sendData: function (userData){
-dispatch({type: 'register',userData})
-}
-
-}
-}
+function mapStateToProps(state) {
+    return {
+        userToSend: state.userToken
+    }}
 
 export default connect(
-null,
-mapDispatchToProps
+    mapStateToProps,
+    null
 )(BuddyScreen);
 
 
-            const styles = StyleSheet.create({
+
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',

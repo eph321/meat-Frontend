@@ -9,6 +9,10 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
 
 const franckIP = "192.168.1.41"
+const StephIP = "192.168.1.9"
+const StephIpCapsule = "172.17.1.164"
+
+const franckLaCapsuleIP = "172.17.1.118"
 
 function HomeScreen(props) {
 
@@ -42,7 +46,7 @@ function HomeScreen(props) {
     // Affichage des tables existantes 
 
     useEffect(async () => {
-        var rawResponse = await fetch(`http://${franckIP}:3000/search-table`);
+        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/search-table`);
         var response = await rawResponse.json();
 
         setTableDataList(response.result)
@@ -106,7 +110,7 @@ function HomeScreen(props) {
                     />
                 </Appbar>
             </View>
-            <View style={{ flex: 4, backgroundColor: "#F2F2F2", justifyContent: "flex-start" }}>
+            <View style={{ flex: 2, backgroundColor: "#F2F2F2", justifyContent: "flex-start", marginBottom : 150 }}>
 
                 <Button
                     style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#0E9BA4", color: '#FFC960' }}
@@ -140,12 +144,13 @@ function HomeScreen(props) {
                     placeholder="Italien"
                 />
             </View>
-            <ScrollView style={{ flex: 2 }}>
+            <View style={{ flex: 3 , height: 100}}>
+            <ScrollView >
 
                 {tableList}
 
             </ScrollView>
-
+            </View>
 
         </View>
 
@@ -170,16 +175,24 @@ const styles = StyleSheet.create({
     },
 });
 
+
+
+function mapStateToProps(state) {
+    return {
+            tableId: state.tableId
+    }
+}
+
 function mapDispatchToProps(dispatch) {
     return {
-        onCardClick: function (tableID) {
-            dispatch({ type: "saveTableID", tableID: tableID })
+        onCardClick: function (tableId) {
+            dispatch({ type: "saveTableId", tableId: tableId })
         }
     }
 }
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(HomeScreen)
 
