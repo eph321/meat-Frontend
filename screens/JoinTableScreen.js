@@ -13,6 +13,7 @@ const franckIP = "192.168.1.41"
 const StephIP = "192.168.1.9"
 const StephIpCapsule = "172.17.1.164"
 
+const franckLaCapsuleIP = "172.17.1.118"
 
 
 
@@ -20,13 +21,12 @@ function JoinTableScreen(props) {
 
     const [tableData, setTableData] = useState([''])
     useEffect( async() => {
-        console.log(props.tableId)
            var responseRaw = await fetch(`http://${StephIpCapsule}:3000/join-table/${props.tableId}`)
-        //    var response = await responseRaw.json();
+        var response = await responseRaw.json();
             
-           console.log(responseRaw, "sisisiisi")
+           console.log(response, "sisisiisi")
         
-            // setTableData(response.result)
+            setTableData(response.result)
           }
          
         , []);

@@ -12,6 +12,7 @@ const franckIP = "192.168.1.41"
 const StephIP = "192.168.1.9"
 const StephIpCapsule = "172.17.1.164"
 
+const franckLaCapsuleIP = "172.17.1.118"
 
 function HomeScreen(props) {
 
@@ -174,6 +175,14 @@ const styles = StyleSheet.create({
     },
 });
 
+
+
+function mapStateToProps(state) {
+    return {
+            tableId: state.tableId
+    }
+}
+
 function mapDispatchToProps(dispatch) {
     return {
         onCardClick: function (tableId) {
@@ -183,7 +192,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(HomeScreen)
 

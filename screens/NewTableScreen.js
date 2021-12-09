@@ -9,6 +9,8 @@ import RNPickerSelect from 'react-native-picker-select';
 
 const franckIP = "192.168.1.41"
 const StephIP = "192.168.1.9"
+const franckLaCapsuleIP = "172.17.1.118"
+const StephIpCapsule = "172.17.1.164"
 
 
 // Préférence culinaire Liste
@@ -39,7 +41,7 @@ function NewTableScreen(props) {
     const [restaurantName, setRestaurantName] = useState('');
     const [restaurantAddress, setRestaurantAddress] = useState('');
     const [description, setDescription] = useState('');
-    const planner = "ME" // props.userToken;
+    const planner = props.userToken;
 
     // Pour le calendrier Datepicker
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
@@ -120,7 +122,7 @@ function NewTableScreen(props) {
 
     // Création de la table
     const createTable = async () => {
-        await fetch(`http://${StephIP}:3000/add-table`, {
+        await fetch(`http://${StephIpCapsule}:3000/add-table`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}`
