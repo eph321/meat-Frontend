@@ -46,7 +46,7 @@ function HomeScreen(props) {
     // Affichage des tables existantes 
 
     useEffect(async () => {
-        var rawResponse = await fetch(`http://${StephIpCapsule}:3000/search-table`);
+        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/search-table`);
         var response = await rawResponse.json();
 
         setTableDataList(response.result)
