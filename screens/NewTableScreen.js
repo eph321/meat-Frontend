@@ -228,7 +228,7 @@ function NewTableScreen(props) {
                     style={{ alignSelf: "center", width: '70%' }}
                     mode="outlined"
                     label="Description"
-                    placeholder="Tranche d'âge (optionnel)"
+                    placeholder="Description"
                     multiline={true}
                     dense={true}
                     right={<TextInput.Affix text="/280" />}
@@ -247,7 +247,7 @@ function NewTableScreen(props) {
                         maxHeight={300}
                         labelField="label"
                         valueField="value"
-                        placeholder={!isAgeFocus ? 'Select item' : '...'}
+                        placeholder={!isAgeFocus ? "Tranche d'âge (optionnel)" : '...'}
                         searchPlaceholder="Search..."
                         value={ageRange}
                         onFocus={() => setIsAgeFocus(true)}
@@ -327,6 +327,7 @@ const styles = StyleSheet.create({
     },
     placeholderStyle: {
         fontSize: 16,
+        textAlign: "center",
     },
     selectedTextStyle: {
         fontSize: 16,

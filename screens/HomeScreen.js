@@ -222,6 +222,7 @@ const styles = StyleSheet.create({
       },
       placeholderStyle: {
         fontSize: 16,
+        textAlign: "center",
       },
       selectedTextStyle: {
         fontSize: 14,
