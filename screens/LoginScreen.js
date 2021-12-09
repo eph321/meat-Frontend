@@ -10,6 +10,7 @@ import {connect} from "react-redux";
 function LoginScreen(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const IP_LACAPSULE_ETIENNE = "172.17.1.60";
 
 
     //Vérifie l'existence d'un userToken et redirige vers home si présence userToken
@@ -20,12 +21,13 @@ function LoginScreen(props) {
             console.log(userData);
             if (userData){
                 props.navigation.navigate("Home")
-                props.sendUserToken(userData)}
+                props.sendUserToken(userData)
+                }
         })})()
     },[])
 
     const isLogin = async () => {
-        var rawResponse = await fetch('http://192.168.1.246:3000/sign-in',{
+        var rawResponse = await fetch(`http://${IP_LACAPSULE_ETIENNE}/sign-in`,{
             method:'POST',
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
             body: `email=${email}&password=${password}`

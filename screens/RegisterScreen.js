@@ -9,8 +9,10 @@ import * as ImagePicker from 'expo-image-picker';
 
 
 function RegisterScreen(props) {
+    const IP_LACAPSULE_ETIENNE = "172.17.1.60";
     const [inputEmail,setInputEmail] = useState("");
     const [inputPassword,setInputPassword] = useState("");
+    const [inputPasswordVerif,setInputPasswordVerif] = useState("");
     const [inputProgress,setInputProgress] = useState(0);
     const [image, setImage] = useState(null);
     const [visible, setVisible] = useState(true);
@@ -46,7 +48,7 @@ function RegisterScreen(props) {
                 type: 'image/jpeg',
                 name: 'avatar.jpg'});
 
-            var rawResponse = await fetch("http://192.168.1.246:3000/upload-avatar",{
+            var rawResponse = await fetch(`http://${IP_LACAPSULE_ETIENNE}:3000/upload-avatar`,{
                 method: 'POST',
                 body: data});
             var response = await rawResponse.json();
@@ -92,7 +94,7 @@ function RegisterScreen(props) {
                     <TextInput style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
                                mode="outlined"
                                label="Confirmation du mot de passe *"
-                               onChangeText={(val)=> {setInputEmail(val); setInputProgress(inputProgress + 0.01)}}
+                               onChangeText={(val)=> {setInputPasswordVerif(val); setInputProgress(inputProgress + 0.01)}}
                                placeholder ="***********"
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
