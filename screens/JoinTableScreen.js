@@ -5,13 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { FontAwesome5 } from '@expo/vector-icons';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { FontAwesome } from '@expo/vector-icons';
-
-const franckIP = "192.168.1.41"
-const StephIP = "192.168.1.9"
-const franckLaCapsuleIP = "172.17.1.118"
-
 
 
 function JoinTableScreen(props) {
@@ -19,7 +13,7 @@ function JoinTableScreen(props) {
     const [tableData, setTableData] = useState([''])
     useEffect( async() => {
       
-           var responseRaw = await fetch(`http://${franckLaCapsuleIP}:3000/search-table`)
+           var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/search-table`)
            var response = await responseRaw.json();
             
             setTableData(response.result)
