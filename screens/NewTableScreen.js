@@ -11,9 +11,9 @@ import RNPickerSelect from 'react-native-picker-select';
 // Préférence culinaire Liste
 
 const restaurantTypeList = [
-    { label: 'Italien', value: 'italien' },
-    { label: 'Japonais', value: 'japonais' },
-    { label: 'Fast-food', value: 'fast-food' },
+    { label: 'Italien', value: 'Italien' },
+    { label: 'Japonais', value: 'Japonais' },
+    { label: 'Fast-food', value: 'Fast-food' },
 ];
 
 // Liste déroulante trannche d'age
