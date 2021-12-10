@@ -24,10 +24,10 @@ function RegisterScreenC(props) {
 
         });
         var response = await rawResponse.json();
-        await AsyncStorage.setItem("userToken", JSON.stringify({token: response.newUserSave.token}))
         console.log(response)
         console.log(response.newUserSave.token)
         let  {token} = response.newUserSave
+        await AsyncStorage.setItem("userToken", JSON.stringify(token))
         props.sendUserTokenRegister(token)
 
     }

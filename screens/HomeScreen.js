@@ -21,6 +21,7 @@ const restaurantTypeList = [
     { label: 'Mexicain', value: 'Mexicain'},
     { label: 'Indien', value: 'Indien'},
     { label: 'Coréen', value: 'Coréen'},
+    { label: 'Africain', value: 'Africain'},
 ]
 
 function HomeScreen(props) {
