@@ -61,17 +61,31 @@ function HomeScreen(props) {
         setTableDataList(response.result)
     }, [])
 
-    /* if (restaurantType != nnull) {
-            useEffect(async () => {
-                var rawFilteredResponse = await fetch(`${FranckLacapsuleIP}/filter-table/${restaurantType}`);
+    
+
+    /*   useEffect(async () => {
+                console.log(restaurantType)
+
+                 var rawFilteredResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
                 var filteredResponse = await rawFilteredResponse.json();
     
-                console.log(rawFilteredResponse.result)
+                //console.log(rawFilteredResponse.result)
                 setTableDataList(filteredResponse.result)
             }
-        ,[restaurantType]) 
-        } */
+        ,[restaurantType])
 
+        const typeList = []
+        const [selected, setSelected] = useState("")
+        const selectedType = (item) => {
+            for (el of typeList){
+                if(selected != el){
+                    typeList.push(selected)
+                } else {
+                   typeList = typeList.filter(e => e == selected )
+                }
+            }   
+        } */
+    
 
     var tableList = tableDataList.map((e, i) => {
 
@@ -158,7 +172,7 @@ function HomeScreen(props) {
                         />
                     )}
                 </View>
-                <View style={{ alignItems: "center", marginTop: 12, marginBottom: 8 }}>
+                <View style={{alignItems: "center", marginTop: 12, marginBottom: 8 }}>
                     <MultiSelect
                         style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
                         placeholderStyle={styles.placeholderStyle}
@@ -171,16 +185,16 @@ function HomeScreen(props) {
                         valueField="value"
                         placeholder="Quel type de cuisine ?"
                         searchPlaceholder="Search..."
-                        value={restaurantType}
+                        /* value={restaurantType} */
                         onChange={item => {
-                            setRestaurantType(item);
+                            setRestaurantType(...restaurantType, item);
                             setIsFocus(false);
                         }}
                         renderLeftIcon={() => (
                             <MaterialIcons style={styles.icon} name="restaurant" size={24} color="#0E9BA4" />
 
                         )}
-                        selectedStyle={styles.selectedStyle}
+                      selectedStyle={styles.selectedStyle} 
                     />
                 </View>
 
