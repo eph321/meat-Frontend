@@ -23,7 +23,7 @@ function BuddyScreen(props) {
             const rawResponse = await fetch("https://polar-stream-28883.herokuapp.com/search-user");
             const response = await rawResponse.json();
             if(props.userToSend !== null){
-            console.log(props.userToSend.token + "j'ai bien récupéré le token dans le store")}
+            console.log(props.userToSend+ "j'ai bien récupéré le token dans le store")}
 
             console.log(response.result[0].email)
 
@@ -36,11 +36,11 @@ function BuddyScreen(props) {
 
     const handleAddFriend = async (userToken) => {
         console.log(userToken)
-        console.log(props.userToSend.token)
+        console.log(props.userToSend)
         let rawSend = await fetch(`https://polar-stream-28883.herokuapp.com/add-buddy`, {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `token=${JSON.parse(props.userToSend.token)}&userToken=${userToken}`
+            body: `token=${JSON.parse(props.userToSend)}&userToken=${userToken}`
 
         })
         let sendResponse = await rawSend.json();
