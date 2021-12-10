@@ -30,7 +30,7 @@ function BuddyScreen(props) {
             setUserList(response.result)
 
         }
-        , [])
+        , [UserList])
 
 
 

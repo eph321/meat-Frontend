@@ -5,7 +5,7 @@ import socketIOClient from "socket.io-client";
 import {connect} from "react-redux";
 
 
-var socket = socketIOClient("http://192.168.1.246:3000");
+var socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
 
 function ChatScreen(props) {
     const [currentMessage,setCurrentMessage] = useState("")
