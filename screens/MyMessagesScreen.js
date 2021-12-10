@@ -1,5 +1,5 @@
-import React,  from 'react';
-import { StyleSheet, View,Button } from 'react-native';
+import React  from 'react';
+import {  View,Button } from 'react-native';
 import {AntDesign} from "@expo/vector-icons";
 
 

@@ -1,6 +1,6 @@
 
-import React, from 'react';
-import { StyleSheet, } from 'react-native';
+import React from 'react';
+
 import { NavigationContainer} from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider, DefaultTheme} from 'react-native-paper'
@@ -46,7 +46,7 @@ const store = createStore(combineReducers({ userRegister, tableId, userToken }))
 
 
 
-function App() {
+export default function App() {
   return (
       <StoreProvider store={store}>
         <PaperProvider theme={ThemeMeat}>
