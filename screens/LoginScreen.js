@@ -38,16 +38,13 @@ function LoginScreen(props) {
         });
         var response = await rawResponse.json();
         if (response.login) { props.navigation.navigate('Home')
-            setPassword("");
-            setEmail("");
 
-            console.log(response)
-            console.log(response.searchUser.token)
            let  {token} = response.searchUser
+            console.log(token)
             await AsyncStorage.setItem("userToken", JSON.stringify(token))
             props.sendUserToken(token)
         } else {
-            setError()
+            setError("Wrong Credentials")
         }
     }
 
