@@ -63,7 +63,7 @@ function HomeScreen(props) {
 
     
 
- /*        useEffect(async () => {
+    /*   useEffect(async () => {
                 console.log(restaurantType)
 
                  var rawFilteredResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
@@ -81,11 +81,11 @@ function HomeScreen(props) {
                 if(selected != el){
                     typeList.push(selected)
                 } else {
-                    typeList.splice(el)
+                   typeList = typeList.filter(e => e == selected )
                 }
             }   
-        }
-     */
+        } */
+    
 
     var tableList = tableDataList.map((e, i) => {
 
