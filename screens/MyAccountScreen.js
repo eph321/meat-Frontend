@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Button, ScrollView, TouchableOpacity, Platform, AsyncStorage} from 'react-native';
-import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text,Colors} from "react-native-paper";
+import {StyleSheet, View,  ScrollView, TouchableOpacity, Platform, AsyncStorage} from 'react-native';
+import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text} from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 
 

@@ -1,9 +1,9 @@
 
-import React, { Component } from 'react';
-import {Button, StyleSheet, View, Text} from 'react-native';
+import React, from 'react';
+import { StyleSheet, } from 'react-native';
 import { NavigationContainer} from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
-import {TextInput, Provider as PaperProvider, DefaultTheme} from 'react-native-paper'
+import { Provider as PaperProvider, DefaultTheme} from 'react-native-paper'
 import { Provider as StoreProvider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 import { LogBox } from 'react-native';  
@@ -46,7 +46,7 @@ const store = createStore(combineReducers({ userRegister, tableId, userToken }))
 
 
 
-export default function App() {
+function App() {
   return (
       <StoreProvider store={store}>
         <PaperProvider theme={ThemeMeat}>
@@ -77,11 +77,3 @@ export default function App() {
 
 
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

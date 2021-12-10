@@ -8,15 +8,15 @@ import {
     Avatar,
     Card,
     Title,
-    Paragraph, IconButton, List
+    Paragraph, IconButton,
 } from "react-native-paper";
 import { connect } from 'react-redux';
-import {Ionicons} from "@expo/vector-icons";
+
 
 function BuddyScreen(props) {
     const [userList, setUserList] = useState([]);
-    const [buddyId,setBuddyId] = useState("");
-    const [buddyIndex,setBuddyIndex] = useState("");
+
+
 
 
     useEffect(async () => {

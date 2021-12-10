@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import {StyleSheet, View, TouchableOpacity, Platform} from 'react-native';
-import {TextInput, Appbar, Button, ProgressBar, Text, Avatar, RadioButton} from "react-native-paper";
+import {TextInput, Appbar, Button, ProgressBar, Text, Avatar} from "react-native-paper";
 import { connect } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -9,7 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 
 function RegisterScreen(props) {
-    const IP_LACAPSULE_ETIENNE = "172.17.1.60";
+
     const [inputEmail,setInputEmail] = useState("");
     const [inputPassword,setInputPassword] = useState("");
     const [inputPasswordVerif,setInputPasswordVerif] = useState("");

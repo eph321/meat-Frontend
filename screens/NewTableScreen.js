@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
-import {Button, TextInput, Dialog, Portal, Appbar, IconButton} from "react-native-paper"
+import { StyleSheet, View, Text, ScrollView} from 'react-native';
+import {Button, TextInput, Appbar, IconButton} from "react-native-paper"
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';

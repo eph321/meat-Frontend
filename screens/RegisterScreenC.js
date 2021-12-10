@@ -1,9 +1,9 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState} from 'react';
 
 import {AsyncStorage, StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text} from "react-native-paper";
 import { connect } from 'react-redux';
-const IP_LACAPSULE_ETIENNE = "172.17.1.60";
+
 
 function RegisterScreenC(props) {
 

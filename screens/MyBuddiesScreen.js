@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import { StyleSheet, Touchable, TouchableOpacity, View } from 'react-native';
+import React, {useEffect, } from 'react';
+import { StyleSheet,  TouchableOpacity, View } from 'react-native';
 import {TextInput, Button, Appbar, Avatar, Title, IconButton, Colors, Card, Paragraph} from "react-native-paper";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
@@ -7,6 +7,20 @@ import { Icon } from 'react-native-elements/dist/icons/Icon';
 
 
 function MyBuddiesScreen(props) {
+
+    useEffect(async () => {
+            const rawResponse = await fetch("https://polar-stream-28883.herokuapp.com/list-related-users");
+            const response = await rawResponse.json();
+            if(props.userToSend !== null){
+                console.log(props.userToSend+ "j'ai bien récupéré le token dans le store")}
+
+            console.log(response.result[0].email)
+
+            setUserList(response.result)
+
+        }
+        , [])
+
 
     const displayUser = (user,i) => {
 
@@ -154,13 +168,6 @@ function MyBuddiesScreen(props) {
 
     );
 }
-
-const styles = StyleSheet.create({
-    container: { 
-            flex: 1,
-            justifyContent: "center",
-    },
-});
 
 
 export default MyBuddiesScreen;

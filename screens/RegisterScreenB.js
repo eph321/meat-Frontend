@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import {Platform, StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text,RadioButton} from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { connect } from 'react-redux';
 
 
@@ -32,10 +31,6 @@ function RegisterScreenB(props) {
 
     const showDatepicker = () => {
         showMode('date');
-    };
-
-    const showTimepicker = () => {
-        showMode('time');
     };
 
 
