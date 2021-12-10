@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, Touchable, TouchableOpacity, View } from 'react-native';
-import {TextInput, Button, Appbar, Avatar, Title, IconButton,Colors} from "react-native-paper";
+import {TextInput, Button, Appbar, Avatar, Title, IconButton, Colors, Card, Paragraph} from "react-native-paper";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 
@@ -8,6 +8,24 @@ import { Icon } from 'react-native-elements/dist/icons/Icon';
 
 function MyBuddiesScreen(props) {
 
+    const displayUser = (user,i) => {
+
+        return <TouchableOpacity key={i} onPress={() => handleAddFriend(user.token)}>
+            <View  style={{flexDirection: "row", justifyContent: "center", alignItems: "center",}}>
+                <Card style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "3%",width:"100%"}}>
+                    <Card.Content style={{flexDirection: "row",alignItems:"center"}}>
+                        <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={require('../assets/picture-4.png')} />
+                        <View>
+                            <Title style={{fontWeight:"bold", fontSize:30, marginBottom:5}}>{user.firstname}</Title>
+                            <Paragraph>{user.description}</Paragraph>
+                            <Paragraph>{user.preference1}</Paragraph>
+                            <Paragraph>{user.preference2}</Paragraph>
+                            <Paragraph>{user.preference3}</Paragraph>
+                        </View>
+                    </Card.Content>
+                </Card>
+            </View>
+        </TouchableOpacity>}
 
 
     return (   

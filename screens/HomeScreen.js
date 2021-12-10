@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { Text, Button, Appbar, TextInput, Card, Title, Paragraph } from "react-native-paper";
+import {StyleSheet, View, ScrollView, AsyncStorage} from 'react-native';
+import {Text, Button, Appbar, TextInput, Card, Title, Paragraph, IconButton} from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -132,35 +132,71 @@ function HomeScreen(props) {
     return (
 
         <View style={{ flex: 1, justifyContent: 'space-evenly' }}>
-            <View style={styles.viewHeader}>
-                <Appbar style={{ flex: 1, backgroundColor: "#FFC960", height: 20 }}>
-                    <Appbar.Content title="Home Page" style={{ textAlign: 'center' }} />
+            <View style={{ flex: 2,
+                left: 0,
+                width:"100%",
+                top: 0,
+                justifyContent:"flex-start",}}>
+                <Appbar style={{ backgroundColor: "#FFC960", flex:1}}>
+                    <Appbar.Content title="Home Screen" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
+
                 </Appbar>
-                <Appbar style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", justifyContent: "space-evenly", height: 40 }}>
-                    <Appbar.Action icon="home" onPress={() => props.navigation.navigate('Home')} />
-                    <Appbar.Action icon="plus-circle" onPress={() => props.navigation.navigate('NewTable')} />
-                    <Appbar.Action icon="calendar-month" onPress={() => props.navigation.navigate('MyEvents')} />
-                    <Appbar.Action icon="message-text" onPress={() => props.navigation.navigate('Chat')} />
-                    <Appbar.Action icon="account" onPress={() => props.navigation.navigate('MyAccount')}
-/>
-                </Appbar>
+                <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
+                    <IconButton
+                        icon="home"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() => props.navigation.navigate('Home')}
+                    />
+                    <IconButton
+                        icon="plus-circle"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() => props.navigation.navigate('NewTable')}
+                    />
+                    <IconButton
+                        icon="message"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>  props.navigation.navigate('Chat')}
+                    />
+                    <IconButton
+                        icon="calendar-month"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>props.navigation.navigate('MyEvents')}
+                    />
+                    <IconButton
+                        icon="account"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>  props.navigation.navigate('MyAccount')}
+                    />
+                </View>
             </View>
             <View style={{ flex: 2, backgroundColor: "#F2F2F2", justifyContent: "flex-start", marginBottom: 150 }}>
 
-                <Button
-                    style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#0E9BA4", color: '#FFC960' }}
+{/*                <Button
+                    style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#0E9BA4", color: '#FFC960',marginBottom:5 }}
                     mode="contained" onPress={() => { props.navigation.navigate('JoinTable'); }}>
                     <Text Style={{ color: '#FFC960' }}>Go to join</Text>
-                </Button>
-                <TextInput
-                    label="Où ?"
-                    placeholder="Paris 17"
+                </Button>*/}
+                <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center",marginBottom: 5}}
+                           mode="outlined"
+                           label="Où ?"
+                           placeholder ="Paris 17"
+                           activeOutlineColor={"#FF3D00"}
+                           outlineColor={'#0E9BA4'}
                 />
+
                 <View>
-                    <TextInput
-                        label="Quand ?"
-                        placeholder="JJ/MM/AAAA"
-                        onFocus={showDatepicker}
+                    <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center",marginBottom: 5}}
+                               mode="outlined"
+                               label="Quand ? ?"
+                               placeholder ="JJ/MM/AAAA"
+                               activeOutlineColor={"#FF3D00"}
+                               outlineColor={'#0E9BA4'}
+                               onFocus={showDatepicker}
                     />
                     {show && (
                         <DateTimePicker
