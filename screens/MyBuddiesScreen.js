@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, Touchable, TouchableOpacity, View } from 'react-native';
-import {TextInput, Button, Appbar, Avatar, Title, IconButton} from "react-native-paper";
+import {TextInput, Button, Appbar, Avatar, Title, IconButton,Colors} from "react-native-paper";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 
@@ -76,7 +76,30 @@ function MyBuddiesScreen(props) {
                                         </Button>
                                 </View>
                         </View>
-                    <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                    <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center",marginBottom:5}}>
+                        <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={require('../assets/picture-4.png')} />
+                        <View style={{marginTop:"3%", marginRight:"2%"}}>
+                            <Title style={{fontWeight:"bold", fontSize:30, marginBottom:"-8%"}}>Arthur</Title>
+                            <Title style={{fontStyle:"italic", fontSize:11}}>Buddy depuis le 10/10/2021</Title>
+                        </View>
+                        <View style={{flexDirection: "row"}}>
+                            <Button style={{borderColor: Colors.grey400, backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "3%"}}
+                                    mode="contained"
+                                    icon="account-clock"
+                                    labelStyle={{marginTop: "50%", marginLeft: 1, color: Colors.grey400, fontSize: 30}}
+                                    onPress={() => props.navigation.navigate('MyMessages')}
+                            >
+                            </Button>
+                            <Button style={{borderColor: "#FF3D00", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "5%"}}
+                                    mode="contained"
+                                    icon="account-cancel"
+                                    labelStyle={{marginTop: "50%", marginLeft: 0, color: "#FF3D00", fontSize: 35 }}
+                                    onPress={() => props.navigation.navigate('MyMessages')}
+                            >
+                            </Button>
+                        </View>
+                    </View>
+                    <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center",marginBottom:5}}>
                         <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={require('../assets/picture-4.png')} />
                         <View style={{marginTop:"3%", marginRight:"2%"}}>
                             <Title style={{fontWeight:"bold", fontSize:30, marginBottom:"-8%"}}>Arthur</Title>
@@ -85,21 +108,20 @@ function MyBuddiesScreen(props) {
                         <View style={{flexDirection: "row"}}>
                             <Button style={{borderColor: "#009788", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "3%"}}
                                     mode="contained"
-                                    icon="email-outline"
+                                    icon="forum"
                                     labelStyle={{marginTop: "50%", marginLeft: 1, color: "#009788", fontSize: 30}}
                                     onPress={() => props.navigation.navigate('MyMessages')}
                             >
                             </Button>
-                            <Button style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "5%"}}
+                            <Button style={{borderColor: "#FF3D00", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "5%"}}
                                     mode="contained"
-                                    icon="trash-can-outline"
-                                    labelStyle={{marginTop: "50%", marginLeft: 0, color: "#FFC960", fontSize: 35 }}
+                                    icon="account-remove"
+                                    labelStyle={{marginTop: "50%", marginLeft: 0, color: "#FF3D00", fontSize: 35 }}
                                     onPress={() => props.navigation.navigate('MyMessages')}
                             >
                             </Button>
                         </View>
                     </View>
-                       
                         
                 </View>
 
