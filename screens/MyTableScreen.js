@@ -131,7 +131,7 @@ function MyTableScreen(props) {
                
        </View>
        
-       <View style={{flex : 3, alignItems: 'strech', justifyContent: 'center'}}>
+       <View style={{flex : 3, justifyContent: 'center'}}>
        <Card style={{width : 350, height : 400}}>
                <Card.Content>
                <ScrollView style={{ marginTop: 50}}>
