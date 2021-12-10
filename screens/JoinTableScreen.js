@@ -15,16 +15,10 @@ function JoinTableScreen(props) {
    
 
     useEffect( async() => {
-<<<<<<< HEAD
            var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
            var response = await responseRaw.json();
         console.log(response)
 
-=======
-      
-           var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
-           var response = await responseRaw.json();
->>>>>>> 0ecd607ffc4b28e1a00b3641969fd62b026218c0
         
             setTableData(response.result)
         
@@ -67,6 +61,22 @@ function JoinTableScreen(props) {
       else if(tableInfo.placeType === "Italien") {
           cardImage= 'https://cache.marieclaire.fr/data/photo/w1000_ci/5b/italianfood.jpg' 
         }
+      else if(tableInfo.placeType === "Chinois") {
+            cardImage= 'https://www.takeaway.com/be-fr/foodwiki/uploads/sites/3/2018/02/chine.jpg'   
+          }
+       else if(tableInfo.placeType === "Mexicain") {
+            cardImage= 'https://images.radio-canada.ca/q_auto,w_960/v1/ici-premiere/16x9/mlarge-cuisine-mexicaine-nourriture-mexique-alimentation-tacos-salsa-mais.jpg' 
+            
+          }
+       else if(tableInfo.placeType === "Coréen") {
+            cardImage= 'https://aconsommerdepreference.lexpress.fr/wp-content/uploads/2018/02/iStock-849756458.jpg'   
+          }
+       else if(tableInfo.placeType === "Indien") {
+            cardImage= 'https://media.istockphoto.com/photos/assorted-indian-recipes-food-various-picture-id922783734' 
+          }
+       else if(tableInfo.placeType === "Africain") {
+            cardImage= 'https://afrogadget.com/wp-content/uploads/2021/06/01-couscous-royal-traditionnel.jpeg' 
+          }
        
     //    var guestCount = tableInfo.guests.lenght + 1;
 
