@@ -23,6 +23,7 @@ const restaurantTypeList = [
 
 // Liste déroulante trannche d'age
 const ageRangeList = [
+    { label: "Sans préférence", value: "" },
     { label: "18-25 ans", value: "18-25" },
     { label: "25-35 ans", value: "25-35" },
     { label: "35-45 ans", value: "35-45" },

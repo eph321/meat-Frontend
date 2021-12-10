@@ -61,17 +61,20 @@ function HomeScreen(props) {
         setTableDataList(response.result)
     }, [])
 
-    /* if (restaurantType != nnull) {
+    
+   /* if (restaurantType !== "") {
             useEffect(async () => {
-                var rawFilteredResponse = await fetch(`${FranckLacapsuleIP}/filter-table/${restaurantType}`);
+                console.log(restaurantType)
+
+                var rawFilteredResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
                 var filteredResponse = await rawFilteredResponse.json();
     
-                console.log(rawFilteredResponse.result)
+                //console.log(rawFilteredResponse.result)
                 setTableDataList(filteredResponse.result)
             }
         ,[restaurantType]) 
-        } */
-
+        } 
+ */
 
     var tableList = tableDataList.map((e, i) => {
 
@@ -158,7 +161,7 @@ function HomeScreen(props) {
                         />
                     )}
                 </View>
-                <View style={{ alignItems: "center", marginTop: 12, marginBottom: 8 }}>
+                <View style={{alignItems: "center", marginTop: 12, marginBottom: 8 }}>
                     <MultiSelect
                         style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
                         placeholderStyle={styles.placeholderStyle}
@@ -171,16 +174,16 @@ function HomeScreen(props) {
                         valueField="value"
                         placeholder="Quel type de cuisine ?"
                         searchPlaceholder="Search..."
-                        value={restaurantType}
+                        /* value={restaurantType} */
                         onChange={item => {
-                            setRestaurantType(item);
+                            setRestaurantType(...restaurantType, item);
                             setIsFocus(false);
                         }}
                         renderLeftIcon={() => (
                             <MaterialIcons style={styles.icon} name="restaurant" size={24} color="#0E9BA4" />
 
                         )}
-                        selectedStyle={styles.selectedStyle}
+                      selectedStyle={styles.selectedStyle} 
                     />
                 </View>
 
