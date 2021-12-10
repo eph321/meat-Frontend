@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, Button, View, Text } from 'react-native';
-import { Appbar, Card, Title, Paragraph } from "react-native-paper";
+import { Appbar, Card, Title, Paragraph, IconButton } from "react-native-paper";
 
 import { connect } from "react-redux";
 
@@ -20,10 +20,10 @@ function MyEventsScreen(props) {
 
 
                 return (
-                        <Card key={i} style={{ marginBottom: 8 }} onPress={() =>{ props.navigation.navigate("MyTable"), props.onCardClick(e._id) }}>
-                                <Card.Content style={{alignItems:"center", justifyContent:"center"}}>
+                        <Card key={i} style={{ marginBottom: 8 }} onPress={() => { props.navigation.navigate("MyTable"), props.onCardClick(e._id) }}>
+                                <Card.Content style={{ alignItems: "center", justifyContent: "center" }}>
                                         <Title>{e.title}</Title>
-                                        <Paragraph style={{alignSelf:"center"}}>{e.description}</Paragraph>
+                                        <Paragraph style={{ alignSelf: "center" }}>{e.description}</Paragraph>
                                         <Paragraph>{e.date}</Paragraph>
                                 </Card.Content>
                         </Card>
@@ -34,19 +34,35 @@ function MyEventsScreen(props) {
         return (
 
 
-                <View style={styles.container}>
-                        <View style={styles.viewHeader}>
-                                <Appbar style={{ flex: 1, backgroundColor: "#FFC960", height: 20 }}>
-                                        <Appbar.Content title="My events" style={{ textAlign: 'center', marginTop: 30 }} />
-                                </Appbar>
-                                <Appbar style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", justifyContent: "space-evenly", height: 40 }}>
-                                        <Appbar.Action icon="home" onPress={() => props.navigation.navigate('Home')} />
-                                        <Appbar.Action icon="plus-circle" onPress={() => props.navigation.navigate('NewTable')} />
-                                        <Appbar.Action icon="calendar-month" onPress={() => props.navigation.navigate('MyEvents')} />
-                                        <Appbar.Action icon="message-text" onPress={() => props.navigation.navigate('Chat')} />
-                                        <Appbar.Action icon="account" onPress={() => props.navigation.navigate('MyAccount')}
-                                        />
-                                </Appbar>
+                <View style={styles.viewHeader}>
+                        <Appbar style={{ flex: 1, backgroundColor: "#FFC960" }}>
+                                <Appbar.Content title="Planning" style={{ marginTop: 20, alignItems: "center", size: 17 }} titleStyle={{ fontSize: 22, fontWeight: "700", color: "#009788" }} />
+                        </Appbar>
+                        <View style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", flexDirection: "row", justifyContent: "space-around" }}>
+                                <IconButton
+                                        icon="home"
+                                        color={'#0E9BA4'}
+                                        size={25}
+                                        onPress={() => props.navigation.navigate('Home')}
+                                />
+                                <IconButton
+                                        icon="plus-circle"
+                                        color={'#0E9BA4'}
+                                        size={25}
+                                        onPress={() => props.navigation.navigate('NewTable')}
+                                />
+                                <IconButton
+                                        icon="message-text"
+                                        color={'#0E9BA4'}
+                                        size={25}
+                                        onPress={() => props.navigation.navigate('Chat')}
+                                />
+                                <IconButton
+                                        icon="account"
+                                        color={'#0E9BA4'}
+                                        size={25}
+                                        onPress={() => props.navigation.navigate('MyAccount')}
+                                />
                         </View>
                         <Text style={{ fontSize: 26, marginBottom: 20, marginTop: 20 }}>
                                 Mes participations
@@ -61,37 +77,8 @@ function MyEventsScreen(props) {
                                 </View>
 
                         </ScrollView>
-                    <View style={styles.viewHeader}>
-                        <Appbar style={{flex:1,backgroundColor:"#FFC960"}}>
-                            <Appbar.Content title="Planning" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}}/>
-                        </Appbar>
-                        <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
-                            <IconButton
-                                icon="home"
-                                color={'#0E9BA4'}
-                                size={25}
-                                onPress={() => props.navigation.navigate('Home')}
-                            />
-                            <IconButton
-                                icon="plus-circle"
-                                color={'#0E9BA4'}
-                                size={25}
-                                onPress={() => props.navigation.navigate('NewTable')}
-                            />
-                            <IconButton
-                                icon="message-text"
-                                color={'#0E9BA4'}
-                                size={25}
-                                onPress={() =>props.navigation.navigate('Chat')}
-                            />
-                            <IconButton
-                                icon="account"
-                                color={'#0E9BA4'}
-                                size={25}
-                                onPress={() =>  props.navigation.navigate('MyAccount')}
-                            />
-                        </View>
-                    </View>
+
+
 
 
 
@@ -120,11 +107,11 @@ const styles = StyleSheet.create({
 
 function mapDispatchToProps(dispatch) {
         return {
-            onCardClick: function (tableId) {
-                dispatch({ type: "saveTableId", tableId: tableId })
-            }
+                onCardClick: function (tableId) {
+                        dispatch({ type: "saveTableId", tableId: tableId })
+                }
         }
-    }
+}
 
 
 export default connect(
