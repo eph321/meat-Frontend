@@ -284,10 +284,7 @@ function NewTableScreen(props) {
 
                     </View>
                 </View>
-
-                <Button mode="contained" onPress={() => console.log(props.userToken)}> UserTOKEN </Button>
                 <Button mode="contained" onPress={() => createTable()}>Créer la table</Button>
-
             </View>
 
         </ScrollView>

@@ -142,7 +142,7 @@ function HomeScreen(props) {
                     <Appbar.Action icon="calendar-month" onPress={() => props.navigation.navigate('MyEvents')} />
                     <Appbar.Action icon="message-text" onPress={() => props.navigation.navigate('Chat')} />
                     <Appbar.Action icon="account" onPress={() => props.navigation.navigate('MyAccount')}
-                    />
+/>
                 </Appbar>
             </View>
             <View style={{ flex: 2, backgroundColor: "#F2F2F2", justifyContent: "flex-start", marginBottom: 150 }}>
