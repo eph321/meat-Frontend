@@ -18,7 +18,6 @@ import ResultScreen from "./screens/ResultScreen";
 import JoinTableScreen from "./screens/JoinTableScreen";
 import MyTableScreen from "./screens/MyTableScreen";
 import NewTableScreen from "./screens/NewTableScreen";
-import ProfileScreen from "./screens/ProfileScreen";
 import MyAccountScreen from "./screens/MyAccountScreen";
 import MyBuddiesScreen from "./screens/MyBuddiesScreen";
 import MyMessagesScreen from "./screens/MyMessagesScreen";
@@ -63,7 +62,6 @@ export default function App() {
                 <Stack.Screen name="MyTable" component={MyTableScreen} />
                 <Stack.Screen name="NewTable" component={NewTableScreen} />
                 <Stack.Screen name="BuddyProfile" component={BuddyScreen} />
-                <Stack.Screen name="JoinProfile" component={ProfileScreen} />
                 <Stack.Screen name="MyAccount" component={MyAccountScreen} />
                 <Stack.Screen name="MyAddresses" component={MyAddressesScreen} />
                 <Stack.Screen name="MyBuddies" component={MyBuddiesScreen} />

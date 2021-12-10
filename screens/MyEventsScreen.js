@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, ScrollView, Button, View, Text } from 'react-native';
-import { Appbar } from "react-native-paper";
+import {Appbar, IconButton} from "react-native-paper";
 
 import { MultiSelect } from 'react-native-element-dropdown';
   import { MaterialIcons } from '@expo/vector-icons';
@@ -39,19 +39,39 @@ const [isFocus, setIsFocus] = useState(false);
 
         return (
                 <View style={styles.container}>
-                        <View style={styles.viewHeader}>
-                                <Appbar style={{ flex: 1, backgroundColor: "#FFC960", height: 20 }}>
-                                        <Appbar.Content title="Creer une table" style={{ textAlign: 'center' }} />
-                                </Appbar>
-                                <Appbar style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", justifyContent: "space-evenly", height: 40 }}>
-                                        <Appbar.Action icon="home" onPress={() => props.navigation.navigate('Home')} />
-                                        <Appbar.Action icon="plus-circle" onPress={() => props.navigation.navigate('NewTable')} />
-                                        <Appbar.Action icon="calendar-month" onPress={() => props.navigation.navigate('MyEvents')} />
-                                        <Appbar.Action icon="message-text" onPress={() => props.navigation.navigate('Chat')} />
-                                        <Appbar.Action icon="account" onPress={() => props.navigation.navigate('MyAccount')}
-                                        />
-                                </Appbar>
+                    <View style={styles.viewHeader}>
+                        <Appbar style={{flex:1,backgroundColor:"#FFC960"}}>
+                            <Appbar.Content title="Planning" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}}/>
+                        </Appbar>
+                        <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
+                            <IconButton
+                                icon="home"
+                                color={'#0E9BA4'}
+                                size={25}
+                                onPress={() => props.navigation.navigate('Home')}
+                            />
+                            <IconButton
+                                icon="plus-circle"
+                                color={'#0E9BA4'}
+                                size={25}
+                                onPress={() => props.navigation.navigate('NewTable')}
+                            />
+                            <IconButton
+                                icon="message-text"
+                                color={'#0E9BA4'}
+                                size={25}
+                                onPress={() =>props.navigation.navigate('Chat')}
+                            />
+                            <IconButton
+                                icon="account"
+                                color={'#0E9BA4'}
+                                size={25}
+                                onPress={() =>  props.navigation.navigate('MyAccount')}
+                            />
                         </View>
+                    </View>
+
+
 
                         {/* TEST LISTE DEROULANTE */}
 

@@ -49,6 +49,8 @@ function BuddyScreen(props) {
 
     }
     // Fonction de display pour l'affichage des buddies à rajouter
+
+
     const displayUser = (user,i) => {
 
         return <TouchableOpacity key={i} onPress={() => handleAddFriend(user.token)}>
