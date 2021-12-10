@@ -62,8 +62,8 @@ function HomeScreen(props) {
     }, [])
 
     
-   /* if (restaurantType !== "") {
-            useEffect(async () => {
+/* if (restaurantType !== ""){
+        useEffect(async () => {
                 console.log(restaurantType)
 
                 var rawFilteredResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
@@ -72,9 +72,9 @@ function HomeScreen(props) {
                 //console.log(rawFilteredResponse.result)
                 setTableDataList(filteredResponse.result)
             }
-        ,[restaurantType]) 
-        } 
- */
+        ,[restaurantType])
+} */
+    
 
     var tableList = tableDataList.map((e, i) => {
 

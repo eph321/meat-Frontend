@@ -42,7 +42,7 @@ function NewTableScreen(props) {
     const [restaurantName, setRestaurantName] = useState('');
     const [restaurantAddress, setRestaurantAddress] = useState('');
     const [description, setDescription] = useState('');
-    const planner = props.userToken;
+    const [planner, setPlanner] = useState(props.userToken);
 
     const [isTypeFocus, setIsTypeFocus] = useState(false); // pour style de la liste déroulante type restaurant
     const [isAgeFocus, setIsAgeFocus] = useState(false); // pour style de la liste déroulante tranche d'âge
@@ -130,7 +130,8 @@ function NewTableScreen(props) {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}`
-        })
+        });
+        props.navigation.navigate("MyTable")
     }
 
     return (
@@ -248,9 +249,8 @@ function NewTableScreen(props) {
                         maxHeight={300}
                         labelField="label"
                         valueField="value"
-                        placeholder={!isAgeFocus ? "Tranche d'âge (optionnel)" : '...'}
+                        placeholder="Tranche d'âge (optionnel)"
                         searchPlaceholder="Search..."
-                        value={ageRange}
                         onFocus={() => setIsAgeFocus(true)}
                         onBlur={() => setIsAgeFocus(false)}
                         onChange={item => {
@@ -281,6 +281,7 @@ function NewTableScreen(props) {
                     </View>
                 </View>
 
+                <Button mode="contained" onPress={() => console.log(props.userToken)}> UserTOKEN </Button>
                 <Button mode="contained" onPress={() => createTable()}>Créer la table</Button>
 
             </View>
