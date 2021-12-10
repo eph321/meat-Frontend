@@ -47,6 +47,8 @@ function NewTableScreen(props) {
     const [isTypeFocus, setIsTypeFocus] = useState(false); // pour style de la liste déroulante type restaurant
     const [isAgeFocus, setIsAgeFocus] = useState(false); // pour style de la liste déroulante tranche d'âge
 
+    // const [newTableCreated, setNewTableCreated ] = useState(false)
+
     // Pour le calendrier Datepicker
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
 
@@ -131,9 +133,9 @@ function NewTableScreen(props) {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}`
         });
-        const tableDataResponse = await tableDataRawResponse.json()
-        props.onCreateClick(tableDataResponse.newTable._id)
-        props.navigation.navigate("MyTable")
+        const tableDataResponse = await tableDataRawResponse.json();
+        props.onCreateClick(tableDataResponse.newTable._id);
+        props.navigation.navigate("MyTable");
     }
 
     return (
@@ -356,8 +358,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         onCreateClick: function (tableId) {
-            dispatch({ type: "saveTableId", tableId: tableId })
-        }
+            dispatch({ type: "saveTableId", tableId: tableId})
+        },
     }
 }
 

@@ -85,7 +85,7 @@ function MyTableScreen(props) {
     <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>  
      <View style={stylesBar.viewHeader}>
                 <Appbar style={{ flex: 1, backgroundColor: "#FFC960", height: 20 }}>
-                    <Appbar.Content title="Rejoindre une Table" style={{ textAlign: 'center' }} />
+                    <Appbar.Content title="Ma table" style={{ textAlign: 'center' }} />
                 </Appbar>
                 <Appbar style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", justifyContent: "space-evenly", height: 40 }}>
                     <Appbar.Action icon="home" onPress={() => props.navigation.navigate('Home')} />
