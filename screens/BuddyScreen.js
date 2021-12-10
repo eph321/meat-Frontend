@@ -22,6 +22,9 @@ function BuddyScreen(props) {
     useEffect(async () => {
             const rawResponse = await fetch("https://polar-stream-28883.herokuapp.com/search-user");
             const response = await rawResponse.json();
+            if(props.userToSend !== null){
+            console.log(props.userToSend+ "j'ai bien récupéré le token dans le store")}
+
             console.log(response.result[0].email)
 
             setUserList(response.result)
@@ -33,10 +36,11 @@ function BuddyScreen(props) {
 
     const handleAddFriend = async (userToken) => {
         console.log(userToken)
+        console.log(props.userToSend)
         let rawSend = await fetch(`https://polar-stream-28883.herokuapp.com/add-buddy`, {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `token=${JSON.parse(props.userToSend.token)}&userToken=${userToken}`
+            body: `token=${JSON.parse(props.userToSend)}&userToken=${userToken}`
 
         })
         let sendResponse = await rawSend.json();
@@ -47,8 +51,8 @@ function BuddyScreen(props) {
     // Fonction de display pour l'affichage des buddies à rajouter
     const displayUser = (user,i) => {
 
-        return <TouchableOpacity onPress={handleAddFriend(user.token)}>
-        <View key={i} style={{flexDirection: "row", justifyContent: "center", alignItems: "center",}}>
+        return <TouchableOpacity key={i} onPress={() => handleAddFriend(user.token)}>
+        <View  style={{flexDirection: "row", justifyContent: "center", alignItems: "center",}}>
                 <Card style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "3%",width:"100%"}}>
                     <Card.Content style={{flexDirection: "row",alignItems:"center"}}>
                         <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={require('../assets/picture-4.png')} />
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-        userToSend: state.userRegister
+        userToSend: state.userToken
     }}
 
 export default connect(
