@@ -82,7 +82,7 @@ function ChatScreen(props) {
                     onPress={() =>  props.navigation.navigate('MyAccount')}
                 />
                 <IconButton
-                    icon="account"
+                    icon="target-account"
                     color={'#0E9BA4'}
                     size={25}
                     onPress={() =>  props.navigation.navigate('BuddyProfile')}

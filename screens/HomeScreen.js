@@ -7,17 +7,27 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
+import { MultiSelect } from 'react-native-element-dropdown';
 
-const franckIP = "192.168.1.41"
-const StephIP = "192.168.1.9"
-const StephIpCapsule = "172.17.1.164"
+const FranckLacapsuleIP = "http://172.17.1.118:3000"
+const FranckIP = "http://192.168.1.41:3000"
+const herokuIP = "https://polar-stream-28883.herokuapp.com"
 
-const franckLaCapsuleIP = "172.17.1.118"
+const restaurantTypeList = [
+    { label: 'Italien', value: 'Italien' },
+    { label: 'Japonais', value: 'Japonais' },
+    { label: 'Fast-food', value: 'Fast-food' },
+    { label: 'Chinois', value: 'Chinois'},
+    { label: 'Mexicain', value: 'Mexicain'},
+    { label: 'Indien', value: 'Indien'},
+    { label: 'Coréen', value: 'Coréen'},
+]
 
 function HomeScreen(props) {
 
     const [tableDataList, setTableDataList] = useState([""])
-
+    const [restaurantType, setRestaurantType] = useState("");
+    const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
 
     // DATE PICKER - input "où"
     const [date, setDate] = useState(new Date(1598051730000));
@@ -46,13 +56,21 @@ function HomeScreen(props) {
     // Affichage des tables existantes 
 
     useEffect(async () => {
-        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/search-table`);
+        var rawResponse = await fetch(`${herokuIP}/search-table`);
         var response = await rawResponse.json();
-
         setTableDataList(response.result)
-    }
-        , []) // tableDataList
+    }, [])
 
+    /* if (restaurantType != nnull) {
+            useEffect(async () => {
+                var rawFilteredResponse = await fetch(`${FranckLacapsuleIP}/filter-table/${restaurantType}`);
+                var filteredResponse = await rawFilteredResponse.json();
+    
+                console.log(rawFilteredResponse.result)
+                setTableDataList(filteredResponse.result)
+            }
+        ,[restaurantType]) 
+        } */
 
 
     var tableList = tableDataList.map((e, i) => {
@@ -73,15 +91,17 @@ function HomeScreen(props) {
                     <View style={{ flexDirection: "row", alignSelf: "center", marginBottom: 4, marginTop: 4 }}>
                         {capacityAvatar}
                     </View>
-                    <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-                        <MaterialCommunityIcons name="table-furniture" size={24} color="black" />
-                        <View>
-                            <Text>Restaurant</Text>
-                            <Paragraph style={{ color: "#0E9BA4", fontWeight: "bold" }}>Nom du restaurant</Paragraph>
+                    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <MaterialCommunityIcons style={{ marginRight: 5 }} name="table-furniture" size={24} color="#0E9BA4" />
+                            <View>
+                                <Text>Restaurant</Text>
+                                <Paragraph style={{ color: "#0E9BA4", fontWeight: "bold" }}>{e.placeName}</Paragraph>
+                            </View>
                         </View>
-                        <View style={{ flexDirection: "row" }}>
-                            <MaterialIcons name="restaurant" size={24} color="#0E9BA4" />
-                            <Paragraph> Type du Restaurant</Paragraph>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <MaterialIcons style={{ marginRight: 5 }} name="restaurant" size={24} color="#0E9BA4" />
+                            <Paragraph>{e.placeType}</Paragraph>
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", alignSelf: "center", marginTop: 3 }}>
@@ -110,7 +130,7 @@ function HomeScreen(props) {
                     />
                 </Appbar>
             </View>
-            <View style={{ flex: 2, backgroundColor: "#F2F2F2", justifyContent: "flex-start", marginBottom : 150 }}>
+            <View style={{ flex: 2, backgroundColor: "#F2F2F2", justifyContent: "flex-start", marginBottom: 150 }}>
 
                 <Button
                     style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#0E9BA4", color: '#FFC960' }}
@@ -137,19 +157,40 @@ function HomeScreen(props) {
                             onChange={onChange}
                         />
                     )}
-
                 </View>
-                <TextInput
-                    label="De quoi avez-vous envie ?"
-                    placeholder="Italien"
-                />
+                <View style={{ alignItems: "center", marginTop: 12, marginBottom: 8 }}>
+                    <MultiSelect
+                        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                        placeholderStyle={styles.placeholderStyle}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        inputSearchStyle={styles.inputSearchStyle}
+                        iconStyle={styles.iconStyle}
+                        search
+                        data={restaurantTypeList}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Quel type de cuisine ?"
+                        searchPlaceholder="Search..."
+                        value={restaurantType}
+                        onChange={item => {
+                            setRestaurantType(item);
+                            setIsFocus(false);
+                        }}
+                        renderLeftIcon={() => (
+                            <MaterialIcons style={styles.icon} name="restaurant" size={24} color="#0E9BA4" />
+
+                        )}
+                        selectedStyle={styles.selectedStyle}
+                    />
+                </View>
+
             </View>
-            <View style={{ flex: 3 , height: 100}}>
-            <ScrollView >
+            <View style={{ flex: 3, height: 100 }}>
+                <ScrollView >
 
-                {tableList}
+                    {tableList}
 
-            </ScrollView>
+                </ScrollView>
             </View>
 
         </View>
@@ -170,16 +211,43 @@ const styles = StyleSheet.create({
         top: 0,
         justifyContent: "flex-start",
     },
-    input: {
-        flex: 0.1
-    },
+    dropdown: {
+        width: "70%",
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+        backgroundColor: "transparent",
+      },
+      placeholderStyle: {
+        fontSize: 16,
+        textAlign: "center",
+      },
+      selectedTextStyle: {
+        fontSize: 14,
+      },
+      iconStyle: {
+        width: 20,
+        height: 20,
+      },
+      inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+      },
+      icon: {
+        marginRight: 5,
+      },
+      selectedStyle: {
+        borderRadius: 12,
+      },
 });
 
 
 
 function mapStateToProps(state) {
     return {
-            tableId: state.tableId
+        tableId: state.tableId
     }
 }
 
