@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Button, ScrollView, TouchableOpacity, Platform} from 'react-native';
+import {StyleSheet, View, Button, ScrollView, TouchableOpacity, Platform, AsyncStorage} from 'react-native';
 import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text,Colors} from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 
@@ -89,6 +89,12 @@ function MyAccountScreen(props) {
                         color={'#0E9BA4'}
                         size={25}
                         onPress={() =>  props.navigation.navigate('Chat')}
+                    />
+                    <IconButton
+                        icon="exit-to-app"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>  {AsyncStorage.clear();props.navigation.navigate('Login')}}
                     />
                 </View>
             </View>
