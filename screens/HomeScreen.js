@@ -62,19 +62,30 @@ function HomeScreen(props) {
     }, [])
 
     
-/* if (restaurantType !== ""){
-        useEffect(async () => {
+
+ /*        useEffect(async () => {
                 console.log(restaurantType)
 
-                var rawFilteredResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
+                 var rawFilteredResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
                 var filteredResponse = await rawFilteredResponse.json();
     
                 //console.log(rawFilteredResponse.result)
                 setTableDataList(filteredResponse.result)
             }
         ,[restaurantType])
-} */
-    
+
+        const typeList = []
+        const [selected, setSelected] = useState("")
+        const selectedType = (item) => {
+            for (el of typeList){
+                if(selected != el){
+                    typeList.push(selected)
+                } else {
+                    typeList.splice(el)
+                }
+            }   
+        }
+     */
 
     var tableList = tableDataList.map((e, i) => {
 
