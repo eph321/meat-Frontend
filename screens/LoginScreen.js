@@ -18,7 +18,7 @@ function LoginScreen(props) {
         (async => { AsyncStorage.getItem("userToken", function(error, data) {
             console.log(data);
             let userData = JSON.parse(data);
-            console.log(userData);
+            console.log(userData.token + "hello je suis le user  token storé");
             if (userData){
                 props.navigation.navigate("Home")
                 props.sendUserToken(userData)
@@ -136,7 +136,7 @@ function LoginScreen(props) {
 function mapDispatchToProps(dispatch){
     return {
         sendUserToken: function (userToken){
-            dispatch({type: 'register',userToken})
+            dispatch({type: 'saveUserToken',userToken})
         }
 
     }
