@@ -102,7 +102,7 @@ function HomeScreen(props) {
                 <Appbar style={{ flex: 1, backgroundColor: "#FFC960", height: 20 }}>
                     <Appbar.Content title="Home Page" style={{ textAlign: 'center' }} />
                 </Appbar>
-                <Appbar style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", justifyContent: "space-evenly", height: 40 }}>
+                <Appbar style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", justifyContent: "space-evenly" }}>
                     <Appbar.Action icon="home" onPress={() => props.navigation.navigate('Home')} />
                     <Appbar.Action icon="plus-circle" onPress={() => props.navigation.navigate('NewTable')} />
                     <Appbar.Action icon="calendar-month" onPress={() => props.navigation.navigate('MyEvents')} />
@@ -114,16 +114,18 @@ function HomeScreen(props) {
             <View style={{ flex: 2, backgroundColor: "#F2F2F2", justifyContent: "flex-start", marginBottom: 150 }}>
 
                 <Button
-                    style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#0E9BA4", color: '#FFC960' }}
+                    style={{ padding: "3%", textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#0E9BA4", color: '#FFC960' }}
                     mode="contained" onPress={() => { props.navigation.navigate('JoinTable'); }}>
-                    <Text Style={{ color: '#FFC960' }}>Go to join</Text>
+                    <Text labelStyle={{ color: '#FFC960', fontWeight: "bold", fontSize: 12}}>Go to join</Text>
                 </Button>
-                <TextInput
+                <TextInput style={styles.input}
+                    mode="outlined" outlineColor="#009788" activeOutlineColor="#009788"
                     label="Où ?"
                     placeholder="Paris 17"
                 />
                 <View>
-                    <TextInput
+                    <TextInput style={styles.input}
+                        mode="outlined" outlineColor="#009788" activeOutlineColor="#009788"
                         label="Quand ?"
                         placeholder="JJ/MM/AAAA"
                         onFocus={showDatepicker}
@@ -138,18 +140,18 @@ function HomeScreen(props) {
                             onChange={onChange}
                         />
                     )}
-
                 </View>
-                <View style={{ alignContent: "center", marginTop: 12, marginBottom: 8 }}>
-                    <RNPickerSelect
+
+                <View style={pickerStyle, { alignContent: "center"}}>
+                    <RNPickerSelect style={styles.placeholder}
                         onValueChange={(value) => { setRestaurantType(value) }}
-                        placeholder={{ label: "Quel type de cuisine ?", value: null, color: "black" }}
+                        placeholder={{ label: "Quel type de cuisine ?", value: null, color: "#009788" }}
                         items={restaurantTypeList}
                     />
                 </View>
 
             </View>
-            <View style={{ flex: 3, height: 100 }}>
+            <View style={{ flex:10 }}>
                 <ScrollView >
 
                     {tableList}
@@ -176,10 +178,47 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
     },
     input: {
-        flex: 0.1
+        fontWeight: "600",
+        marginLeft:"3%",
+        marginRight:"3%"
     },
+    placeholder: {
+        borderStyle: "solid",
+        borderColor: "#888888",
+        borderWidth: 3,
+    },
+   
+    
 });
 
+
+const pickerStyle = {
+	inputIOS: {
+		color: 'white',
+		paddingTop: 13,
+		paddingHorizontal: 10,
+		paddingBottom: 12,
+	},
+	inputAndroid: {
+		color: 'white',
+	},
+	placeholderColor: 'white',
+	underline: { borderTopWidth: 0 },
+	icon: {
+		position: 'absolute',
+		backgroundColor: 'transparent',
+		borderTopWidth: 5,
+		borderTopColor: '#00000099',
+		borderRightWidth: 5,
+		borderRightColor: 'transparent',
+		borderLeftWidth: 5,
+		borderLeftColor: 'transparent',
+		width: 0,
+		height: 0,
+		top: 20,
+		right: 15,
+	},
+};
 
 
 function mapStateToProps(state) {

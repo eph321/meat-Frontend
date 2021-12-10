@@ -19,7 +19,7 @@ function MyBuddiesScreen(props) {
                         <Appbar style={{ backgroundColor: "#FFC960", height: "100%"}}>
                                 <Appbar.Content title="Mes buddies" style={{paddingTop: "20%", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
                         </Appbar>
-                        <Appbar.Header style={{flex: 1, backgroundColor:"#F2F2F2", width:"100%", justifyContent:"space-around"}} labelStyle={{color: "#009788"}}>
+                        <Appbar.Header style={{flex: 1, backgroundColor:"#F2F2F2", width:"100%", justifyContent:"space-around", paddingTop:"20%"}} labelStyle={{color: "#009788"}}>
                                 <IconButton icon="home" color={'#0E9BA4'} size={25} onPress={() => props.navigation.navigate('Home')}/>
                                 <IconButton icon="plus-circle" color={'#0E9BA4'} size={25} onPress={() => props.navigation.navigate('MyAdresses')}/>
                                 <IconButton icon="calendar" color={'#0E9BA4'} size={25} onPress={() => props.navigation.navigate('MyEvents')}/>
@@ -81,7 +81,7 @@ function MyBuddiesScreen(props) {
 
 const styles = StyleSheet.create({
     container: { 
-            flex: 1,
+            flex: 0.15,
             justifyContent: "center",
     },
 });
