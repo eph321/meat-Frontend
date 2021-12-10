@@ -132,7 +132,48 @@ function HomeScreen(props) {
     return (
 
         <View style={{ flex: 1, justifyContent: 'space-evenly' }}>
+            <View style={{ flex: 2,
+                left: 0,
+                width:"100%",
+                top: 0,
+                justifyContent:"flex-start",}}>
+                <Appbar style={{ backgroundColor: "#FFC960", flex:1}}>
+                    <Appbar.Content title="Home Screen" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
 
+                </Appbar>
+                <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
+                    <IconButton
+                        icon="home"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() => props.navigation.navigate('Home')}
+                    />
+                    <IconButton
+                        icon="plus-circle"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() => props.navigation.navigate('MyAdresses')}
+                    />
+                    <IconButton
+                        icon="message"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>  props.navigation.navigate('Chat')}
+                    />
+                    <IconButton
+                        icon="calendar-month"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>props.navigation.navigate('MyEvents')}
+                    />
+                    <IconButton
+                        icon="account"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>  props.navigation.navigate('MyAccount')}
+                    />
+                </View>
+            </View>
             <View style={{ flex: 2, backgroundColor: "#F2F2F2", justifyContent: "flex-start", marginBottom: 150 }}>
 
 {/*                <Button
