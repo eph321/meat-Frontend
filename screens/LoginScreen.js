@@ -18,7 +18,10 @@ function LoginScreen(props) {
         (async => { AsyncStorage.getItem("userToken", function(error, data) {
             console.log(data);
             let userData = JSON.parse(data);
-            console.log(userData.token + "hello je suis le user  token storé");
+            if (userData !== null){
+                console.log(userData + "hello je suis le user  token storé");
+            }
+
             if (userData){
                 props.navigation.navigate("Home")
                 props.sendUserToken(userData)
@@ -37,7 +40,8 @@ function LoginScreen(props) {
         await AsyncStorage.setItem("userToken", JSON.stringify({token: response.searchUser.token}))
         console.log(response)
         console.log(response.searchUser.token)
-            props.sendUserToken(response.searchUser.token)
+           let  {token} = response.searchUser
+            props.sendUserToken(token)
         } else {
             setError()
         }
