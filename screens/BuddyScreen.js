@@ -49,6 +49,8 @@ function BuddyScreen(props) {
 
     }
     // Fonction de display pour l'affichage des buddies à rajouter
+
+
     const displayUser = (user,i) => {
 
         return <TouchableOpacity key={i} onPress={() => handleAddFriend(user.token)}>
@@ -74,7 +76,7 @@ function BuddyScreen(props) {
     return (<View style={{flex:1,justifyContent: 'space-evenly'}}>
         <View style={styles.viewHeader}>
             <Appbar style={{flex:1,backgroundColor:"#FFC960"}}>
-                <Appbar.Content title="Messages" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}}/>
+                <Appbar.Content title="M.eaters" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}}/>
             </Appbar>
             <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
                 <IconButton

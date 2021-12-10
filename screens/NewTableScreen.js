@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
-import { Button, TextInput, Dialog, Portal, Appbar } from "react-native-paper"
+import {Button, TextInput, Dialog, Portal, Appbar, IconButton} from "react-native-paper"
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -46,6 +46,8 @@ function NewTableScreen(props) {
 
     const [isTypeFocus, setIsTypeFocus] = useState(false); // pour style de la liste déroulante type restaurant
     const [isAgeFocus, setIsAgeFocus] = useState(false); // pour style de la liste déroulante tranche d'âge
+
+    // const [newTableCreated, setNewTableCreated ] = useState(false)
 
     // Pour le calendrier Datepicker
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
@@ -131,9 +133,9 @@ function NewTableScreen(props) {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}`
         });
-        const tableDataResponse = await tableDataRawResponse.json()
-        props.onCreateClick(tableDataResponse.newTable._id)
-        props.navigation.navigate("MyTable")
+        const tableDataResponse = await tableDataRawResponse.json();
+        props.onCreateClick(tableDataResponse.newTable._id);
+        props.navigation.navigate("MyTable");
     }
 
     return (
@@ -143,20 +145,45 @@ function NewTableScreen(props) {
 > */
 
         <ScrollView style={{ flex: 1, marginTop: 50 }}>
-
             <View style={styles.viewHeader}>
-                <Appbar style={{ flex: 1, backgroundColor: "#FFC960", height: 20 }}>
-                    <Appbar.Content title="Creer une table" style={{ textAlign: 'center' }} />
+                <Appbar style={{flex:1,backgroundColor:"#FFC960"}}>
+                    <Appbar.Content title="Créer une table" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}}/>
                 </Appbar>
-                <Appbar style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", justifyContent: "space-evenly", height: 40 }}>
-                    <Appbar.Action icon="home" onPress={() => props.navigation.navigate('Home')} />
-                    <Appbar.Action icon="plus-circle" onPress={() => props.navigation.navigate('NewTable')} />
-                    <Appbar.Action icon="calendar-month" onPress={() => props.navigation.navigate('MyEvents')} />
-                    <Appbar.Action icon="message-text" onPress={() => props.navigation.navigate('Chat')} />
-                    <Appbar.Action icon="account" onPress={() => props.navigation.navigate('MyAccount')}
+                <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
+                    <IconButton
+                        icon="home"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() => props.navigation.navigate('Home')}
                     />
-                </Appbar>
+                    <IconButton
+                        icon="plus-circle"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() => props.navigation.navigate('NewTable')}
+                    />
+                    <IconButton
+                        icon="calendar-month"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>props.navigation.navigate('MyEvents')}
+                    />
+                    <IconButton
+                        icon="message-text"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>props.navigation.navigate('Chat')}
+                    />
+                    <IconButton
+                        icon="account"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>  props.navigation.navigate('MyAccount')}
+                    />
+                </View>
             </View>
+
+
 
             <View
                 style={styles.container}
@@ -282,10 +309,7 @@ function NewTableScreen(props) {
 
                     </View>
                 </View>
-
-                <Button mode="contained" onPress={() => console.log(props.userToken)}> UserTOKEN </Button>
                 <Button mode="contained" onPress={() => createTable()}>Créer la table</Button>
-
             </View>
 
         </ScrollView>
@@ -356,8 +380,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         onCreateClick: function (tableId) {
-            dispatch({ type: "saveTableId", tableId: tableId })
-        }
+            dispatch({ type: "saveTableId", tableId: tableId})
+        },
     }
 }
 

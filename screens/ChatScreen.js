@@ -5,7 +5,7 @@ import socketIOClient from "socket.io-client";
 import {connect} from "react-redux";
 
 
-var socket = socketIOClient("http://192.168.1.246:3000");
+var socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
 
 function ChatScreen(props) {
     const [currentMessage,setCurrentMessage] = useState("")
@@ -52,43 +52,49 @@ function ChatScreen(props) {
 
     return (
         <View style={{flex:1,justifyContent: 'space-evenly'}}>
-        <View style={styles.viewHeader}>
-                    <Appbar style={{flex:1,backgroundColor:"#FFC960"}}>
-                        <Appbar.Content title="Messages" style={{textAlign:'center'}}/>
-                    </Appbar>
-            <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
-                <IconButton
-                    icon="home"
-                    color={'#0E9BA4'}
-                    size={25}
-                    onPress={() => props.navigation.navigate('Home')}
-                />
-                <IconButton
-                    icon="plus-circle"
-                    color={'#0E9BA4'}
-                    size={25}
-                    onPress={() => props.navigation.navigate('NewTable')}
-                />
-                <IconButton
-                    icon="calendar-month"
-                    color={'#0E9BA4'}
-                    size={25}
-                    onPress={() =>props.navigation.navigate('MyEvents')}
-                />
-                <IconButton
-                    icon="account"
-                    color={'#0E9BA4'}
-                    size={25}
-                    onPress={() =>  props.navigation.navigate('MyAccount')}
-                />
-                <IconButton
-                    icon="target-account"
-                    color={'#0E9BA4'}
-                    size={25}
-                    onPress={() =>  props.navigation.navigate('BuddyProfile')}
-                />
+            <View style={{ flex: 2,
+                left: 0,
+                width:"100%",
+                top: 0,
+                justifyContent:"flex-start",}}>
+                <Appbar style={{ backgroundColor: "#FFC960", flex:1}}>
+                    <Appbar.Content title="Messages" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
+
+                </Appbar>
+                <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
+                    <IconButton
+                        icon="home"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() => props.navigation.navigate('Home')}
+                    />
+                    <IconButton
+                        icon="plus-circle"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() => props.navigation.navigate('NewTable')}
+                    />
+                    <IconButton
+                        icon="calendar-month"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>props.navigation.navigate('MyEvents')}
+                    />
+                    <IconButton
+                        icon="account"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>  props.navigation.navigate('MyAccount')}
+                    />
+                    <IconButton
+                        icon="target-account"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>  props.navigation.navigate('BuddyProfile')}
+                    />
+                </View>
             </View>
-        </View>
+
             <View style={{flex:7, backgroundColor:"#F2F2F2"}}>
                 <View style={{flex:1}}>
 
