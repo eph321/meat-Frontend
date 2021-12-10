@@ -20,22 +20,31 @@ const franckLaCapsuleIP = "172.17.1.118"
 function JoinTableScreen(props) {
 
     const [tableData, setTableData] = useState([''])
+   
+
     useEffect( async() => {
-      
-           var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/search-table`)
+           var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
            var response = await responseRaw.json();
-            
+        console.log(response)
+
         
             setTableData(response.result)
+        
+         
+            
+         
           }
+
          
         , []);
        
+       
+
        var tableInfo = tableData;
 
       var tabCapacity = []
       for(let i = 0; i < tableInfo.capacity; i++) {
-
+      
         
         tabCapacity.push(<MaterialCommunityIcons key={i}  name="seat" size={24} color="black"/>)
 
@@ -48,6 +57,18 @@ function JoinTableScreen(props) {
         bugdetInfo.push(<MaterialIcons key={j} name="euro" size={24} color="green" />) 
 
       }
+
+      var cardImage; 
+        
+      if(tableInfo.placeType === "Japonais") {
+          cardImage= 'https://www.terres-japonaises.com/app/media/26/files/2016/06/sushi-japon.jpg'  
+      }
+      else if(tableInfo.placeType === "Fast-food") {
+          cardImage= 'https://medias.toutelanutrition.com/ressource/104/Fast%20Food.jpg'   
+        }
+      else if(tableInfo.placeType === "Italien") {
+          cardImage= 'https://cache.marieclaire.fr/data/photo/w1000_ci/5b/italianfood.jpg' 
+        }
        
     //    var guestCount = tableInfo.guests.lenght + 1;
 
@@ -86,8 +107,8 @@ function JoinTableScreen(props) {
                 </Card>
                 
                 <Card style={{marginLeft : 10 , marginRight : 60, marginBottom : 60, marginTop : 50, height : 250, width : 180 }}>
-                <Card.Cover style = {{height : 150, widht : 80}}source={{ uri: 'https://picsum.photos/700' }} />
-
+                <Card.Cover style = {{height : 150, widht : 80}} source={{ uri: cardImage }} /> 
+                
                         <Card.Content>
 
                             <Title>{tableInfo.placeName}</Title>
@@ -105,7 +126,7 @@ function JoinTableScreen(props) {
 
 
          
-         <Button style={{ marginBottom : 60, marginTop : 50, width : 300, height : 50, backgroundColor : "#0E9BA4"}} type='text' mode="contained" onPress={() => console.log('Pressed')}>
+         <Button style={{ marginBottom : 60, marginTop : 50, width : 300, height : 50, backgroundColor : "#0E9BA4"}} type='text' mode="contained" onPress={() => { props.navigation.navigate('MyTable'); }}>
               <Text style={{color:"#FFC960", fontWeight:"bold"}}> Rejoindre la table</Text>
         </Button>
         </View>
