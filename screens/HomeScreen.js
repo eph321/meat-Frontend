@@ -23,7 +23,7 @@ const restaurantTypeList = [
 
 function HomeScreen(props) {
 
-    const [tableDataList, setTableDataList] = useState([""])
+    const [tableDataList, setTableDataList] = useState([])
     const [restaurantType, setRestaurantType] = useState([]);
     const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
 
@@ -57,19 +57,22 @@ function HomeScreen(props) {
         var rawResponse = await fetch(`${herokuIP}/search-table`);
         var response = await rawResponse.json();
         setTableDataList(response.result)
-    }, [tableDataList])
+        console.log("initialisation",restaurantType)
+    }, [] //(restaurantType.length===0)?tableDataList:undefined
+    )
 
-
-// if(restaurantType !== "") {
+    
     useEffect(async () => {
-        console.log("before", restaurantType[0])
-     //  var rawFilteredResponse = await fetch(`${FranckIP}/filter-table/${restaurantType[0]}`);
-      //  var filteredResponse = await rawFilteredResponse.json();
-       // console.log("response", filteredResponse.result) 
-        //setTableDataList(filteredResponse.result)
-    }
-        , [restaurantType])
-// }
+        console.log("before", restaurantType)
+        if(restaurantType.length !== 0){
+        const rawFilteredResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
+        const filteredResponse = await rawFilteredResponse.json();
+        setTableDataList(filteredResponse.result)
+        }
+    },[restaurantType])
+
+    // Problème : si suppression des filtres après en avoir mis, restaurantType.length = 1 car dans la liste déroulante "item" ajoute un array à l'état restaurantType (array)
+    // à l'initialisation, avant de filtrer, restaurantType.length = 0 (array vide)
 
     var tableList = tableDataList.map((e, i) => {
 
@@ -209,9 +212,8 @@ function HomeScreen(props) {
                         searchPlaceholder="Search..."
                         /* value={restaurantType} */
                         onChange={item => {
-                            setRestaurantType([...restaurantType, item]);
+                            setRestaurantType([item]);
                             setIsFocus(false);
-                            console.log("after", restaurantType)
                         }}
                         renderLeftIcon={() => (
                             <MaterialIcons style={styles.icon} name="restaurant" size={24} color="#0E9BA4" />
