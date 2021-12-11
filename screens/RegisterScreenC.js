@@ -9,7 +9,7 @@ function RegisterScreenC(props) {
 
 
     const signUpBackend = async () => {
-        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/sign-up`,{
+        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/users/sign-up`,{
             method:'POST',
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
             body: `lastname=${props.userToSend.lastName}&firstname=${props.userToSend.firstName}&password=${props.userToSend.inputPassword}&description=${userDesc}&email=${props.userToSend.inputEmail}&dateofbirth=${props.userToSend.dateOfBirth}&gender=${props.userToSend.gender}&addresses=${props.userToSend.userAddress}&avatar=${props.userToSend.inputAvatar}&phone=${props.userToSend.inputPhone}&preference1=${userPreference1}&preference2=${userPreference2}&preference3=${userPreference3}`

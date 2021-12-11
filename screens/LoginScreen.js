@@ -31,7 +31,7 @@ function LoginScreen(props) {
     },[])
 
     const isLogin = async () => {
-        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/sign-in`,{
+        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/users/sign-in`,{
             method:'POST',
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
             body: `email=${email}&password=${password}`

@@ -48,7 +48,7 @@ function RegisterScreen(props) {
                 type: 'image/jpeg',
                 name: 'avatar.jpg'});
 
-            var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/upload-avatar`,{
+            var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/users/upload-avatar`,{
                 method: 'POST',
                 body: data});
             var response = await rawResponse.json();

@@ -20,7 +20,7 @@ function BuddyScreen(props) {
 
 
     useEffect(async () => {
-            const rawResponse = await fetch("https://polar-stream-28883.herokuapp.com/search-user");
+            const rawResponse = await fetch("https://polar-stream-28883.herokuapp.com/users/search-user");
             const response = await rawResponse.json();
             if(props.userToSend !== null){
             console.log(props.userToSend+ "j'ai bien récupéré le token dans le store")}
