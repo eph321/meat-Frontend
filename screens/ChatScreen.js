@@ -5,17 +5,57 @@ import socketIOClient from "socket.io-client";
 import {connect} from "react-redux";
 
 
+
 var socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
 
 function ChatScreen(props) {
     const [currentMessage,setCurrentMessage] = useState("")
     const [listMessages,setListMessages] = useState([])
+    const [author, setAuthor] =useState("");
 
     // props.userRegister.firstName
-    const handlePress = () => {
-        socket.emit("sendMessage", JSON.stringify({content: currentMessage, author: props.userToSend.firstName }));
+    const handlePress = async () => {
+
+        //envoi du message en websocket
+
+        socket.emit("sendMessage", JSON.stringify({content: currentMessage, author: author,conversation: props.userConversation}));
+
+        //envoi d'une copie en database
+
+        let rawSend = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/add-chat-message`, {
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: `conversation=${props.userConversation}&author=${author}&content=${currentMessage}`
+
+        })
+        let sendResponse = await rawSend.json();
+        console.log(sendResponse)
+        console.log("envoyé")
+
         setCurrentMessage("");
     }
+
+/*
+    router.post('/update-chat', async function(req,res, next){
+        let userConversation = await conversationModel.findById({id: req.body.conversation}).populate('users').exec();
+        userConversation.chat = [...userConversation.chat,req.body.message]
+        let savedConversation = await userConversation.save()
+
+
+        res.json({ result: true, conversation : savedConversation });*/
+    useEffect(async () => {
+            //Au chargement récupère les messages en bdd
+            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-chat-messages/${props.userConversation}`)
+            let response = await rawResponse.json();
+            // console.log(response)
+            setListMessages([])
+            return () => {
+                setListMessages([]); // Clean up à l'unmount du composant.
+            };
+
+
+        }
+        , [])
 
 
     useEffect(() => {
@@ -143,7 +183,8 @@ function ChatScreen(props) {
 
 function mapStateToProps(state) {
     return {
-        userToSend: state.userRegister
+        userToSend: state.userToken,
+        conversationToSend : state.userConversation
     }}
 
 export default connect(

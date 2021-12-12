@@ -29,6 +29,7 @@ import MyAddressesScreen from "./screens/MyAddressesScreen";
 import userRegister from './reducers/userRegister'
 import tableId from "./reducers/event"
 import userToken from './reducers/userToken'
+import userConversation from "./reducers/userConversation";
 
 // création du menu
 const ThemeMeat = {
@@ -42,7 +43,7 @@ const ThemeMeat = {
 };
 
 const Stack = createStackNavigator();
-const store = createStore(combineReducers({ userRegister, tableId, userToken }));
+const store = createStore(combineReducers({ userRegister, tableId, userToken,userConversation }));
 
 
 
