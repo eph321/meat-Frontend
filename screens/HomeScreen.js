@@ -60,11 +60,7 @@ function HomeScreen(props) {
         var rawResponse = await fetch(`${herokuIP}/search-table`);
         var response = await rawResponse.json();
         setTableDataList(response.result)
-<<<<<<< HEAD
-    }, [tableDataList])
-=======
     }, [tableDataList]) 
->>>>>>> 49d02a7fb57c9ad073c01b572c16fafb5fc6c40a
 
     
 
