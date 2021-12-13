@@ -85,11 +85,12 @@ function MyAccountScreen(props) {
                         onPress={() =>  props.navigation.navigate('MyBuddies')}
                     />
                     <IconButton
-                        icon="message"
+                        icon="target-account"
                         color={'#0E9BA4'}
                         size={25}
-                        onPress={() =>  props.navigation.navigate('Chat')}
+                        onPress={() =>  props.navigation.navigate('BuddyProfile')}
                     />
+
                     <IconButton
                         icon="exit-to-app"
                         color={'#0E9BA4'}
