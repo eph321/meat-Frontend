@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, AsyncStorage } from 'react-native';
-import { Text, Button, Appbar, TextInput, Card, Title, Paragraph, IconButton } from "react-native-paper";
+import { StyleSheet, View, ScrollView, AsyncStorage, Button } from 'react-native';
+import { Text, Appbar, TextInput, Card, Title, Paragraph, IconButton } from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
@@ -28,18 +28,24 @@ function HomeScreen(props) {
     const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
 
     // DATE PICKER - input "où"
-    const [date, setDate] = useState(new Date(1598051730000));
+    const [date, setDate] = useState(new Date(Date.now()));
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
+    const [dateValue, setDateValue] = useState(false);
+
+    const formattedDate = date.toLocaleString("fr-FR", options);
+    const options = { weekday: 'long', day: '2-digit', month: '2-digit', year: '2-digit' }
 
     const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
+        const currentDate = selectedDate || date.toLocaleString("fr-FR", options);
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
+        setDateValue(true);
+        console.log(formattedDate)
     };
 
     const showMode = (currentMode) => {
-        setShow(true);
+        setShow(!show);
         setMode(currentMode);
     };
 
@@ -51,6 +57,7 @@ function HomeScreen(props) {
         showMode('time');
     };
 
+
     // Affichage des tables existantes 
 
     useEffect(async () => {
@@ -60,7 +67,6 @@ function HomeScreen(props) {
     }, [] //(restaurantType.length===0)?tableDataList:undefined
     )
 
-    
     useEffect(async () => {
         if (restaurantType[0]) {
             if (restaurantType[0].length > 0) {
@@ -185,14 +191,13 @@ function HomeScreen(props) {
                 />
 
                 <View>
-                    <TextInput style={{ textAlign: 'center', width: '70%', alignSelf: "center", marginBottom: 5 }}
-                        mode="outlined"
-                        label="Quand ? ?"
-                        placeholder="JJ/MM/AAAA"
-                        activeOutlineColor={"#FF3D00"}
-                        outlineColor={'#0E9BA4'}
-                        onFocus={showDatepicker}
-                    />
+                   
+                    <View>
+                        <Button onPress={showDatepicker} title={(dateValue)?formattedDate:"Choisissez une date"} />
+                    </View>
+                    <View>
+                        <Button onPress={showTimepicker} title="Show time picker!" />
+                    </View>
                     {show && (
                         <DateTimePicker
                             testID="dateTimePicker"
@@ -203,6 +208,8 @@ function HomeScreen(props) {
                             onChange={onChange}
                         />
                     )}
+                        
+
                 </View>
                 <View style={{ alignItems: "center", marginTop: 12, marginBottom: 8 }}>
                     <MultiSelect
