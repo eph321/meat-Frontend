@@ -35,6 +35,7 @@ function HomeScreen(props) {
 
     const formattedDate = date.toLocaleString("fr-FR", options);
     const options = { weekday:"long", day: '2-digit', month: '2-digit', year: '2-digit' }
+    // l'affichage de l'heure à enlever !
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
