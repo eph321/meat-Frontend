@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, AsyncStorage, Button } from 'react-native';
-import { Text, Appbar, TextInput, Card, Title, Paragraph, IconButton } from "react-native-paper";
+import { StyleSheet, View, ScrollView, AsyncStorage } from 'react-native';
+import { Text, Appbar, TextInput, Card, Title, Paragraph, IconButton, Button } from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
@@ -37,7 +37,7 @@ function HomeScreen(props) {
     const options = { weekday: 'long', day: '2-digit', month: '2-digit', year: '2-digit' }
 
     const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date.toLocaleString("fr-FR", options);
+        const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
         setDateValue(true);
@@ -45,7 +45,7 @@ function HomeScreen(props) {
     };
 
     const showMode = (currentMode) => {
-        setShow(!show);
+        setShow(true);
         setMode(currentMode);
     };
 
@@ -189,14 +189,11 @@ function HomeScreen(props) {
                     activeOutlineColor={"#FF3D00"}
                     outlineColor={'#0E9BA4'}
                 />
-
+                <Text style={{ marginTop: 15, height: 30, alignSelf: "center" }}>{(dateValue) ? "Le "+formattedDate : "Choisissez une date"} </Text>
                 <View>
-                   
-                    <View>
-                        <Button onPress={showDatepicker} title={(dateValue)?formattedDate:"Choisissez une date"} />
-                    </View>
-                    <View>
-                        <Button onPress={showTimepicker} title="Show time picker!" />
+                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                        <Button onPress={showDatepicker}> Date </Button>
+                        <Button onPress={showTimepicker}> Heure </Button>
                     </View>
                     {show && (
                         <DateTimePicker
@@ -208,9 +205,8 @@ function HomeScreen(props) {
                             onChange={onChange}
                         />
                     )}
-                        
-
                 </View>
+
                 <View style={{ alignItems: "center", marginTop: 12, marginBottom: 8 }}>
                     <MultiSelect
                         style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}

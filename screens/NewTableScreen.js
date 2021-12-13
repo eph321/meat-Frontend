@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView} from 'react-native';
-import {Button, TextInput, Appbar, IconButton} from "react-native-paper"
+import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import { Button, TextInput, Appbar, IconButton } from "react-native-paper"
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -15,10 +15,10 @@ const restaurantTypeList = [
     { label: 'Italien', value: 'Italien' },
     { label: 'Japonais', value: 'Japonais' },
     { label: 'Fast-food', value: 'Fast-food' },
-    { label: 'Chinois', value: 'Chinois'},
-    { label: 'Mexicain', value: 'Mexicain'},
-    { label: 'Indien', value: 'Indien'},
-    { label: 'Coréen', value: 'Coréen'},
+    { label: 'Chinois', value: 'Chinois' },
+    { label: 'Mexicain', value: 'Mexicain' },
+    { label: 'Indien', value: 'Indien' },
+    { label: 'Coréen', value: 'Coréen' },
 ];
 
 // Liste déroulante trannche d'age
@@ -49,19 +49,23 @@ function NewTableScreen(props) {
 
     // const [newTableCreated, setNewTableCreated ] = useState(false)
 
-    // Pour le calendrier Datepicker
-    const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
-
     // Date Picker
 
-    const [date, setDate] = useState(new Date(1598051730000));
+    const [date, setDate] = useState(new Date(Date.now()));
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
+    const [dateValue, setDateValue] = useState(false); // Pour affichage uniquement
+
+// AJOUTER UN MINIMUM DATE + TIME
+
+    const formattedDate = date.toLocaleString("fr-FR", options)
+    const options = { weekday: 'long', day: '2-digit', month: '2-digit', year: '2-digit' }
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
+        setDateValue(true);
     };
 
     const showMode = (currentMode) => {
@@ -128,7 +132,7 @@ function NewTableScreen(props) {
 
     // Création de la table
     const createTable = async () => {
-       const tableDataRawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/add-table`, {
+        const tableDataRawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/add-table`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}`
@@ -146,10 +150,10 @@ function NewTableScreen(props) {
 
         <ScrollView style={{ flex: 1, marginTop: 50 }}>
             <View style={styles.viewHeader}>
-                <Appbar style={{flex:1,backgroundColor:"#FFC960"}}>
-                    <Appbar.Content title="Créer une table" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}}/>
+                <Appbar style={{ flex: 1, backgroundColor: "#FFC960" }}>
+                    <Appbar.Content title="Créer une table" style={{ marginTop: 20, alignItems: "center", size: 17 }} titleStyle={{ fontSize: 22, fontWeight: "700", color: "#009788" }} />
                 </Appbar>
-                <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
+                <View style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", flexDirection: "row", justifyContent: "space-around" }}>
                     <IconButton
                         icon="home"
                         color={'#0E9BA4'}
@@ -166,19 +170,19 @@ function NewTableScreen(props) {
                         icon="calendar-month"
                         color={'#0E9BA4'}
                         size={25}
-                        onPress={() =>props.navigation.navigate('MyEvents')}
+                        onPress={() => props.navigation.navigate('MyEvents')}
                     />
                     <IconButton
                         icon="message-text"
                         color={'#0E9BA4'}
                         size={25}
-                        onPress={() =>props.navigation.navigate('Chat')}
+                        onPress={() => props.navigation.navigate('Chat')}
                     />
                     <IconButton
                         icon="account"
                         color={'#0E9BA4'}
                         size={25}
-                        onPress={() =>  props.navigation.navigate('MyAccount')}
+                        onPress={() => props.navigation.navigate('MyAccount')}
                     />
                 </View>
             </View>
@@ -190,7 +194,7 @@ function NewTableScreen(props) {
             >
 
                 <View>
-                    <Button
+                    {/*  <Button
                         mode="outlined"
                         color={'#FFC960'}
                         style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#FFFFFF", color: '#FFC960' }}
@@ -207,7 +211,25 @@ function NewTableScreen(props) {
                             display="default"
                             onChange={onChange}
                         />
-                    )}
+                    )} */}
+
+                    <Text style={{ marginTop: 15, height: 30, alignSelf: "center", fontSize: 25 }}>{(dateValue) ? "Le " + formattedDate : "Choisissez une date"} </Text>
+                    <View>
+                        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                            <Button onPress={showDatepicker}> Date </Button>
+                            <Button onPress={showTimepicker}> Heure </Button>
+                        </View>
+                        {show && (
+                            <DateTimePicker
+                                testID="dateTimePicker"
+                                value={date}
+                                mode={mode}
+                                is24Hour={true}
+                                display="default"
+                                onChange={onChange}
+                            />
+                        )}
+                    </View>
                 </View>
 
                 <TextInput
@@ -231,30 +253,30 @@ function NewTableScreen(props) {
                     value={restaurantAddress}
                     onChangeText={text => setRestaurantAddress(text)}
                 />
-                    <Dropdown
-                        style={[styles.dropdown, isTypeFocus && { borderColor: '#0E9BA4' }]}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={restaurantTypeList}
-                        search
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Quel type de cuisine ?"
-                        searchPlaceholder="Search..."
-                        value={restaurantType}
-                        onFocus={() => setIsTypeFocus(true)}
-                        onBlur={() => setIsTypeFocus(false)}
-                        onChange={item => {
-                            setRestaurantType(item.value);
-                            setIsTypeFocus(false);
-                        }}
-                        renderLeftIcon={() => (
-                            <MaterialIcons style={styles.icon} name="restaurant" size={24} color="#0E9BA4" />
-                        )}
-                    />
+                <Dropdown
+                    style={[styles.dropdown, isTypeFocus && { borderColor: '#0E9BA4' }]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={restaurantTypeList}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Quel type de cuisine ?"
+                    searchPlaceholder="Search..."
+                    value={restaurantType}
+                    onFocus={() => setIsTypeFocus(true)}
+                    onBlur={() => setIsTypeFocus(false)}
+                    onChange={item => {
+                        setRestaurantType(item.value);
+                        setIsTypeFocus(false);
+                    }}
+                    renderLeftIcon={() => (
+                        <MaterialIcons style={styles.icon} name="restaurant" size={24} color="#0E9BA4" />
+                    )}
+                />
                 <TextInput
                     style={{ alignSelf: "center", width: '70%' }}
                     mode="outlined"
@@ -267,30 +289,30 @@ function NewTableScreen(props) {
                     value={description}
                     onChangeText={text => setDescription(text)}
                 />
-                    <Dropdown
-                        style={[styles.dropdown, isAgeFocus && { borderColor: '#0E9BA4' }]}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={ageRangeList}
-                        search
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Tranche d'âge (optionnel)"
-                        searchPlaceholder="Search..."
-                        onFocus={() => setIsAgeFocus(true)}
-                        onBlur={() => setIsAgeFocus(false)}
-                        onChange={item => {
-                            setAgeRange(item.value);
-                            setIsAgeFocus(false);
-                        }}
-                        renderLeftIcon={() => (
-                            <Ionicons name="options-outline" size={24} color="#0E9BA4" />
-                        )}
-                        />
-              
+                <Dropdown
+                    style={[styles.dropdown, isAgeFocus && { borderColor: '#0E9BA4' }]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={ageRangeList}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Tranche d'âge (optionnel)"
+                    searchPlaceholder="Search..."
+                    onFocus={() => setIsAgeFocus(true)}
+                    onBlur={() => setIsAgeFocus(false)}
+                    onChange={item => {
+                        setAgeRange(item.value);
+                        setIsAgeFocus(false);
+                    }}
+                    renderLeftIcon={() => (
+                        <Ionicons name="options-outline" size={24} color="#0E9BA4" />
+                    )}
+                />
+
 
                 <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
                     <View style={{ flexDirection: "row", alignSelf: "flex-start", alignItems: "center", justifyContent: "flex-end" }}>
@@ -340,14 +362,14 @@ const styles = StyleSheet.create({
         fontSize: 32,
     },
     dropdown: {
-        width:"70%",
+        width: "70%",
         height: 50,
         borderColor: 'gray',
         borderWidth: 0.5,
         borderRadius: 8,
         paddingHorizontal: 8,
         backgroundColor: "transparent",
-        marginTop: 12, 
+        marginTop: 12,
         marginBottom: 8,
     },
     icon: {
@@ -380,7 +402,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         onCreateClick: function (tableId) {
-            dispatch({ type: "saveTableId", tableId: tableId})
+            dispatch({ type: "saveTableId", tableId: tableId })
         },
     }
 }
