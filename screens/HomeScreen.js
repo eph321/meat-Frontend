@@ -34,18 +34,17 @@ function HomeScreen(props) {
     const [dateValue, setDateValue] = useState(false);
 
     const formattedDate = date.toLocaleString("fr-FR", options);
-    const options = { weekday: 'long', day: '2-digit', month: '2-digit', year: '2-digit' }
+    const options = { weekday:"long", day: '2-digit', month: '2-digit', year: '2-digit' }
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
         setDateValue(true);
-        console.log(formattedDate)
     };
 
     const showMode = (currentMode) => {
-        setShow(true);
+        setShow(!show);
         setMode(currentMode);
     };
 
@@ -96,12 +95,15 @@ function HomeScreen(props) {
             )
         }
 
+        let dateParse = new Date(e.date)
+        let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
+        formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1) // Première lettre en Maj sur la card
 
         return (
             <Card key={i} style={{ marginBottom: 8 }} onPress={() => { props.onCardClick(e._id); props.navigation.navigate("JoinTable") }}>
                 <Card.Content>
                     <Title style={{ alignSelf: "center" }}>{e.title}</Title>
-                    <Paragraph style={{ alignSelf: "center" }}>{e.date}</Paragraph>
+                    <Paragraph style={{ alignSelf: "center" }}>{formattedDate}</Paragraph>
                     <View style={{ flexDirection: "row", alignSelf: "center", marginBottom: 4, marginTop: 4 }}>
                         {capacityAvatar}
                     </View>
@@ -189,12 +191,11 @@ function HomeScreen(props) {
                     activeOutlineColor={"#FF3D00"}
                     outlineColor={'#0E9BA4'}
                 />
-                <Text style={{ marginTop: 15, height: 30, alignSelf: "center" }}>{(dateValue) ? "Le "+formattedDate : "Choisissez une date"} </Text>
+                <Button onPress={showDatepicker} style={{ height: 30, alignSelf: "center" }}>{(dateValue) ? "Le " + formattedDate : "Choisissez une date"} </Button>
                 <View>
-                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                    {/* <View style={{ flexDirection: "row", justifyContent: "center" }}>
                         <Button onPress={showDatepicker}> Date </Button>
-                        <Button onPress={showTimepicker}> Heure </Button>
-                    </View>
+                    </View> */}
                     {show && (
                         <DateTimePicker
                             testID="dateTimePicker"

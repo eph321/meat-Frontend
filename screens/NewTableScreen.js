@@ -84,11 +84,11 @@ function NewTableScreen(props) {
 
     // Capacity
 
-    const [capacity, setCapacity] = useState(1)
+    const [capacity, setCapacity] = useState(2)
 
     var setTableCapacity = (countCapacity) => {
-        if (countCapacity < 1) {
-            countCapacity = 1
+        if (countCapacity < 2) {
+            countCapacity = 2
         }
         if (countCapacity > 6) {
             countCapacity = 6
