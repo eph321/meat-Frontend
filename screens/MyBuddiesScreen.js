@@ -63,9 +63,9 @@ function MyBuddiesScreen(props) {
 
     const displayRelations = (user,i) => {
 
-
+        console.log(user.avatar)
         return <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start",marginBottom:5}} key={i}>
-                        <Avatar.Image size={64} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={require('../assets/picture-4.png')} />
+                        <Avatar.Image size={64} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(user.avatar)?{uri: user.avatar}:require("../assets/picture-4.png")} />
                         <View style={{marginTop:"3%", marginRight:"2%"}}>
                             <Title style={{fontWeight:"bold"}}>{user.firstname}</Title>
 

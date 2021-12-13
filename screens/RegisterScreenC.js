@@ -24,6 +24,7 @@ function RegisterScreenC(props) {
 
         });
         var response = await rawResponse.json();
+        console.log("résumé des infos envoyés au backend")
         console.log(response)
         console.log(response.newUserSave.token)
         let  {token} = response.newUserSave

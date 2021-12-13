@@ -58,7 +58,7 @@ function BuddyScreen(props) {
         <View  style={{flexDirection: "row", justifyContent: "center", alignItems: "center",}}>
                 <Card style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "3%",width:"100%"}}>
                     <Card.Content style={{flexDirection: "row",alignItems:"center"}}>
-                        <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={require('../assets/picture-4.png')} />
+                        <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(user.avatar)?{uri: user.avatar}:require("../assets/picture-4.png")} />
                         <View>
                         <Title style={{fontWeight:"bold", fontSize:30, marginBottom:5}}>{user.firstname}</Title>
                         <Paragraph>{user.description}</Paragraph>
