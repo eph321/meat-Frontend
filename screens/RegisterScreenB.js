@@ -6,6 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { connect } from 'react-redux';
 
 
+
 function RegisterScreenB(props) {
     const [firstName,setFirstName] =useState('');
     const [lastName, setLastName] = useState('');

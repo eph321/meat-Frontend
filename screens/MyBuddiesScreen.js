@@ -2,25 +2,22 @@ import React, {useEffect, useState} from 'react';
 import {  View } from 'react-native';
 import { Button, Appbar, Avatar, Title, IconButton} from "react-native-paper";
 import {connect} from "react-redux";
-
-
+import {useIsFocused} from "@react-navigation/native";
 
 
 function MyBuddiesScreen(props) {
     const [relations,setRelations] = useState([]);
-    useEffect(async () => {
-
-            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-related-users/${props.userToSend}`)
-            let response = await rawResponse.json();
-            // console.log(response)
-            setRelations([...response.listOfRelations])
-        return () => {
-                setRelations([]); // Clean up à l'unmount du composant.
-            };
 
 
-        }
-        , [relations])
+
+        useEffect( () => {
+                        ( async () => {
+
+                let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-related-users/${props.userToSend}`)
+                let response = await rawResponse.json();
+                setRelations([...response.listOfRelations])})()
+            return  ()=> console.log("composant détruit")
+        } , [relations])
 
     const handleAcceptBuddy = async (buddyToken) => {
 
@@ -54,6 +51,7 @@ function MyBuddiesScreen(props) {
         })
         let sendResponse = await rawSend.json();
         props.sendConversationToStore(sendResponse.conv)
+
         props.navigation.navigate('Chat');
 
     };
