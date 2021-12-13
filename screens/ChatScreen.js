@@ -22,6 +22,17 @@ function ChatScreen(props) {
     // props.userRegister.firstName
     const handlePress = async () => {
         const today = new Date(Date.now());
+        const loadNewMessageToDatabase = async (message) =>{
+            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/update-messages`,{
+                method:'POST',
+                headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                body: `content=${message.content}&author=${message.author}&conversation=${props.conversationToSend}&date=${message.date}`
+
+            });
+            let response = await rawResponse.json();
+            console.log(response)
+
+        }
 
         const options = {  day: '2-digit', month: '2-digit', year: '2-digit' }
         let formattedDate =today.toLocaleString('fr-FR', options);
@@ -31,14 +42,9 @@ function ChatScreen(props) {
                                                              author: author,
                                                              conversation: props.conversationToSend,date: formattedDate  }));
         //envoi d'une copie en database
-        let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/update-messages`,{
-            method:'POST',
-            headers:{'Content-Type':'application/x-www-form-urlencoded'},
-            body: `content=${currentMessage}&author=${author}&conversation=${props.conversationToSend}&date=${formattedDate}`
-
-        });
-        let response = await rawResponse.json();
-        console.log(response)
+        loadNewMessageToDatabase({content: currentMessage,
+            author: author,
+            conversation: props.conversationToSend,date: formattedDate  });
         setCurrentMessage("");
     }
 
@@ -49,28 +55,36 @@ function ChatScreen(props) {
 
     useEffect( ()=> {
         const getChatMessages = async () =>{
-        let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-chat-messages/${props.conversationToSend}/${props.userToSend}`)
-        let response = await rawResponse.json();
-        console.log(response)
-        setListMessages([response.chatMessages])
-        setAuthor(response.author)}
+            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-chat-messages/${props.conversationToSend}/${props.userToSend}`)
+            let response = await rawResponse.json();
+            console.log("j'essaie de récupérer les messages")
+            console.log(response.chatMessages)
+            setListMessages(response.chatMessages)
+            setAuthor(response.author)}
         getChatMessages();
 
 
-    },[])
+
+    },[isFocused])
 
 
 
     useEffect(() => {
 
+
+
         socket.on('sendMessageToAll', (newMessage)=> {
             if(newMessage !== null){
                 let messageToFilter = JSON.parse(newMessage)
+                console.log(messageToFilter)
                 if (messageToFilter.conversation === props.conversationToSend){
                     setListMessages([...listMessages,messageToFilter ])}
-                console.log(messageToFilter);
+                    console.log(listMessages)
+
+
                 }
         });
+
 
     }, [listMessages]);
 
