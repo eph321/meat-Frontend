@@ -1,9 +1,9 @@
 
-import React, { Component } from 'react';
-import {Button, StyleSheet, View, Text} from 'react-native';
+import React from 'react';
+
 import { NavigationContainer} from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
-import {TextInput, Provider as PaperProvider, DefaultTheme} from 'react-native-paper'
+import { Provider as PaperProvider, DefaultTheme} from 'react-native-paper'
 import { Provider as StoreProvider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 import { LogBox } from 'react-native';  
@@ -18,7 +18,6 @@ import ResultScreen from "./screens/ResultScreen";
 import JoinTableScreen from "./screens/JoinTableScreen";
 import MyTableScreen from "./screens/MyTableScreen";
 import NewTableScreen from "./screens/NewTableScreen";
-import ProfileScreen from "./screens/ProfileScreen";
 import MyAccountScreen from "./screens/MyAccountScreen";
 import MyBuddiesScreen from "./screens/MyBuddiesScreen";
 import MyMessagesScreen from "./screens/MyMessagesScreen";
@@ -30,6 +29,7 @@ import MyAddressesScreen from "./screens/MyAddressesScreen";
 import userRegister from './reducers/userRegister'
 import tableId from "./reducers/event"
 import userToken from './reducers/userToken'
+import userConversation from "./reducers/userConversation";
 
 // création du menu
 const ThemeMeat = {
@@ -43,7 +43,7 @@ const ThemeMeat = {
 };
 
 const Stack = createStackNavigator();
-const store = createStore(combineReducers({ userRegister, tableId, userToken }));
+const store = createStore(combineReducers({ userRegister, tableId, userToken,userConversation }));
 
 
 
@@ -63,7 +63,6 @@ export default function App() {
                 <Stack.Screen name="MyTable" component={MyTableScreen} />
                 <Stack.Screen name="NewTable" component={NewTableScreen} />
                 <Stack.Screen name="BuddyProfile" component={BuddyScreen} />
-                <Stack.Screen name="JoinProfile" component={ProfileScreen} />
                 <Stack.Screen name="MyAccount" component={MyAccountScreen} />
                 <Stack.Screen name="MyAddresses" component={MyAddressesScreen} />
                 <Stack.Screen name="MyBuddies" component={MyBuddiesScreen} />
@@ -79,11 +78,3 @@ export default function App() {
 
 
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

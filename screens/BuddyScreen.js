@@ -8,19 +8,19 @@ import {
     Avatar,
     Card,
     Title,
-    Paragraph, IconButton, List
+    Paragraph, IconButton,
 } from "react-native-paper";
 import { connect } from 'react-redux';
-import {Ionicons} from "@expo/vector-icons";
+
 
 function BuddyScreen(props) {
     const [userList, setUserList] = useState([]);
-    const [buddyId,setBuddyId] = useState("");
-    const [buddyIndex,setBuddyIndex] = useState("");
+
+
 
 
     useEffect(async () => {
-            const rawResponse = await fetch("https://polar-stream-28883.herokuapp.com/search-user");
+            const rawResponse = await fetch("https://polar-stream-28883.herokuapp.com/users/search-user");
             const response = await rawResponse.json();
             if(props.userToSend !== null){
             console.log(props.userToSend+ "j'ai bien récupéré le token dans le store")}
@@ -35,12 +35,13 @@ function BuddyScreen(props) {
 
 
     const handleAddFriend = async (userToken) => {
-        console.log(userToken)
+        console.log(userToken + "c le token du user")
+
         console.log(props.userToSend)
-        let rawSend = await fetch(`https://polar-stream-28883.herokuapp.com/add-buddy`, {
+        let rawSend = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/add-buddy`, {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `token=${JSON.parse(props.userToSend)}&userToken=${userToken}`
+            body: `token=${props.userToSend}&userToken=${userToken}`
 
         })
         let sendResponse = await rawSend.json();
@@ -49,13 +50,15 @@ function BuddyScreen(props) {
 
     }
     // Fonction de display pour l'affichage des buddies à rajouter
+
+
     const displayUser = (user,i) => {
 
         return <TouchableOpacity key={i} onPress={() => handleAddFriend(user.token)}>
         <View  style={{flexDirection: "row", justifyContent: "center", alignItems: "center",}}>
                 <Card style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "3%",width:"100%"}}>
                     <Card.Content style={{flexDirection: "row",alignItems:"center"}}>
-                        <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={require('../assets/picture-4.png')} />
+                        <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(user.avatar)?{uri: user.avatar}:require("../assets/picture-4.png")} />
                         <View>
                         <Title style={{fontWeight:"bold", fontSize:30, marginBottom:5}}>{user.firstname}</Title>
                         <Paragraph>{user.description}</Paragraph>
@@ -74,7 +77,7 @@ function BuddyScreen(props) {
     return (<View style={{flex:1,justifyContent: 'space-evenly'}}>
         <View style={styles.viewHeader}>
             <Appbar style={{flex:1,backgroundColor:"#FFC960"}}>
-                <Appbar.Content title="Messages" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}}/>
+                <Appbar.Content title="M.eaters" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}}/>
             </Appbar>
             <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
                 <IconButton

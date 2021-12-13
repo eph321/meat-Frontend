@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import {StyleSheet, View, TouchableOpacity, Platform} from 'react-native';
-import {TextInput, Appbar, Button, ProgressBar, Text, Avatar, RadioButton} from "react-native-paper";
+import {TextInput, Appbar, Button, ProgressBar, Text, Avatar} from "react-native-paper";
 import { connect } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -9,7 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 
 function RegisterScreen(props) {
-    const IP_LACAPSULE_ETIENNE = "172.17.1.60";
+
     const [inputEmail,setInputEmail] = useState("");
     const [inputPassword,setInputPassword] = useState("");
     const [inputPasswordVerif,setInputPasswordVerif] = useState("");
@@ -48,12 +48,12 @@ function RegisterScreen(props) {
                 type: 'image/jpeg',
                 name: 'avatar.jpg'});
 
-            var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/upload-avatar`,{
+            var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/users/upload-avatar`,{
                 method: 'POST',
                 body: data});
             var response = await rawResponse.json();
-            console.log(response)
-            setTempAvatarUri(response);
+            console.log(response.cloud.url)
+            setTempAvatarUri(response.cloud.url);
             }
         }
 

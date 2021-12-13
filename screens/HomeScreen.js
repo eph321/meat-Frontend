@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {StyleSheet, View, ScrollView, AsyncStorage} from 'react-native';
-import {Text, Button, Appbar, TextInput, Card, Title, Paragraph, IconButton} from "react-native-paper";
+import { StyleSheet, View, ScrollView, AsyncStorage } from 'react-native';
+import { Text, Button, Appbar, TextInput, Card, Title, Paragraph, IconButton } from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
 import { MultiSelect } from 'react-native-element-dropdown';
 
@@ -17,17 +14,17 @@ const restaurantTypeList = [
     { label: 'Italien', value: 'Italien' },
     { label: 'Japonais', value: 'Japonais' },
     { label: 'Fast-food', value: 'Fast-food' },
-    { label: 'Chinois', value: 'Chinois'},
-    { label: 'Mexicain', value: 'Mexicain'},
-    { label: 'Indien', value: 'Indien'},
-    { label: 'Coréen', value: 'Coréen'},
-    { label: 'Africain', value: 'Africain'},
+    { label: 'Chinois', value: 'Chinois' },
+    { label: 'Mexicain', value: 'Mexicain' },
+    { label: 'Indien', value: 'Indien' },
+    { label: 'Coréen', value: 'Coréen' },
+    { label: 'Africain', value: 'Africain' },
 ]
 
 function HomeScreen(props) {
 
-    const [tableDataList, setTableDataList] = useState([""])
-    const [restaurantType, setRestaurantType] = useState("");
+    const [tableDataList, setTableDataList] = useState([])
+    const [restaurantType, setRestaurantType] = useState([]);
     const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
 
     // DATE PICKER - input "où"
@@ -60,33 +57,22 @@ function HomeScreen(props) {
         var rawResponse = await fetch(`${herokuIP}/search-table`);
         var response = await rawResponse.json();
         setTableDataList(response.result)
-    }, [tableDataList]) 
+        console.log("initialisation",restaurantType)
+    }, [] //(restaurantType.length===0)?tableDataList:undefined
+    )
 
     
+    useEffect(async () => {
+        console.log("before", restaurantType)
+        if(restaurantType.length !== 0){
+        const rawFilteredResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
+        const filteredResponse = await rawFilteredResponse.json();
+        setTableDataList(filteredResponse.result)
+        }
+    },[restaurantType])
 
-    /*   useEffect(async () => {
-                console.log(restaurantType)
-
-                 var rawFilteredResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
-                var filteredResponse = await rawFilteredResponse.json();
-    
-                //console.log(rawFilteredResponse.result)
-                setTableDataList(filteredResponse.result)
-            }
-        ,[restaurantType])
-
-        const typeList = []
-        const [selected, setSelected] = useState("")
-        const selectedType = (item) => {
-            for (el of typeList){
-                if(selected != el){
-                    typeList.push(selected)
-                } else {
-                   typeList = typeList.filter(e => e == selected )
-                }
-            }   
-        } */
-    
+    // Problème : si suppression des filtres après en avoir mis, restaurantType.length = 1 car dans la liste déroulante "item" ajoute un array à l'état restaurantType (array)
+    // à l'initialisation, avant de filtrer, restaurantType.length = 0 (array vide)
 
     var tableList = tableDataList.map((e, i) => {
 
@@ -132,16 +118,18 @@ function HomeScreen(props) {
     return (
 
         <View style={{ flex: 1, justifyContent: 'space-evenly' }}>
-            <View style={{ flex: 2,
+            <View style={{
+                flex: 2,
                 left: 0,
-                width:"100%",
+                width: "100%",
                 top: 0,
-                justifyContent:"flex-start",}}>
-                <Appbar style={{ backgroundColor: "#FFC960", flex:1}}>
-                    <Appbar.Content title="Home Screen" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
+                justifyContent: "flex-start",
+            }}>
+                <Appbar style={{ backgroundColor: "#FFC960", flex: 1 }}>
+                    <Appbar.Content title="Home Screen" style={{ marginTop: 20, alignItems: "center", size: 17 }} titleStyle={{ fontSize: 22, fontWeight: "700", color: "#009788" }} />
 
                 </Appbar>
-                <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
+                <View style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", flexDirection: "row", justifyContent: "space-around" }}>
                     <IconButton
                         icon="home"
                         color={'#0E9BA4'}
@@ -152,51 +140,51 @@ function HomeScreen(props) {
                         icon="plus-circle"
                         color={'#0E9BA4'}
                         size={25}
-                        onPress={() => props.navigation.navigate('MyAdresses')}
+                        onPress={() => props.navigation.navigate('NewTable')}
                     />
                     <IconButton
                         icon="message"
                         color={'#0E9BA4'}
                         size={25}
-                        onPress={() =>  props.navigation.navigate('Chat')}
+                        onPress={() => props.navigation.navigate('Chat')}
                     />
                     <IconButton
                         icon="calendar-month"
                         color={'#0E9BA4'}
                         size={25}
-                        onPress={() =>props.navigation.navigate('MyEvents')}
+                        onPress={() => props.navigation.navigate('MyEvents')}
                     />
                     <IconButton
                         icon="account"
                         color={'#0E9BA4'}
                         size={25}
-                        onPress={() =>  props.navigation.navigate('MyAccount')}
+                        onPress={() => props.navigation.navigate('MyAccount')}
                     />
                 </View>
             </View>
             <View style={{ flex: 2, backgroundColor: "#F2F2F2", justifyContent: "flex-start", marginBottom: 150 }}>
 
-{/*                <Button
+                {/*                <Button
                     style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#0E9BA4", color: '#FFC960',marginBottom:5 }}
                     mode="contained" onPress={() => { props.navigation.navigate('JoinTable'); }}>
                     <Text Style={{ color: '#FFC960' }}>Go to join</Text>
                 </Button>*/}
-                <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center",marginBottom: 5}}
-                           mode="outlined"
-                           label="Où ?"
-                           placeholder ="Paris 17"
-                           activeOutlineColor={"#FF3D00"}
-                           outlineColor={'#0E9BA4'}
+                <TextInput style={{ textAlign: 'center', width: '70%', alignSelf: "center", marginBottom: 5 }}
+                    mode="outlined"
+                    label="Où ?"
+                    placeholder="Paris 17"
+                    activeOutlineColor={"#FF3D00"}
+                    outlineColor={'#0E9BA4'}
                 />
 
                 <View>
-                    <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center",marginBottom: 5}}
-                               mode="outlined"
-                               label="Quand ? ?"
-                               placeholder ="JJ/MM/AAAA"
-                               activeOutlineColor={"#FF3D00"}
-                               outlineColor={'#0E9BA4'}
-                               onFocus={showDatepicker}
+                    <TextInput style={{ textAlign: 'center', width: '70%', alignSelf: "center", marginBottom: 5 }}
+                        mode="outlined"
+                        label="Quand ? ?"
+                        placeholder="JJ/MM/AAAA"
+                        activeOutlineColor={"#FF3D00"}
+                        outlineColor={'#0E9BA4'}
+                        onFocus={showDatepicker}
                     />
                     {show && (
                         <DateTimePicker
@@ -209,7 +197,7 @@ function HomeScreen(props) {
                         />
                     )}
                 </View>
-                <View style={{alignItems: "center", marginTop: 12, marginBottom: 8 }}>
+                <View style={{ alignItems: "center", marginTop: 12, marginBottom: 8 }}>
                     <MultiSelect
                         style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
                         placeholderStyle={styles.placeholderStyle}
@@ -224,14 +212,14 @@ function HomeScreen(props) {
                         searchPlaceholder="Search..."
                         /* value={restaurantType} */
                         onChange={item => {
-                            setRestaurantType(...restaurantType, item);
+                            setRestaurantType([item]);
                             setIsFocus(false);
                         }}
                         renderLeftIcon={() => (
                             <MaterialIcons style={styles.icon} name="restaurant" size={24} color="#0E9BA4" />
 
                         )}
-                      selectedStyle={styles.selectedStyle} 
+                        selectedStyle={styles.selectedStyle}
                     />
                 </View>
 
@@ -270,28 +258,28 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingHorizontal: 8,
         backgroundColor: "transparent",
-      },
-      placeholderStyle: {
+    },
+    placeholderStyle: {
         fontSize: 16,
         textAlign: "center",
-      },
-      selectedTextStyle: {
+    },
+    selectedTextStyle: {
         fontSize: 14,
-      },
-      iconStyle: {
+    },
+    iconStyle: {
         width: 20,
         height: 20,
-      },
-      inputSearchStyle: {
+    },
+    inputSearchStyle: {
         height: 40,
         fontSize: 16,
-      },
-      icon: {
+    },
+    icon: {
         marginRight: 5,
-      },
-      selectedStyle: {
+    },
+    selectedStyle: {
         borderRadius: 12,
-      },
+    },
 });
 
 

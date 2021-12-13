@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, KeyboardAvoidingView } from 'react-native'; 
-import { Title, Avatar, Button, Card, Paragraph, Subheading, Appbar } from 'react-native-paper';
+import { Title, Button, Card, Paragraph, Subheading, Appbar } from 'react-native-paper';
 import { ListItem, Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FontAwesome5 } from '@expo/vector-icons';

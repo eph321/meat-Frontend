@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 
 import {StyleSheet, View, Image, Text, AsyncStorage} from "react-native";
 import {SocialIcon} from 'react-native-elements'
-import {TextInput, Button, Paragraph} from "react-native-paper";
+import {TextInput, Button} from "react-native-paper";
 import {connect} from "react-redux";
 
 
@@ -31,7 +31,7 @@ function LoginScreen(props) {
     },[])
 
     const isLogin = async () => {
-        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/sign-in`,{
+        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/users/sign-in`,{
             method:'POST',
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
             body: `email=${email}&password=${password}`

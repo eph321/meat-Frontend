@@ -1,20 +1,124 @@
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, Touchable, TouchableOpacity, View } from 'react-native';
-import {TextInput, Button, Appbar, Avatar, Title, IconButton,Colors} from "react-native-paper";
-import { FontAwesome5 } from '@expo/vector-icons';
-import { Icon } from 'react-native-elements/dist/icons/Icon';
+import {  View } from 'react-native';
+import { Button, Appbar, Avatar, Title, IconButton} from "react-native-paper";
+import {connect} from "react-redux";
+
 
 
 
 function MyBuddiesScreen(props) {
+    const [relations,setRelations] = useState([]);
+    useEffect(async () => {
+
+            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-related-users/${props.userToSend}`)
+            let response = await rawResponse.json();
+            // console.log(response)
+            setRelations([...response.listOfRelations])
+        return () => {
+                setRelations([]); // Clean up à l'unmount du composant.
+            };
+
+
+        }
+        , [relations])
+
+    const handleAcceptBuddy = async (buddyToken) => {
+
+        let rawSend = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/accept-buddy`, {
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: `token=${props.userToSend}&userToken=${buddyToken}`
+
+        })
+        let sendResponse = await rawSend.json();
+
+    };
+    const handleDeclineBuddy = async (buddyToken) => {
+
+        let rawSend = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/decline-buddy`, {
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: `token=${props.userToSend}&userToken=${buddyToken}`
+
+        })
+        let sendResponse = await rawSend.json();
+
+    };
+
+    const handleConversation = async (buddyToken) => {
+        let rawSend = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/conversation`, {
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: `token=${props.userToSend}&userToken=${buddyToken}`
+
+        })
+        let sendResponse = await rawSend.json();
+        props.sendConversationToStore(sendResponse.conv)
+        props.navigation.navigate('Chat');
+
+    };
 
 
 
-    return (   
+
+    const displayRelations = (user,i) => {
+
+        console.log(user.avatar)
+        return <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start",marginBottom:5}} key={i}>
+                        <Avatar.Image size={64} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(user.avatar)?{uri: user.avatar}:require("../assets/picture-4.png")} />
+                        <View style={{marginTop:"3%", marginRight:"2%"}}>
+                            <Title style={{fontWeight:"bold"}}>{user.firstname}</Title>
+
+                        </View>
+                            {(user.buddies.filter((buddy) => buddy.status === true && buddy.token === props.userToSend).length !== 0 )
+                            ?
+                            <View style={{flexDirection: "row"}}>
+                                <IconButton
+                                    icon="forum"
+                                    mode="contained"
+                                    color={'#0E9BA4'}
+                                    style={{borderColor: "#009788", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2}}
+                                    size={32}
+                                    onPress={() => handleConversation(user.token)}
+                                />
+                                <IconButton
+                                    icon="account-remove"
+                                    mode="contained"
+                                    color={'#FF3D00'}
+                                    style={{borderColor: "#FF3D00", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2}}
+                                    size={32}
+                                    onPress={() => handleDeclineBuddy(user.token)}
+                                />
+
+                            </View>
+                            :
+                            <View style={{flexDirection: "row"}}>
+                                         <IconButton
+                                    icon="account-plus"
+                                    mode="contained"
+                                    color={'#0E9BA4'}
+                                    style={{borderColor: "#009788", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2 }}
+                                    size={32}
+                                    onPress={() => handleAcceptBuddy(user.token)}
+                                />
+                                <IconButton
+                                    icon="account-cancel"
+                                    mode="contained"
+                                    color={'#FF3D00'}
+                                    style={{borderColor: "#FF3D00", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2}}
+                                    size={32}
+                                    onPress={() => handleDeclineBuddy(user.token)}
+                                />
+                            </View>}
+        </View>
+
+                        }
+
+    return (
         <View style={{flex:1}}>
 
 
-                        {/* EN-TETE DE LA PAGE DE BUDDYSCREEN */}
+
                 <View style={{ flex: 2,
                     left: 0,
                     width:"100%",
@@ -52,31 +156,8 @@ function MyBuddiesScreen(props) {
                 </View>
 
                 <View  style={{flex:7, backgroundColor:"#F2F2F2"}}>
-
-                        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center",marginBottom:5}}>
-                                <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={require('../assets/picture-4.png')} />
-                                <View style={{marginTop:"3%", marginRight:"2%"}}>      
-                                        <Title style={{fontWeight:"bold", fontSize:30, marginBottom:"-8%"}}>Arthur</Title>
-                                        <Title style={{fontStyle:"italic", fontSize:11}}>Buddy depuis le 10/10/2021</Title>
-                                </View>
-                                <View style={{flexDirection: "row"}}>
-                                        <Button style={{borderColor: "#009788", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "3%"}}
-                                                mode="contained"
-                                                icon="account-plus"
-                                                labelStyle={{marginTop: "50%", marginLeft: 1, color: "#009788", fontSize: 30}}
-                                                onPress={() => props.navigation.navigate('MyMessages')}
-                                        >
-                                        </Button>
-                                        <Button style={{borderColor: "#FF3D00", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "5%"}}
-                                                mode="contained"
-                                                icon="account-cancel"
-                                                labelStyle={{marginTop: "50%", marginLeft: 0, color: "#FF3D00", fontSize: 35 }}
-                                                onPress={() => props.navigation.navigate('MyMessages')}
-                                        >
-                                        </Button>
-                                </View>
-                        </View>
-                    <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center",marginBottom:5}}>
+                    {relations.map((user,i)=> displayRelations(user,i))}
+                    {/*<View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center",marginBottom:5}}>
                         <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={require('../assets/picture-4.png')} />
                         <View style={{marginTop:"3%", marginRight:"2%"}}>
                             <Title style={{fontWeight:"bold", fontSize:30, marginBottom:"-8%"}}>Arthur</Title>
@@ -98,31 +179,8 @@ function MyBuddiesScreen(props) {
                             >
                             </Button>
                         </View>
-                    </View>
-                    <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center",marginBottom:5}}>
-                        <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={require('../assets/picture-4.png')} />
-                        <View style={{marginTop:"3%", marginRight:"2%"}}>
-                            <Title style={{fontWeight:"bold", fontSize:30, marginBottom:"-8%"}}>Arthur</Title>
-                            <Title style={{fontStyle:"italic", fontSize:11}}>Buddy depuis le 10/10/2021</Title>
-                        </View>
-                        <View style={{flexDirection: "row"}}>
-                            <Button style={{borderColor: "#009788", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "3%"}}
-                                    mode="contained"
-                                    icon="forum"
-                                    labelStyle={{marginTop: "50%", marginLeft: 1, color: "#009788", fontSize: 30}}
-                                    onPress={() => props.navigation.navigate('MyMessages')}
-                            >
-                            </Button>
-                            <Button style={{borderColor: "#FF3D00", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "5%"}}
-                                    mode="contained"
-                                    icon="account-remove"
-                                    labelStyle={{marginTop: "50%", marginLeft: 0, color: "#FF3D00", fontSize: 35 }}
-                                    onPress={() => props.navigation.navigate('MyMessages')}
-                            >
-                            </Button>
-                        </View>
-                    </View>
-                        
+                    </View>*/}
+
                 </View>
 
 
@@ -131,18 +189,27 @@ function MyBuddiesScreen(props) {
         </View>
 
 
-    
+
 
 
     );
 }
+function mapDispatchToProps(dispatch){
+    return {
+        sendConversationToStore: function (conversationId){
+            dispatch({type: 'registerConversation',conversationId})
+        }
 
-const styles = StyleSheet.create({
-    container: { 
-            flex: 0.15,
-            justifyContent: "center",
-    },
-});
+    }
+}
 
 
-export default MyBuddiesScreen;
+function mapStateToProps(state) {
+    return {
+        userToSend: state.userToken
+    }}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(MyBuddiesScreen);
