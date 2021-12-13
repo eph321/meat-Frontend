@@ -57,22 +57,29 @@ function HomeScreen(props) {
         var rawResponse = await fetch(`${herokuIP}/search-table`);
         var response = await rawResponse.json();
         setTableDataList(response.result)
-        console.log("initialisation",restaurantType)
     }, [] //(restaurantType.length===0)?tableDataList:undefined
     )
 
     
     useEffect(async () => {
-        console.log("before", restaurantType)
-        if(restaurantType.length !== 0){
-        const rawFilteredResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
-        const filteredResponse = await rawFilteredResponse.json();
-        setTableDataList(filteredResponse.result)
+        if (restaurantType[0]) {
+            if (restaurantType[0].length > 0) {
+                const rawFilteredResponse = await fetch(`${herokuIP}/filter-table/${restaurantType}`);
+                const filteredResponse = await rawFilteredResponse.json();
+                setTableDataList(filteredResponse.result)
+            } else {
+                var rawResponse = await fetch(`${herokuIP}/search-table`);
+                var response = await rawResponse.json();
+                setTableDataList(response.result)
+            }
         }
-    },[restaurantType])
+    }, [restaurantType])
 
-    // Problème : si suppression des filtres après en avoir mis, restaurantType.length = 1 car dans la liste déroulante "item" ajoute un array à l'état restaurantType (array)
+    // Conditions du useEffect
+    // lorsque setRestaurantType([item]) : ne détecte pas changement de l'état restaurantType
+    // si suppression des filtres après en avoir mis, restaurantType.length = 1 car dans la liste déroulante "item" ajoute un array à l'état restaurantType (array)
     // à l'initialisation, avant de filtrer, restaurantType.length = 0 (array vide)
+
 
     var tableList = tableDataList.map((e, i) => {
 

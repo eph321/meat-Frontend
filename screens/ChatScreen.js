@@ -1,85 +1,98 @@
 import React, { useState,useEffect } from 'react';
-import {KeyboardAvoidingView, ScrollView, StyleSheet, View} from 'react-native';
-import {Appbar, IconButton,  List,  TextInput, } from "react-native-paper";
+import {AsyncStorage, KeyboardAvoidingView, ScrollView, StyleSheet, View} from 'react-native';
+import {Appbar, IconButton,  List,  TextInput, Text} from "react-native-paper";
 import socketIOClient from "socket.io-client";
+import { useIsFocused } from '@react-navigation/native';
 import {connect} from "react-redux";
+
 
 
 
 var socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
 
 function ChatScreen(props) {
+
     const [currentMessage,setCurrentMessage] = useState("")
     const [listMessages,setListMessages] = useState([])
     const [author, setAuthor] =useState("");
+    const [isDisplay,setIsDisplay] =useState(true)
+    const [dateToSend,setDateToSend] =useState("")
 
     // props.userRegister.firstName
     const handlePress = async () => {
+        const today = new Date(Date.now());
 
-        //envoi du message en websocket
+        const options = {  day: '2-digit', month: '2-digit', year: '2-digit' }
+        let formattedDate =today.toLocaleString('fr-FR', options);
 
-        socket.emit("sendMessage", JSON.stringify({content: currentMessage, author: author,conversation: props.userConversation}));
 
+
+        console.log(formattedDate)
+
+
+        socket.emit("sendMessage", JSON.stringify({content: currentMessage,
+                                                             author: author,
+                                                             conversation: props.conversationToSend,date: formattedDate  }));
         //envoi d'une copie en database
+        let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/update-messages`,{
+            method:'POST',
+            headers:{'Content-Type':'application/x-www-form-urlencoded'},
+            body: `content=${props.userToSend}&author=${author}&conversation=${props.conversationToSend}&date=${formattedDate}`
 
-        let rawSend = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/add-chat-message`, {
-            method: 'POST',
-            headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `conversation=${props.userConversation}&author=${author}&content=${currentMessage}`
-
-        })
-        let sendResponse = await rawSend.json();
-        console.log(sendResponse)
-        console.log("envoyé")
-
+        });
+        let response = await rawResponse.json();
+        console.log(response)
         setCurrentMessage("");
     }
 
-/*
-    router.post('/update-chat', async function(req,res, next){
-        let userConversation = await conversationModel.findById({id: req.body.conversation}).populate('users').exec();
-        userConversation.chat = [...userConversation.chat,req.body.message]
-        let savedConversation = await userConversation.save()
 
 
-        res.json({ result: true, conversation : savedConversation });*/
-    useEffect(async () => {
-            //Au chargement récupère les messages en bdd
-            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-chat-messages/${props.userConversation}`)
-            let response = await rawResponse.json();
-            // console.log(response)
-            setListMessages([])
-            return () => {
-                setListMessages([]); // Clean up à l'unmount du composant.
-            };
 
 
-        }
-        , [])
+
+    useEffect( ()=> {
+        const getChatMessages = async () =>{
+        let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-chat-messages/${props.conversationToSend}/${props.userToSend}`)
+        let response = await rawResponse.json();
+        console.log(response)
+        setListMessages([response.chatMessages])
+        setAuthor(response.author)}
+        getChatMessages();
+        return  ()=> console.log("composant détruit")
+        setIsDisplay(false)
+
+    },[])
+
 
 
     useEffect(() => {
 
         socket.on('sendMessageToAll', (newMessage)=> {
             if(newMessage !== null){
-
-                setListMessages([...listMessages, JSON.parse(newMessage)])}
-            console.log(newMessage);
-
+                let messageToFilter = JSON.parse(newMessage)
+                if (messageToFilter.conversation === props.conversationToSend){
+                    setListMessages([...listMessages,messageToFilter ])}
+                console.log(messageToFilter);
+                }
         });
 
     }, [listMessages]);
 
     const displayMessage = (message,i) => {
-        if ( i % 2 === 0){
-            return <List.Item key={i} style={{backgroundColor:"rgba(14, 155, 164, 0.22)",width:"70%",marginHorizontal:20,marginVertical:5}}
+        if ( message.author === author ){
+            return <View key={i} style={{width:"70%",marginHorizontal:20,marginVertical:5}}><List.Item  style={{backgroundColor:"rgba(14, 155, 164, 0.22)",}}
                               title={message.author}
 
                               description={message.content}/>
-        }else {
-            return <List.Item key={i} style={{backgroundColor:"rgba(255, 201, 96, 0.22)",width:"70%",alignSelf:"flex-end",marginHorizontal:20,marginVertical:5}}
+                <Text>{message.date}</Text>
+            </View>
+        }else if (message.author !== author){
+            return <View  key={i} style={{width:"70%",marginHorizontal:20,marginVertical:5,alignSelf:"flex-end"}}>
+            <List.Item  style={{backgroundColor:"rgba(255, 201, 96, 0.22)"}}
                               title={message.author}
                               description={message.content}/>
+                <Text>{message.date}</Text>
+            </View>
         }
         
     }
@@ -140,9 +153,6 @@ function ChatScreen(props) {
                         {listMessages.map((el,i)=> displayMessage(el,i))}
 
 
-
-
-                        {/*{listMessages.map((message,i) => displwayMessage(message,i))}*/}
                     </ScrollView>
 
                     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>

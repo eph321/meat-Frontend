@@ -11,43 +11,25 @@ import {
     Paragraph, IconButton,
 } from "react-native-paper";
 import { connect } from 'react-redux';
-
+import { useIsFocused } from '@react-navigation/native';
 
 function BuddyScreen(props) {
     const [userList, setUserList] = useState([]);
+    const isFocused = useIsFocused();
 
 
 
 
-    useEffect(async () => {
-            const rawResponse = await fetch("https://polar-stream-28883.herokuapp.com/users/search-user");
-            const response = await rawResponse.json();
-            if(props.userToSend !== null){
-            console.log(props.userToSend+ "j'ai bien récupéré le token dans le store")}
-
-            console.log(response.result[0].email)
-
-            setUserList(response.result)
-
-        }
-        , [])
 
 
 
     const handleAddFriend = async (userToken) => {
-        console.log(userToken + "c le token du user")
-
-        console.log(props.userToSend)
         let rawSend = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/add-buddy`, {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
             body: `token=${props.userToSend}&userToken=${userToken}`
-
         })
         let sendResponse = await rawSend.json();
-        console.log(sendResponse)
-        console.log("envoyé")
-
     }
     // Fonction de display pour l'affichage des buddies à rajouter
 
@@ -73,6 +55,15 @@ function BuddyScreen(props) {
 
 
 
+        useEffect(async () => {
+                const rawResponse = await fetch("https://polar-stream-28883.herokuapp.com/users/search-user");
+                const response = await rawResponse.json();
+                if(props.userToSend !== null){
+                }
+                setUserList(response.result)
+            }
+
+            , [])
 
     return (<View style={{flex:1,justifyContent: 'space-evenly'}}>
         <View style={styles.viewHeader}>
