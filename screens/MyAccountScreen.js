@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Button, ScrollView, TouchableOpacity, Platform} from 'react-native';
+import {StyleSheet, View, Button, ScrollView, TouchableOpacity, Platform, AsyncStorage} from 'react-native';
 import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text,Colors} from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 
@@ -51,34 +51,50 @@ function MyAccountScreen(props) {
 
 
     return (   <View style={{flex:1,justifyContent: 'space-evenly'}}>
-            <View style={styles.viewHeader}>
-                <Appbar style={{flex:1,backgroundColor:"#FFC960"}}>
-                    <Appbar.Content title="Mon Profil" style={{textAlign:'center'}}/>
-                </Appbar>
-                <Appbar style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",justifyContent:"space-around"}}>
-                    <Appbar.Action icon="home" onPress={() => props.navigation.navigate('Home')} />
-                    <Appbar.Action icon="label" onPress={() => props.navigation.navigate('MyBuddies')} />
-                    <Appbar.Action icon="delete" onPress={() => console.log('Pressed delete')}
-                    />
+            <View style={{ flex: 2,
+                left: 0,
+                width:"100%",
+                top: 0,
+                justifyContent:"flex-start",}}>
+                <Appbar style={{ backgroundColor: "#FFC960", flex:1}}>
+                    <Appbar.Content title="Mon profil" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
                 </Appbar>
                 <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
                     <IconButton
                         icon="home"
-                        color={"#FF3D00"}
+                        color={'#0E9BA4'}
                         size={25}
-                        onPress={() => console.log('Pressed')}
+                        onPress={() => props.navigation.navigate('Home')}
                     />
                     <IconButton
-                        icon="label"
-                        color={Colors.green999}
+                        icon="plus-circle"
+                        color={'#0E9BA4'}
                         size={25}
-                        onPress={() => props.navigation.navigate('MyBuddies')}
+                        onPress={() => props.navigation.navigate('MyAdresses')}
                     />
                     <IconButton
-                        icon="delete"
-                        color={Colors.yellow999}
+                        icon="calendar-month"
+                        color={'#0E9BA4'}
                         size={25}
-                        onPress={() => console.log('Pressed')}
+                        onPress={() =>props.navigation.navigate('MyEvents')}
+                    />
+                    <IconButton
+                        icon="human-handsup"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>  props.navigation.navigate('MyBuddies')}
+                    />
+                    <IconButton
+                        icon="message"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>  props.navigation.navigate('Chat')}
+                    />
+                    <IconButton
+                        icon="exit-to-app"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>  {AsyncStorage.clear();props.navigation.navigate('Login')}}
                     />
                 </View>
             </View>

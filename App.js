@@ -43,7 +43,7 @@ const ThemeMeat = {
 };
 
 const Stack = createStackNavigator();
-const store = createStore(combineReducers({ userRegister, tableId,userToken}));
+const store = createStore(combineReducers({ userRegister, tableId, userToken }));
 
 
 

@@ -4,20 +4,26 @@ import { Button, TextInput, Dialog, Portal, Appbar } from "react-native-paper"
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { connect } from "react-redux";
-import RNPickerSelect from 'react-native-picker-select';
+import { Dropdown } from 'react-native-element-dropdown';
 
 
 // Préférence culinaire Liste
 
 const restaurantTypeList = [
-    { label: 'Italien', value: 'italien' },
-    { label: 'Japonais', value: 'japonais' },
-    { label: 'Fast-food', value: 'fast-food' },
+    { label: 'Italien', value: 'Italien' },
+    { label: 'Japonais', value: 'Japonais' },
+    { label: 'Fast-food', value: 'Fast-food' },
+    { label: 'Chinois', value: 'Chinois'},
+    { label: 'Mexicain', value: 'Mexicain'},
+    { label: 'Indien', value: 'Indien'},
+    { label: 'Coréen', value: 'Coréen'},
 ];
 
 // Liste déroulante trannche d'age
 const ageRangeList = [
+    { label: "Sans préférence", value: "" },
     { label: "18-25 ans", value: "18-25" },
     { label: "25-35 ans", value: "25-35" },
     { label: "35-45 ans", value: "35-45" },
@@ -36,7 +42,12 @@ function NewTableScreen(props) {
     const [restaurantName, setRestaurantName] = useState('');
     const [restaurantAddress, setRestaurantAddress] = useState('');
     const [description, setDescription] = useState('');
-    const planner = props.userToken;
+    const [planner, setPlanner] = useState(props.userToken);
+
+    const [isTypeFocus, setIsTypeFocus] = useState(false); // pour style de la liste déroulante type restaurant
+    const [isAgeFocus, setIsAgeFocus] = useState(false); // pour style de la liste déroulante tranche d'âge
+
+    // const [newTableCreated, setNewTableCreated ] = useState(false)
 
     // Pour le calendrier Datepicker
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
@@ -117,11 +128,14 @@ function NewTableScreen(props) {
 
     // Création de la table
     const createTable = async () => {
-        await fetch(`https://polar-stream-28883.herokuapp.com/add-table`, {
+       const tableDataRawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/add-table`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}`
-        })
+        });
+        const tableDataResponse = await tableDataRawResponse.json();
+        props.onCreateClick(tableDataResponse.newTable._id);
+        props.navigation.navigate("MyTable");
     }
 
     return (
@@ -192,20 +206,35 @@ function NewTableScreen(props) {
                     value={restaurantAddress}
                     onChangeText={text => setRestaurantAddress(text)}
                 />
-                <View style={{ alignContent: "center", marginTop: 12, marginBottom: 8 }}>
-                    <RNPickerSelect
-                        onValueChange={(value) => { setRestaurantType(value) }}
-                        placeholder={{ label: "Quel type de cuisine ?", value: null, color: "black" }}
-                        /* style={{...styles.RNPicker}} */
-                        items={restaurantTypeList}
+                    <Dropdown
+                        style={[styles.dropdown, isTypeFocus && { borderColor: '#0E9BA4' }]}
+                        placeholderStyle={styles.placeholderStyle}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        inputSearchStyle={styles.inputSearchStyle}
+                        iconStyle={styles.iconStyle}
+                        data={restaurantTypeList}
+                        search
+                        maxHeight={300}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Quel type de cuisine ?"
+                        searchPlaceholder="Search..."
+                        value={restaurantType}
+                        onFocus={() => setIsTypeFocus(true)}
+                        onBlur={() => setIsTypeFocus(false)}
+                        onChange={item => {
+                            setRestaurantType(item.value);
+                            setIsTypeFocus(false);
+                        }}
+                        renderLeftIcon={() => (
+                            <MaterialIcons style={styles.icon} name="restaurant" size={24} color="#0E9BA4" />
+                        )}
                     />
-                </View>
-
                 <TextInput
                     style={{ alignSelf: "center", width: '70%' }}
                     mode="outlined"
                     label="Description"
-                    placeholder="Présentation de l'évènement"
+                    placeholder="Description"
                     multiline={true}
                     dense={true}
                     right={<TextInput.Affix text="/280" />}
@@ -213,15 +242,30 @@ function NewTableScreen(props) {
                     value={description}
                     onChangeText={text => setDescription(text)}
                 />
-
-                <View style={{ alignContent: "center", marginTop: 12, marginBottom: 8 }}>
-                    <RNPickerSelect
-                        onValueChange={(value) => { setAgeRange(value), console.log(ageRange) }}
-                        placeholder={{ label: "Tranche d'âge (optionnel)", value: null, color: "black" }}
-                        /* style={{...styles.RNPicker}} */
-                        items={ageRangeList}
-                    />
-                </View>
+                    <Dropdown
+                        style={[styles.dropdown, isAgeFocus && { borderColor: '#0E9BA4' }]}
+                        placeholderStyle={styles.placeholderStyle}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        inputSearchStyle={styles.inputSearchStyle}
+                        iconStyle={styles.iconStyle}
+                        data={ageRangeList}
+                        search
+                        maxHeight={300}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Tranche d'âge (optionnel)"
+                        searchPlaceholder="Search..."
+                        onFocus={() => setIsAgeFocus(true)}
+                        onBlur={() => setIsAgeFocus(false)}
+                        onChange={item => {
+                            setAgeRange(item.value);
+                            setIsAgeFocus(false);
+                        }}
+                        renderLeftIcon={() => (
+                            <Ionicons name="options-outline" size={24} color="#0E9BA4" />
+                        )}
+                        />
+              
 
                 <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
                     <View style={{ flexDirection: "row", alignSelf: "flex-start", alignItems: "center", justifyContent: "flex-end" }}>
@@ -241,6 +285,7 @@ function NewTableScreen(props) {
                     </View>
                 </View>
 
+                <Button mode="contained" onPress={() => console.log(props.userToken)}> UserTOKEN </Button>
                 <Button mode="contained" onPress={() => createTable()}>Créer la table</Button>
 
             </View>
@@ -272,15 +317,35 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 32,
     },
-    RNPicker: {
-        fontSize: 16,
-        paddingVertical: 12,
-        paddingHorizontal: 10,
-        borderWidth: 1,
+    dropdown: {
+        width:"70%",
+        height: 50,
         borderColor: 'gray',
-        borderRadius: 4,
-        color: 'black',
-        paddingRight: 30, // to ensure the text is never behind the icon
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+        backgroundColor: "transparent",
+        marginTop: 12, 
+        marginBottom: 8,
+    },
+    icon: {
+        marginRight: 5,
+    },
+    placeholderStyle: {
+        fontSize: 16,
+        textAlign: "center",
+    },
+    selectedTextStyle: {
+        fontSize: 16,
+        textAlign: "center"
+    },
+    iconStyle: {
+        width: 20,
+        height: 20,
+    },
+    inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
     },
 })
 
@@ -290,9 +355,17 @@ function mapStateToProps(state) {
     }
 }
 
+function mapDispatchToProps(dispatch) {
+    return {
+        onCreateClick: function (tableId) {
+            dispatch({ type: "saveTableId", tableId: tableId})
+        },
+    }
+}
+
 export default connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 )(NewTableScreen)
 
 

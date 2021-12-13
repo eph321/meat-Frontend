@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 
 import {StyleSheet, View, Image, Text, AsyncStorage} from "react-native";
 import {SocialIcon} from 'react-native-elements'
-import {TextInput, Button, Paragraph, IconButton} from "react-native-paper";
+import {TextInput, Button, Paragraph} from "react-native-paper";
 import {connect} from "react-redux";
 
 
@@ -10,15 +10,19 @@ import {connect} from "react-redux";
 function LoginScreen(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const IP_LACAPSULE_ETIENNE = "172.17.1.60";
+
+    const [setEye,Eye] = useState(false)
 
 
     //Vérifie l'existence d'un userToken et redirige vers home si présence userToken
     useEffect(()=>{
-        (async => { AsyncStorage.getItem("userToken", function(error, data) {
+        ( () => { AsyncStorage.getItem("userToken", function(error, data) {
             console.log(data);
             let userData = JSON.parse(data);
-            console.log(userData);
+            if (userData !== null){
+                console.log(userData + "hello je suis le user  token storé");
+            }
+
             if (userData){
                 props.navigation.navigate("Home")
                 props.sendUserToken(userData)
@@ -34,29 +38,19 @@ function LoginScreen(props) {
         });
         var response = await rawResponse.json();
         if (response.login) { props.navigation.navigate('Home')
-        await AsyncStorage.setItem("userToken", JSON.stringify({token: response.searchUser.token}))
-        console.log(response)
-        console.log(response.searchUser.token)
-            props.sendUserToken(response.searchUser.token)
+
+           let  {token} = response.searchUser
+            console.log(token)
+            await AsyncStorage.setItem("userToken", JSON.stringify(token))
+            props.sendUserToken(token)
         } else {
-            setError()
+            setError("Wrong Credentials")
         }
     }
 
     
-   /*  const [eye, setEye] = useState(false);
-    const eyeOpen = () => { <TextInput.Icon name="eye" color="#009788"/> };
-    const eyeClosed = () => { <TextInput.Icon name="eye-off" color="#009788"/> };
 
-    function eyeChanging() {
-        const [eye, setEye] = useState(false);
-        if (eye) {
-            return eyeOpen
-        } else {
-            return eyeClosed
-        }
-    } */
-    
+
 
     return (
         <View style={styles.container}>
@@ -68,20 +62,20 @@ function LoginScreen(props) {
             <Text style={{fontSize: 20, fontStyle: 'italic', fontWeight: 'bold', marginTop: 20}}>Rejoignez la communauté</Text>
             <Text style={{fontSize: 20, fontStyle: 'italic', fontWeight: 'bold', marginBottom: 20}}>des M.eaters.</Text>
 
-            <TextInput style={styles.input, {width: "80%", marginBottom: 10}}
+            <TextInput style={{width: "80%", marginBottom: 10}}
                 mode="outlined"
                 label="Adresse email"
                 placeholder="hello@matable.com"
                 onChangeText={(val) => setEmail(val)}
             />
             
-            <TextInput style={styles.input, {width: "80%"}}
+            <TextInput style={{width: "80%"}}
                 mode="outlined"
                 label="Mot de passe"
                 placeholder="********"
                 secureTextEntry
-                onPress={() => setEye(true)}
-                right={<TextInput.Icon name="eye" color="#009788"/>, <TextInput.Icon name="eye-off" color="#009788"/>}
+                onPress={() => setEye(!Eye)}
+                right={(Eye)?<TextInput.Icon name="eye" color="#009788"/>:<TextInput.Icon name="eye-off" color="#009788"/>}
                 onChangeText={(val) => setPassword(val)}
             />
 
@@ -91,7 +85,7 @@ function LoginScreen(props) {
             <Button style={styles.button}
                 mode="contained" 
                 labelStyle={{fontSize: 20, fontWeight: "bold", color: "#009788", paddingTop: 3}}
-                onPress={() => props.navigation.navigate('Home')}>
+                onPress={() => isLogin()}>
                 Connexion
             </Button>
 
@@ -115,14 +109,14 @@ function LoginScreen(props) {
                 Créer un compte
             </Text>
 
-            <Paragraph
+{/*            <Paragraph
                 style={{fontSize: 12, marginBottom: 25}}>
                 En continuant, vous acceptez nos "
                     <Text 
                         onPress={() => {props.navigation.navigate('Register') }} 
                         style={{fontSize: 12, marginBottom: 25, color: "#1A72C2", textDecorationLine: "underline"}}>Conditions Générales.
                     </Text>"
-            </Paragraph>
+            </Paragraph>*/}
         
         </View>
 
@@ -136,7 +130,7 @@ function LoginScreen(props) {
 function mapDispatchToProps(dispatch){
     return {
         sendUserToken: function (userToken){
-            dispatch({type: 'register',userToken})
+            dispatch({type: 'saveUserToken',userToken})
         }
 
     }

@@ -5,7 +5,7 @@ import socketIOClient from "socket.io-client";
 import {connect} from "react-redux";
 
 
-var socket = socketIOClient("http://192.168.1.246:3000");
+var socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
 
 function ChatScreen(props) {
     const [currentMessage,setCurrentMessage] = useState("")
@@ -82,7 +82,7 @@ function ChatScreen(props) {
                     onPress={() =>  props.navigation.navigate('MyAccount')}
                 />
                 <IconButton
-                    icon="account"
+                    icon="target-account"
                     color={'#0E9BA4'}
                     size={25}
                     onPress={() =>  props.navigation.navigate('BuddyProfile')}

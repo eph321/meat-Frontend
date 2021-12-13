@@ -1,77 +1,80 @@
 import React, {useEffect, useState} from 'react';
 
-import {StyleSheet, View, TouchableOpacity, Platform, ScrollView} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 import {
-    TextInput,
     Appbar,
     Button,
-    ProgressBar,
     Text,
     Avatar,
-    RadioButton,
-    Chip,
     Card,
     Title,
-    Paragraph, IconButton
+    Paragraph, IconButton, List
 } from "react-native-paper";
 import { connect } from 'react-redux';
-import * as ImagePicker from 'expo-image-picker';
-
-
-
+import {Ionicons} from "@expo/vector-icons";
 
 function BuddyScreen(props) {
-    const IP_LACAPSULE_ETIENNE = "172.17.1.60";
     const [userList, setUserList] = useState([]);
     const [buddyId,setBuddyId] = useState("");
+    const [buddyIndex,setBuddyIndex] = useState("");
+
 
     useEffect(async () => {
-            var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/search-users`);
-            var response = await rawResponse.json();
-            console.log("add user")
-            console.log(response.result[0].firstname)
+            const rawResponse = await fetch("https://polar-stream-28883.herokuapp.com/search-user");
+            const response = await rawResponse.json();
+            if(props.userToSend !== null){
+            console.log(props.userToSend+ "j'ai bien récupéré le token dans le store")}
+
+            console.log(response.result[0].email)
+
             setUserList(response.result)
+
         }
         , [])
 
 
-    const handleAddFriend = async ( friendId) => {
-        await fetch(`https://polar-stream-28883.herokuapp.com/add-buddy`, {
+
+    const handleAddFriend = async (userToken) => {
+        console.log(userToken)
+        console.log(props.userToSend)
+        let rawSend = await fetch(`https://polar-stream-28883.herokuapp.com/add-buddy`, {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `token=${props.userToSend}&id=${friendId}`
+            body: `token=${JSON.parse(props.userToSend)}&userToken=${userToken}`
 
         })
-        console.log(props.userToSend)
-        console.log(friendId);
+        let sendResponse = await rawSend.json();
+        console.log(sendResponse)
+        console.log("envoyé")
+
     }
+    // Fonction de display pour l'affichage des buddies à rajouter
+    const displayUser = (user,i) => {
 
-
-    const displayUser = (user, i) => {
-
-        return    <TouchableOpacity onPress={() => { handleAddFriend(user._id)}}>
-        <View key={i} style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}} >
-                        <View >
-                            <Avatar.Icon size={32} icon="account" color={'#0E9BA4'} style={{backgroundColor: "#FFFFFF"}}/>
+        return <TouchableOpacity key={i} onPress={() => handleAddFriend(user.token)}>
+        <View  style={{flexDirection: "row", justifyContent: "center", alignItems: "center",}}>
+                <Card style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "3%",width:"100%"}}>
+                    <Card.Content style={{flexDirection: "row",alignItems:"center"}}>
+                        <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={require('../assets/picture-4.png')} />
+                        <View>
+                        <Title style={{fontWeight:"bold", fontSize:30, marginBottom:5}}>{user.firstname}</Title>
+                        <Paragraph>{user.description}</Paragraph>
+                        <Paragraph>{user.preference1}</Paragraph>
+                        <Paragraph>{user.preference2}</Paragraph>
+                        <Paragraph>{user.preference3}</Paragraph>
                         </View>
-                        <View style={{backgroundColor:"rgba(255, 201, 96, 0.22)",width:"70%",alignSelf:"flex-end",marginHorizontal:20,marginVertical:5}} >
-                            <Card.Content>
+                    </Card.Content>
+                </Card>
+        </View>
+        </TouchableOpacity>}
 
-                                <Title>{user.firstname}</Title>
-                                <Paragraph style={{alignSelf:"center"}}>{user.description}</Paragraph>
-                                <Paragraph>{user.preference1}</Paragraph>
-                                <Paragraph>{user.preference2}</Paragraph>
-                                <Paragraph>{user.preference3}</Paragraph>
-                            </Card.Content>
-                        </View>
-                    </View>
-        </TouchableOpacity>
-            }
+
+
 
     return (<View style={{flex:1,justifyContent: 'space-evenly'}}>
         <View style={styles.viewHeader}>
             <Appbar style={{flex:1,backgroundColor:"#FFC960"}}>
-                <Appbar.Content title="Messages" style={{textAlign:'center'}}/>
+                <Appbar.Content title="Messages" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}}/>
             </Appbar>
             <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
                 <IconButton
@@ -102,10 +105,10 @@ function BuddyScreen(props) {
         </View>
         <View style={{flex:7, backgroundColor:"#F2F2F2"}}>
             <ScrollView style={{flex:1, marginTop: 50}}>
-            {userList.map((user,i)=>displayUser((user,i)))}
-                </ScrollView>
+                {userList.map((user,i)=>displayUser(user,i))}
+            </ScrollView>
             <Button
-                style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
+                style={{ padding:10,marginBottom: 20, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
                 mode="contained"  >
                 <Text Style={{color:'#FFC960'}}>Ajouter Buddy</Text>
             </Button>
@@ -114,19 +117,6 @@ function BuddyScreen(props) {
 
 </View>)
 }
-
-function mapStateToProps(state) {
-    return {
-        userToSend: state.userToken
-    }}
-
-export default connect(
-    mapStateToProps,
-    null
-)(BuddyScreen);
-
-
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -147,3 +137,14 @@ const styles = StyleSheet.create({
     }
 });
 
+
+
+function mapStateToProps(state) {
+    return {
+        userToSend: state.userToken
+    }}
+
+export default connect(
+    mapStateToProps,
+    null
+)(BuddyScreen);

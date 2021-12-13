@@ -1,24 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { Text, Button, Appbar, TextInput, Card, Title, Paragraph } from "react-native-paper";
+import {StyleSheet, View, ScrollView, AsyncStorage} from 'react-native';
+import {Text, Button, Appbar, TextInput, Card, Title, Paragraph, IconButton} from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
-import RNPickerSelect from 'react-native-picker-select';
+import { MultiSelect } from 'react-native-element-dropdown';
+
+const FranckLacapsuleIP = "http://172.17.1.118:3000"
+const FranckIP = "http://192.168.1.41:3000"
+const herokuIP = "https://polar-stream-28883.herokuapp.com"
 
 const restaurantTypeList = [
-    { label: 'Italien', value: 'italien' },
-    { label: 'Japonais', value: 'japonais' },
-    { label: 'Fast-food', value: 'fast-food' },
+    { label: 'Italien', value: 'Italien' },
+    { label: 'Japonais', value: 'Japonais' },
+    { label: 'Fast-food', value: 'Fast-food' },
+    { label: 'Chinois', value: 'Chinois'},
+    { label: 'Mexicain', value: 'Mexicain'},
+    { label: 'Indien', value: 'Indien'},
+    { label: 'Coréen', value: 'Coréen'},
+    { label: 'Africain', value: 'Africain'},
 ]
 
 function HomeScreen(props) {
 
     const [tableDataList, setTableDataList] = useState([""])
     const [restaurantType, setRestaurantType] = useState("");
+    const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
 
     // DATE PICKER - input "où"
     const [date, setDate] = useState(new Date(1598051730000));
@@ -47,14 +57,36 @@ function HomeScreen(props) {
     // Affichage des tables existantes 
 
     useEffect(async () => {
-        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/search-table`);
+        var rawResponse = await fetch(`${herokuIP}/search-table`);
         var response = await rawResponse.json();
-
         setTableDataList(response.result)
-    }
-        , []) // tableDataList
+    }, [tableDataList]) 
 
+    
 
+    /*   useEffect(async () => {
+                console.log(restaurantType)
+
+                 var rawFilteredResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
+                var filteredResponse = await rawFilteredResponse.json();
+    
+                //console.log(rawFilteredResponse.result)
+                setTableDataList(filteredResponse.result)
+            }
+        ,[restaurantType])
+
+        const typeList = []
+        const [selected, setSelected] = useState("")
+        const selectedType = (item) => {
+            for (el of typeList){
+                if(selected != el){
+                    typeList.push(selected)
+                } else {
+                   typeList = typeList.filter(e => e == selected )
+                }
+            }   
+        } */
+    
 
     var tableList = tableDataList.map((e, i) => {
 
@@ -74,15 +106,17 @@ function HomeScreen(props) {
                     <View style={{ flexDirection: "row", alignSelf: "center", marginBottom: 4, marginTop: 4 }}>
                         {capacityAvatar}
                     </View>
-                    <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-                        <MaterialCommunityIcons name="table-furniture" size={24} color="black" />
-                        <View>
-                            <Text>Restaurant</Text>
-                            <Paragraph style={{ color: "#0E9BA4", fontWeight: "bold" }}>Nom du restaurant</Paragraph>
+                    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <MaterialCommunityIcons style={{ marginRight: 5 }} name="table-furniture" size={24} color="#0E9BA4" />
+                            <View>
+                                <Text>Restaurant</Text>
+                                <Paragraph style={{ color: "#0E9BA4", fontWeight: "bold" }}>{e.placeName}</Paragraph>
+                            </View>
                         </View>
-                        <View style={{ flexDirection: "row" }}>
-                            <MaterialIcons name="restaurant" size={24} color="#0E9BA4" />
-                            <Paragraph> Type du Restaurant</Paragraph>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <MaterialIcons style={{ marginRight: 5 }} name="restaurant" size={24} color="#0E9BA4" />
+                            <Paragraph>{e.placeType}</Paragraph>
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", alignSelf: "center", marginTop: 3 }}>
@@ -98,37 +132,71 @@ function HomeScreen(props) {
     return (
 
         <View style={{ flex: 1, justifyContent: 'space-evenly' }}>
-            <View style={styles.viewHeader}>
-                <Appbar style={{ flex: 1, backgroundColor: "#FFC960", height: 20 }}>
-                    <Appbar.Content title="Home Page" style={{ textAlign: 'center' }} />
+            <View style={{ flex: 2,
+                left: 0,
+                width:"100%",
+                top: 0,
+                justifyContent:"flex-start",}}>
+                <Appbar style={{ backgroundColor: "#FFC960", flex:1}}>
+                    <Appbar.Content title="Home Screen" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
+
                 </Appbar>
-                <Appbar style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", justifyContent: "space-evenly" }}>
-                    <Appbar.Action icon="home" onPress={() => props.navigation.navigate('Home')} />
-                    <Appbar.Action icon="plus-circle" onPress={() => props.navigation.navigate('NewTable')} />
-                    <Appbar.Action icon="calendar-month" onPress={() => props.navigation.navigate('MyEvents')} />
-                    <Appbar.Action icon="message-text" onPress={() => props.navigation.navigate('Chat')} />
-                    <Appbar.Action icon="account" onPress={() => props.navigation.navigate('MyAccount')}
+                <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
+                    <IconButton
+                        icon="home"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() => props.navigation.navigate('Home')}
                     />
-                </Appbar>
+                    <IconButton
+                        icon="plus-circle"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() => props.navigation.navigate('MyAdresses')}
+                    />
+                    <IconButton
+                        icon="message"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>  props.navigation.navigate('Chat')}
+                    />
+                    <IconButton
+                        icon="calendar-month"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>props.navigation.navigate('MyEvents')}
+                    />
+                    <IconButton
+                        icon="account"
+                        color={'#0E9BA4'}
+                        size={25}
+                        onPress={() =>  props.navigation.navigate('MyAccount')}
+                    />
+                </View>
             </View>
             <View style={{ flex: 2, backgroundColor: "#F2F2F2", justifyContent: "flex-start", marginBottom: 150 }}>
 
-                <Button
-                    style={{ padding: "3%", textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#0E9BA4", color: '#FFC960' }}
+{/*                <Button
+                    style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#0E9BA4", color: '#FFC960',marginBottom:5 }}
                     mode="contained" onPress={() => { props.navigation.navigate('JoinTable'); }}>
-                    <Text labelStyle={{ color: '#FFC960', fontWeight: "bold", fontSize: 12}}>Go to join</Text>
-                </Button>
-                <TextInput style={styles.input}
-                    mode="outlined" outlineColor="#009788" activeOutlineColor="#009788"
-                    label="Où ?"
-                    placeholder="Paris 17"
+                    <Text Style={{ color: '#FFC960' }}>Go to join</Text>
+                </Button>*/}
+                <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center",marginBottom: 5}}
+                           mode="outlined"
+                           label="Où ?"
+                           placeholder ="Paris 17"
+                           activeOutlineColor={"#FF3D00"}
+                           outlineColor={'#0E9BA4'}
                 />
+
                 <View>
-                    <TextInput style={styles.input}
-                        mode="outlined" outlineColor="#009788" activeOutlineColor="#009788"
-                        label="Quand ?"
-                        placeholder="JJ/MM/AAAA"
-                        onFocus={showDatepicker}
+                    <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center",marginBottom: 5}}
+                               mode="outlined"
+                               label="Quand ? ?"
+                               placeholder ="JJ/MM/AAAA"
+                               activeOutlineColor={"#FF3D00"}
+                               outlineColor={'#0E9BA4'}
+                               onFocus={showDatepicker}
                     />
                     {show && (
                         <DateTimePicker
@@ -141,12 +209,29 @@ function HomeScreen(props) {
                         />
                     )}
                 </View>
+                <View style={{alignItems: "center", marginTop: 12, marginBottom: 8 }}>
+                    <MultiSelect
+                        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                        placeholderStyle={styles.placeholderStyle}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        inputSearchStyle={styles.inputSearchStyle}
+                        iconStyle={styles.iconStyle}
+                        search
+                        data={restaurantTypeList}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Quel type de cuisine ?"
+                        searchPlaceholder="Search..."
+                        /* value={restaurantType} */
+                        onChange={item => {
+                            setRestaurantType(...restaurantType, item);
+                            setIsFocus(false);
+                        }}
+                        renderLeftIcon={() => (
+                            <MaterialIcons style={styles.icon} name="restaurant" size={24} color="#0E9BA4" />
 
-                <View style={pickerStyle, { alignContent: "center"}}>
-                    <RNPickerSelect style={styles.placeholder}
-                        onValueChange={(value) => { setRestaurantType(value) }}
-                        placeholder={{ label: "Quel type de cuisine ?", value: null, color: "#009788" }}
-                        items={restaurantTypeList}
+                        )}
+                      selectedStyle={styles.selectedStyle} 
                     />
                 </View>
 
@@ -177,18 +262,36 @@ const styles = StyleSheet.create({
         top: 0,
         justifyContent: "flex-start",
     },
-    input: {
-        fontWeight: "600",
-        marginLeft:"3%",
-        marginRight:"3%"
-    },
-    placeholder: {
-        borderStyle: "solid",
-        borderColor: "#888888",
-        borderWidth: 3,
-    },
-   
-    
+    dropdown: {
+        width: "70%",
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+        backgroundColor: "transparent",
+      },
+      placeholderStyle: {
+        fontSize: 16,
+        textAlign: "center",
+      },
+      selectedTextStyle: {
+        fontSize: 14,
+      },
+      iconStyle: {
+        width: 20,
+        height: 20,
+      },
+      inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+      },
+      icon: {
+        marginRight: 5,
+      },
+      selectedStyle: {
+        borderRadius: 12,
+      },
 });
 
 
