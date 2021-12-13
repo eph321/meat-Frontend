@@ -79,7 +79,7 @@ function MyAccountScreen(props) {
                         onPress={() =>props.navigation.navigate('MyEvents')}
                     />
                     <IconButton
-                        icon="human-handsup"
+                        icon="message"
                         color={'#0E9BA4'}
                         size={25}
                         onPress={() =>  props.navigation.navigate('MyBuddies')}
