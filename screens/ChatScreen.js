@@ -17,6 +17,7 @@ function ChatScreen(props) {
     const [author, setAuthor] =useState("");
     const [isDisplay,setIsDisplay] =useState(true)
     const [dateToSend,setDateToSend] =useState("")
+    const isFocused = useIsFocused();
 
     // props.userRegister.firstName
     const handlePress = async () => {
@@ -26,10 +27,6 @@ function ChatScreen(props) {
         let formattedDate =today.toLocaleString('fr-FR', options);
 
 
-
-        console.log(formattedDate)
-
-
         socket.emit("sendMessage", JSON.stringify({content: currentMessage,
                                                              author: author,
                                                              conversation: props.conversationToSend,date: formattedDate  }));
@@ -37,7 +34,7 @@ function ChatScreen(props) {
         let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/update-messages`,{
             method:'POST',
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
-            body: `content=${props.userToSend}&author=${author}&conversation=${props.conversationToSend}&date=${formattedDate}`
+            body: `content=${currentMessage}&author=${author}&conversation=${props.conversationToSend}&date=${formattedDate}`
 
         });
         let response = await rawResponse.json();
@@ -58,8 +55,7 @@ function ChatScreen(props) {
         setListMessages([response.chatMessages])
         setAuthor(response.author)}
         getChatMessages();
-        return  ()=> console.log("composant détruit")
-        setIsDisplay(false)
+
 
     },[])
 
