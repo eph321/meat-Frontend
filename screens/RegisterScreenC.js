@@ -1,15 +1,15 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState} from 'react';
 
 import {AsyncStorage, StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text} from "react-native-paper";
 import { connect } from 'react-redux';
-const IP_LACAPSULE_ETIENNE = "172.17.1.60";
+
 
 function RegisterScreenC(props) {
 
 
     const signUpBackend = async () => {
-        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/sign-up`,{
+        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/users/sign-up`,{
             method:'POST',
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
             body: `lastname=${props.userToSend.lastName}&firstname=${props.userToSend.firstName}&password=${props.userToSend.inputPassword}&description=${userDesc}&email=${props.userToSend.inputEmail}&dateofbirth=${props.userToSend.dateOfBirth}&gender=${props.userToSend.gender}&addresses=${props.userToSend.userAddress}&avatar=${props.userToSend.inputAvatar}&phone=${props.userToSend.inputPhone}&preference1=${userPreference1}&preference2=${userPreference2}&preference3=${userPreference3}`
@@ -24,6 +24,7 @@ function RegisterScreenC(props) {
 
         });
         var response = await rawResponse.json();
+        console.log("résumé des infos envoyés au backend")
         console.log(response)
         console.log(response.newUserSave.token)
         let  {token} = response.newUserSave

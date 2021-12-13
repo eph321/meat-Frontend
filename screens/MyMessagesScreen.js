@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, View,Button } from 'react-native';
+import React  from 'react';
+import {  View,Button } from 'react-native';
 import {AntDesign} from "@expo/vector-icons";
 
 
@@ -29,13 +29,7 @@ function MyMessagesScreen(props) {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
+
 
 
 export default MyMessagesScreen;

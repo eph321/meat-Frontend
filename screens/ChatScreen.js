@@ -1,8 +1,9 @@
 import React, { useState,useEffect } from 'react';
 import {KeyboardAvoidingView, ScrollView, StyleSheet, View} from 'react-native';
-import {Appbar, IconButton, RadioButton, List, Button, TextInput, Text,Chip,Card,Title,Paragraph,Badge} from "react-native-paper";
+import {Appbar, IconButton,  List,  TextInput, } from "react-native-paper";
 import socketIOClient from "socket.io-client";
 import {connect} from "react-redux";
+
 
 
 var socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
@@ -10,12 +11,51 @@ var socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
 function ChatScreen(props) {
     const [currentMessage,setCurrentMessage] = useState("")
     const [listMessages,setListMessages] = useState([])
+    const [author, setAuthor] =useState("");
 
     // props.userRegister.firstName
-    const handlePress = () => {
-        socket.emit("sendMessage", JSON.stringify({content: currentMessage, author: props.userToSend.firstName }));
+    const handlePress = async () => {
+
+        //envoi du message en websocket
+
+        socket.emit("sendMessage", JSON.stringify({content: currentMessage, author: author,conversation: props.userConversation}));
+
+        //envoi d'une copie en database
+
+        let rawSend = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/add-chat-message`, {
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: `conversation=${props.userConversation}&author=${author}&content=${currentMessage}`
+
+        })
+        let sendResponse = await rawSend.json();
+        console.log(sendResponse)
+        console.log("envoyé")
+
         setCurrentMessage("");
     }
+
+/*
+    router.post('/update-chat', async function(req,res, next){
+        let userConversation = await conversationModel.findById({id: req.body.conversation}).populate('users').exec();
+        userConversation.chat = [...userConversation.chat,req.body.message]
+        let savedConversation = await userConversation.save()
+
+
+        res.json({ result: true, conversation : savedConversation });*/
+    useEffect(async () => {
+            //Au chargement récupère les messages en bdd
+            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-chat-messages/${props.userConversation}`)
+            let response = await rawResponse.json();
+            // console.log(response)
+            setListMessages([])
+            return () => {
+                setListMessages([]); // Clean up à l'unmount du composant.
+            };
+
+
+        }
+        , [])
 
 
     useEffect(() => {
@@ -23,7 +63,7 @@ function ChatScreen(props) {
         socket.on('sendMessageToAll', (newMessage)=> {
             if(newMessage !== null){
 
-                setListMessages([...listMessages, JSON.parse(newMessage)])};
+                setListMessages([...listMessages, JSON.parse(newMessage)])}
             console.log(newMessage);
 
         });
@@ -43,10 +83,6 @@ function ChatScreen(props) {
         }
         
     }
-   const tabTest = [{author:"arthur",content:"Oui, j’ai beaucoup aimé l’ambiance, c’était cool de faire partie de ce goupe de M.eaters."},
-       {author:"axel",content:"D’ailleurs, je tenais à te remercier pour ta bonne humeur, j’ai beaucoup rigolé "},
-       {author:"arthur",content:"J’espère qu’on aura l’occasion de le refaire!"},
-       {author:"axel",content:"Je crée une table pour la semaine prochaine. "},]
 
 
 
@@ -143,31 +179,12 @@ function ChatScreen(props) {
 
     );
 }
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },viewHeader: {
-        flex: 2,
-        left: 0,
-        width:"100%",
-        top: 0,
-        justifyContent:"flex-start",
-
-    }, surface: {
-        width: "80%",
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        elevation: 10,
-    }
-});
-
 
 
 function mapStateToProps(state) {
     return {
-        userToSend: state.userRegister
+        userToSend: state.userToken,
+        conversationToSend : state.userConversation
     }}
 
 export default connect(
