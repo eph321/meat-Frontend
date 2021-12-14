@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 
 import {Platform, StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text,RadioButton} from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { connect } from 'react-redux';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import 'intl';
 import 'intl/locale-data/jsonp/fr-FR';
 
 
 
 function RegisterScreenB(props) {
+
+
+
     const [firstName,setFirstName] =useState('');
     const [lastName, setLastName] = useState('');
     const [userAddress, setUserAddress] = useState('');
@@ -131,6 +135,7 @@ function RegisterScreenB(props) {
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
             />
+
 
             <View style={{alignItems: "center", justifyContent: "flex-end"}}>
                 <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorUserAddress}</Text>
