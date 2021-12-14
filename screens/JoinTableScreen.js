@@ -9,6 +9,8 @@ import { FontAwesome } from '@expo/vector-icons';
 import {connect} from "react-redux";
 import userToken from '../reducers/userToken';
 
+const FranckIP = "http://192.168.1.41:3000"
+const herokuIP = "https://polar-stream-28883.herokuapp.com"
 
 function JoinTableScreen(props) {
 
@@ -17,7 +19,7 @@ function JoinTableScreen(props) {
    
     // `http://192.168.1.9:3000/join-table/${props.tableId}`
     useEffect( async() => {
-        var responseRaw = await fetch(`http://192.168.1.9:3000/join-table/${props.tableId}/${props.userToken}`)
+        var responseRaw = await fetch(`${herokuIP}/join-table/${props.tableId}/${props.userToken}`)
         var response = await responseRaw.json();
 
         console.log(response, 'ok'),
@@ -34,7 +36,7 @@ function JoinTableScreen(props) {
         var handleJoinTable = async () => {
 
 
-            var dataRaw = await fetch(`http://192.168.1.9:3000/enter-table`, {
+            var dataRaw = await fetch(`${herokuIP}/enter-table`, {
                             method: 'POST',
                             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                             body: `id=${props.tableId}&token=${props.userToken}`
