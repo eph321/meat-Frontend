@@ -63,14 +63,15 @@ function RegisterScreenB(props) {
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
             />
-            <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
+{/*            <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
                        label="Adresse Postale"
                        onChangeText={(userAddressValue)=> {setUserAddress(userAddressValue); setInputProgress(inputProgress + 0.01)}}
                        placeholder ="56 boulevard Pereire, 75017 Paris"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
-            />
+            />*/}
+
             <GooglePlacesAutocomplete
                 placeholder='Search'
                 onPress={(data, details = null) => {
@@ -79,9 +80,10 @@ function RegisterScreenB(props) {
                 }}
                 query={{
                     key: 'AIzaSyDv42YKXmBgw6YrGJVtgjtwNNeUht-82I8',
-                    language: 'fr',
+                    language: 'en',
                 }}
             />
+
 
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
