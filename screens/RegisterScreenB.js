@@ -78,7 +78,7 @@ function RegisterScreenB(props) {
             setInputErrorPhone("")
         }
 
-        if (dateOfBirth !== new Date(1598051730000)) {
+        if (dateOfBirth === new Date(1598051730000)) {
             setInputErrorDateOfBirth("*Champ requis!")
         } else {
             setInputErrorDateOfBirth("")
