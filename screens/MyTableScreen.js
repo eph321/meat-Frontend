@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native';
-import {Title, Button, Card, Paragraph, Subheading, Appbar, IconButton, TextInput} from 'react-native-paper';
-import { ListItem, Input} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {Title,  Card, Paragraph, Subheading, Appbar, IconButton, TextInput} from 'react-native-paper';
+import { ListItem} from 'react-native-elements';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import {connect} from "react-redux";
@@ -44,7 +43,7 @@ function MyTableScreen(props) {
             author: author,
             room : props.tableId,date: formattedDate  }));
         //envoi d'une copie en database
-        loadNewMessageToDatabase({content: currentMessage,
+        await loadNewMessageToDatabase({content: currentMessage,
             author: author,
             room: props.tableId,date: formattedDate  });
         setCurrentMessage("");
@@ -96,7 +95,7 @@ function MyTableScreen(props) {
             setTableData(response.result)
           }
 
-         
+
         , []);
        
        
@@ -200,13 +199,14 @@ function MyTableScreen(props) {
 
              </View>
          </View>
-        <View style={{flex : 1, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
-        <Title>{tableInfo.title}</Title>
-        <Subheading>{tableInfo.date}</Subheading>
-        </View>
+        <View style={{flex:8,alignItems:"center"}}>
+            <View style={{flex : 1, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
+            <Title>{tableInfo.title}</Title>
+            <Subheading>{tableInfo.date}</Subheading>
+            </View>
     
-         <View style={{ flex: 3 , marginBottom:150, flexBasis : "auto", flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', }}>
-                <Card style={{ marginLeft : 60, marginBottom : 60, marginTop : 50, height : 250, width : 180 }}>
+         <View style={{ flex: 5 , flexBasis : "auto", flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', }}>
+                <Card style={{ width : "45%" }}>
                         <Card.Content>
                             <Title>M.Eaters : 1/{tableInfo.capacity}</Title>
                             <View style={{flexDirection: "row"}}>{tabCapacity}</View>
@@ -218,8 +218,8 @@ function MyTableScreen(props) {
                         </Card.Content>
                 </Card>
                 
-                <Card style={{marginLeft : 10 , marginRight : 60, marginBottom : 60, marginTop : 50, height : 250, width : 180 }}>
-                <Card.Cover style = {{height : 150, widht : 80}} source={{ uri: cardImage }} /> 
+                <Card style={{marginLeft : 10 ,  width : "45%"  }}>
+                <Card.Cover style = {{height : 150}} source={{ uri: cardImage }} />
                 
                         <Card.Content>
 
@@ -230,51 +230,53 @@ function MyTableScreen(props) {
                 </Card>
         </View>
        
-       <View style={{flex : 3, justifyContent: 'center'}}>
-       <Card style={{width : 350, height : 400, marginBottom:100}}>
-               <Card.Content>
-               <ScrollView style={{ marginTop: 50}}>
-                   {listMessages.map((message,i)=>{
-                       return <ListItem key={{i}}>
-                                <ListItem.Content >
-                                   <ListItem.Title>message.content</ListItem.Title>
-                                   <ListItem.Subtitle>message.author</ListItem.Subtitle>
-                               </ListItem.Content>
-                   </ListItem>
-                   })}
-      </ScrollView>
+       <View style={{flex : 4, justifyContent: 'center'}}>
+           <Card style={{width:"100%"}}>
+                   <Card.Content>
+                   <ScrollView style={{flex:1, marginTop: 50}}>
+                       {listMessages.map((message,i)=>{
+                           return <ListItem key={i}>
+                               <ListItem.Content >
+                                       <ListItem.Title>message.content</ListItem.Title>
+                                       <ListItem.Subtitle>message.author</ListItem.Subtitle>
+                                   </ListItem.Content>
+                       </ListItem>
+                       })}
 
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-          <View style={{flexDirection:"row",justifyContent:"center"}}>
-              <TextInput
+                     </ScrollView>
 
-                  multiline={true}
-                  style={{  textAlign:'center',width:'70%',justifyContent:"flex-end" }}
-                  mode="outlined"
-                  label="Message"
-                  onChangeText={(message)=>setCurrentMessage(message)}
-                  activeOutlineColor={"#FF3D00"}
-                  outlineColor={'#0E9BA4'}
-                  containerStyle = {{marginBottom: 5}}
-                  placeholder='Ecrire ici...'
-                  value={currentMessage}
-              />
-              <IconButton
-                  icon="send"
-                  color={'#0E9BA4'}
-                  size={25}
-                  onPress={() => handlePress()}
-              />
-          </View>
-      </KeyboardAvoidingView>
-               </Card.Content>
+                      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                          <View style={{flexDirection:"row",justifyContent:"center"}}>
+                              <TextInput
 
-               
-       </Card>
+                                  multiline={true}
+                                  style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
+                                  mode="outlined"
+                                  label="Message"
+                                  onChangeText={(message)=>setCurrentMessage(message)}
+                                  activeOutlineColor={"#FF3D00"}
+                                  outlineColor={'#0E9BA4'}
+                                  containerStyle = {{marginBottom: 5}}
+                                  placeholder='Ecrire ici...'
+                                  value={currentMessage}
+                              />
+                              <IconButton
+                                  icon="send"
+                                  color={'#0E9BA4'}
+                                  size={25}
+                                  onPress={() => handlePress()}
+                              />
+                          </View>
 
-       
-        
-       
+                      </KeyboardAvoidingView>
+                   </Card.Content>
+
+
+           </Card>
+
+
+
+           </View>
        </View>
       
        </View>
