@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View,  ScrollView, TouchableOpacity, Platform, AsyncStorage} from 'react-native';
-import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text} from "react-native-paper";
+import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text,Portal,Modal,Provider,Button} from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 
 
@@ -18,6 +18,12 @@ function MyAccountScreen(props) {
     const [inputErrorLastname, setInputErrorLastname] = useState("");
     const [inputErrorUserAddress, setInputErrorUserAddress] = useState("");
     const [inputErrorPhone, setInputErrorPhone] = useState("");
+
+    const [visibleModal, setVisibleModal] =useState(false);
+
+    const showModal = () => setVisible(true);
+    const hideModal = () => setVisible(false);
+    const containerStyle = {backgroundColor: 'white', padding: 20};
 
     // préparation de l'envoi dans le store
     const [tempAvatarUri,setTempAvatarUri] =useState("")
@@ -109,11 +115,12 @@ function MyAccountScreen(props) {
       }   
     }
     const fetchAddress = async (val) => {
-        let valfiltered =val.replace('_',"+");
-        let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${valfiltered }&limit=5`)
+        let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
         let response = await rawResponse.json();
+        console.log(response.features[0].properties.label);
+        setVisibleModal(true)
         setlistAddress(response.features[0].properties.label)
-        console.log();
+
 
     }
 
@@ -184,6 +191,7 @@ function MyAccountScreen(props) {
                         activeOutlineColor={"#FF3D00"}
                         outlineColor={'#0E9BA4'}
                     />
+
 
                     <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
                         <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{errorEmail}</Text>
@@ -266,6 +274,7 @@ function MyAccountScreen(props) {
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
                     />
+
                     <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
                         <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorUserAddress}</Text>
                     </View>  
@@ -276,7 +285,8 @@ function MyAccountScreen(props) {
                             onPress={() => {connexionValidation(); console.log('Pressed')}}
                         />
                     </View>
-                    <View style={{flexDirection:"row",justifyContent:"center"}}>
+
+r                    <View style={{flexDirection:"row",justifyContent:"center"}}>
                     <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                                mode="outlined"
                                label="Numéro de mobile"

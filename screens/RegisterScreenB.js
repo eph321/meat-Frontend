@@ -17,6 +17,7 @@ function RegisterScreenB(props) {
     const [errorMsg, setErrorMsg] = useState(null);
     const [firstName,setFirstName] =useState('');
     const [lastName, setLastName] = useState('');
+
     const [userAddress, setUserAddress] = useState('');
     const [phone, setPhone] = useState('');
     const [gender, setGender] =useState("male")
@@ -77,8 +78,8 @@ function RegisterScreenB(props) {
 
         if (phone === "") {
             setInputErrorPhone("*Numéro de mobile requis!")
-            } else if (!phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/)) {
-            setErrorPassword("*Le numéro de mobile doit comporter 10 chiffres!")
+            } else if (phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/)) {
+            setInputErrorPhone("*Le numéro de mobile doit comporter 10 chiffres!")
             } else {
             setInputErrorPhone("")
         }

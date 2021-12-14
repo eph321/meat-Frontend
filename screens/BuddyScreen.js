@@ -36,10 +36,10 @@ function BuddyScreen(props) {
 
     const displayUser = (user,i) => {
 
-        return <TouchableOpacity key={i} onPress={() => handleAddFriend(user.token)}>
-        <View  style={{flexDirection: "row", justifyContent: "center", alignItems: "center",}}>
+        return <View  >
+        <View key={i} style={{flexDirection: "row", justifyContent: "center", alignItems: "center",}}>
                 <Card style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "3%",width:"100%"}}>
-                    <Card.Content style={{flexDirection: "row",alignItems:"center"}}>
+                    <Card.Content style={{flexDirection: "row",alignItems:"center",justifyContent:"space-between"}}>
                         <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(user.avatar)?{uri: user.avatar}:require("../assets/picture-4.png")} />
                         <View>
                         <Title style={{fontWeight:"bold", fontSize:30, marginBottom:5}}>{user.firstname}</Title>
@@ -48,10 +48,18 @@ function BuddyScreen(props) {
                         <Paragraph>{user.preference2}</Paragraph>
                         <Paragraph>{user.preference3}</Paragraph>
                         </View>
+                        <IconButton
+                            icon="account-plus"
+                            mode="contained"
+                            color={'#0E9BA4'}
+                            style={{borderColor: "#009788", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2 }}
+                            size={32}
+                            onPress={() => handleAcceptBuddy(user.token)}
+                        />
                     </Card.Content>
                 </Card>
         </View>
-        </TouchableOpacity>}
+        </View>}
 
 
 
