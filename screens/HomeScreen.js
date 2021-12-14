@@ -5,6 +5,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
 import { MultiSelect } from 'react-native-element-dropdown';
+import 'intl';
+import 'intl/locale-data/jsonp/fr-FR';
+
+
 
 const FranckLacapsuleIP = "http://172.17.1.118:3000"
 const FranckIP = "http://192.168.1.41:3000"
@@ -256,7 +260,7 @@ function HomeScreen(props) {
                 </View>
 
             </View>
-            <View style={{ flex: 3, height: 100 }}>
+            <View style={{ flex:10 }}>
                 <ScrollView >
 
                     {tableList}
@@ -325,6 +329,34 @@ const styles = StyleSheet.create({
     },
 });
 
+
+const pickerStyle = {
+	inputIOS: {
+		color: 'white',
+		paddingTop: 13,
+		paddingHorizontal: 10,
+		paddingBottom: 12,
+	},
+	inputAndroid: {
+		color: 'white',
+	},
+	placeholderColor: 'white',
+	underline: { borderTopWidth: 0 },
+	icon: {
+		position: 'absolute',
+		backgroundColor: 'transparent',
+		borderTopWidth: 5,
+		borderTopColor: '#00000099',
+		borderRightWidth: 5,
+		borderRightColor: 'transparent',
+		borderLeftWidth: 5,
+		borderLeftColor: 'transparent',
+		width: 0,
+		height: 0,
+		top: 20,
+		right: 15,
+	},
+};
 
 
 function mapStateToProps(state) {

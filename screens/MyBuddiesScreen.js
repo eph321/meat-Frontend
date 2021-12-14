@@ -16,9 +16,10 @@ function MyBuddiesScreen(props) {
 
                 let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-related-users/${props.userToSend}`)
                 let response = await rawResponse.json();
+
                 setRelations([...response.listOfRelations])})()
 
-        } , [isFocused])
+        } , [relations])
 
     const handleAcceptBuddy = async (buddyToken) => {
 
@@ -40,7 +41,7 @@ function MyBuddiesScreen(props) {
 
         })
         let sendResponse = await rawSend.json();
-
+        console.log(sendResponse)
     };
 
     const handleConversation = async (buddyToken) => {

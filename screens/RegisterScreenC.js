@@ -10,7 +10,8 @@ import {useIsFocused} from "@react-navigation/native";
 
 
 function RegisterScreenC(props) {
-    const isFocused = useIsFocused();
+    const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
+    const [setRestaurantType,RestaurantType] = useState([])
     const restaurantTypeList = [
         { label: 'Italien', value: 'Italien' },
         { label: 'Japonais', value: 'Japonais' },
@@ -32,9 +33,6 @@ function RegisterScreenC(props) {
 
         });
         let response = await rawResponse.json();
-        console.log("résumé des infos envoyés au backend")
-        console.log(response)
-        console.log(response.newUserSave.token)
         let  {token} = response.newUserSave
         await AsyncStorage.setItem("userToken", JSON.stringify(token))
         props.sendUserTokenRegister(token)
@@ -80,7 +78,7 @@ function RegisterScreenC(props) {
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
             />
-            <View style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center" }}>
+{/*            <View style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center" }}>
                 <MultiSelect
                     style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
                     placeholderStyle={styles.placeholderStyle}
@@ -91,11 +89,11 @@ function RegisterScreenC(props) {
                     data={restaurantTypeList}
                     labelField="label"
                     valueField="value"
-                    placeholder="Quel type de cuisine ?"
+                    placeholder="Préférences"
                     searchPlaceholder="Search..."
-                    /* value={restaurantType} */
+
                     onChange={item => {
-                        setRestaurantType([item]);
+                        setRestaurantType(item);
                         setIsFocus(false);
                     }}
                     renderLeftIcon={() => (
@@ -104,7 +102,7 @@ function RegisterScreenC(props) {
                     )}
                     selectedStyle={styles.selectedStyle}
                 />
-            </View>
+            </View>*/}
             <TextInput style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
                        multiline={true}
