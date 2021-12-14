@@ -70,8 +70,13 @@ function RegisterScreenB(props) {
 
             for (let item of response) {
                 let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
+                if (address.length > 0) {
+                    //attend 2 secondes avant de définir l'adresse
+                    setTimeout(() => {
+                        setUserAddress(address);
+                    }, 2000);
+                }
 
-                setUserAddress(address);
             }
         }
     };
