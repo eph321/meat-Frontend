@@ -5,26 +5,32 @@ import { Appbar, Card, Title, Paragraph, IconButton } from "react-native-paper";
 import { connect } from "react-redux";
 
 const herokuIP = "https://polar-stream-28883.herokuapp.com"
+const FranckIP = "http://192.168.1.41:3000"
 
 function MyEventsScreen(props) {
 
-        const [tableDataList, setTableDataList] = useState([""])
+        const [myEventsList, setMyEventsList] = useState([])
 
         useEffect(async () => {
-                var rawResponse = await fetch(`${herokuIP}/search-table`);
+                var rawResponse = await fetch(`${FranckIP}/my-events/${props.userToken}`);
                 var response = await rawResponse.json();
-                setTableDataList(response.result)
+                setMyEventsList(response.result)           
         }, [])
 
-        var tableList = tableDataList.map((e, i) => {
+ 
+        var eventsList = myEventsList.map((e, i) => {
 
+                let dateParse = new Date(e.date)
+                let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
+        formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)
 
                 return (
                         <Card key={i} style={{ marginBottom: 8 }} onPress={() => { props.navigation.navigate("MyTable"), props.onCardClick(e._id) }}>
                                 <Card.Content style={{ alignItems: "center", justifyContent: "center" }}>
                                         <Title>{e.title}</Title>
                                         <Paragraph style={{ alignSelf: "center" }}>{e.description}</Paragraph>
-                                        <Paragraph>{e.date}</Paragraph>
+                                        <Paragraph>M.eaters : {`${e.guests.length+1}`}</Paragraph>
+                                        <Paragraph>{formattedDate}</Paragraph>
                                 </Card.Content>
                         </Card>
                 )
@@ -64,6 +70,7 @@ function MyEventsScreen(props) {
                                         onPress={() => props.navigation.navigate('MyAccount')}
                                 />
                         </View>
+                        <View style={{alignItems:"center", flex:6}}>
                         <Text style={{ fontSize: 26, marginBottom: 20, marginTop: 20 }}>
                                 Mes participations
                         </Text>
@@ -72,21 +79,16 @@ function MyEventsScreen(props) {
 
                                 <View style={{ justifyContent: "center" }}>
 
-                                        {tableList}
+                                        {eventsList}
 
                                 </View>
 
                         </ScrollView>
+                        </View>
+
+                        </View>
 
 
-
-
-
-
-
-
-
-                </View>
         );
 }
 
@@ -113,8 +115,14 @@ function mapDispatchToProps(dispatch) {
         }
 }
 
+function mapStateToProps(state){
+        return {
+                userToken : state.userToken
+        }
+}
+
 
 export default connect(
-        null,
+        mapStateToProps,
         mapDispatchToProps
 )(MyEventsScreen);

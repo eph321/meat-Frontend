@@ -67,7 +67,7 @@ function HomeScreen(props) {
     // Affichage des tables existantes 
 
     useEffect(async () => {
-        var rawResponse = await fetch(`${herokuIP}/search-table`);
+        var rawResponse = await fetch(`${FranckIP}/search-table`);
         var response = await rawResponse.json();
         setTableDataList(response.result)
     }, [] //(restaurantType.length===0)?tableDataList:undefined
@@ -80,18 +80,18 @@ function HomeScreen(props) {
                 const typeFilterResponse = await rawTypeFilterResponse.json();
                 setTableDataList(typeFilterResponse.result)
             } else {
-                var rawResponse = await fetch(`${herokuIP}/search-table`);
+                var rawResponse = await fetch(`${FranckIP}/search-table`);
                 var response = await rawResponse.json();
                 setTableDataList(response.result)
             }
         }
 
         //// FILTRE Où ?
-        if (dateFilter){
+       /*  if (dateFilter){
             const rawDateFilterResponse = await fetch(`${FranckIP}/filter-date/${dateFilter}`)
             const dateFilterResponse = await rawDateFilterResponse.json();
-        }
-    }, [restaurantType, dateFilter])
+        } */
+    }, [restaurantType]) //dateFilter
 
     // Conditions du useEffect
     // lorsque setRestaurantType([item]) : ne détecte pas changement de l'état restaurantType
