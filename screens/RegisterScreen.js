@@ -16,6 +16,11 @@ function RegisterScreen(props) {
     const [inputProgress,setInputProgress] = useState(0);
     const [image, setImage] = useState(null);
     const [visible, setVisible] = useState(true);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [errorEmail, setErrorEmail] = useState("");
+    const [errorPassword, setErrorPassword] = useState("");
+    const [errorConfirmPassword, setErrorConfirmPassword] = useState("");
+
 
     // préparation de l'envoi dans le store
     const [tempAvatarUri,setTempAvatarUri] =useState("")
@@ -57,6 +62,49 @@ function RegisterScreen(props) {
             }
         }
 
+    const connexionValidation = () => {
+        if (inputEmail && inputPassword && inputPasswordVerif && inputPassword === inputPasswordVerif) {
+            props.navigation.navigate('RegisterB')
+        } else {
+        
+        if (inputEmail === "") {
+            setErrorEmail("*Email requis!")
+        } else {
+            setErrorEmail("")
+        }
+
+        if (inputPassword === "") {
+            setErrorPassword("*Mot de passe requis!")
+        } else { 
+            setErrorPassword("")
+        }
+
+        if (inputPasswordVerif === "") {
+            setErrorConfirmPassword("*Confirmation du mot de passe requise!")
+        } else {
+            setErrorConfirmPassword("")
+        }
+
+        if (inputPassword !== inputPasswordVerif) {
+            setErrorMessage("*Les mots de passe ne correspondent pas.")
+
+        } else{
+            setErrorMessage("")
+        }
+    }   
+    }
+    
+
+   /*  const passwordVerification = () => {
+        if (inputPassword === inputPasswordVerif) {
+            setIsValid(true);
+            props.navigation.navigate('RegisterB')
+        } else {
+            setIsValid(false);
+            setErrorMessage("Les mots de passe ne correspondent pas.")
+        }
+    } */
+
 
     return (
                 <View style={{flex:1,justifyContent: 'space-evenly'}}>
@@ -73,7 +121,7 @@ function RegisterScreen(props) {
                         </View>
                     </TouchableOpacity>
 
-                    <TextInput style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
+                    <TextInput style={{ textAlign:'center',width:'70%',alignSelf:"center"}}
                                mode="outlined"
                                label="Email"
                                onChangeText={(valEmail)=> {setInputEmail(valEmail);setInputProgress(inputProgress + 0.01)}}
@@ -82,6 +130,9 @@ function RegisterScreen(props) {
                                outlineColor={'#0E9BA4'}
                     />
 
+                    <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
+                        <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{errorEmail}</Text>
+                    </View>
 
                     <TextInput style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
                                mode="outlined"
@@ -91,6 +142,11 @@ function RegisterScreen(props) {
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
                     />
+
+                    <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
+                        <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{errorPassword}</Text>
+                    </View>
+
                     <TextInput style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
                                mode="outlined"
                                label="Confirmation du mot de passe *"
@@ -99,9 +155,18 @@ function RegisterScreen(props) {
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
                     />
+
+                    <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
+                        <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{errorConfirmPassword}</Text>
+                    </View>
+
+                    <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
+                        <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{errorMessage}</Text>
+                    </View>
+
                     <Button
                         style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
-                         mode="contained" onPress={() =>{ props.navigation.navigate('RegisterB');props.sendData({inputEmail:inputEmail,inputPassword:inputPassword,inputAvatar:tempAvatarUri}) }}>
+                         mode="contained" onPress={() =>{connexionValidation();props.sendData({inputEmail:inputEmail,inputPassword:inputPassword,inputAvatar:tempAvatarUri}) }}>
                         <Text Style={{color:'#FFC960'}}>Press me</Text>
                     </Button>
 

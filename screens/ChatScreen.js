@@ -4,7 +4,8 @@ import {Appbar, IconButton,  List,  TextInput, Text} from "react-native-paper";
 import socketIOClient from "socket.io-client";
 import { useIsFocused } from '@react-navigation/native';
 import {connect} from "react-redux";
-
+import 'intl';
+import 'intl/locale-data/jsonp/fr-FR';
 
 
 
@@ -22,20 +23,11 @@ function ChatScreen(props) {
     // props.userRegister.firstName
     const handlePress = async () => {
         const today = new Date(Date.now());
-        const loadNewMessageToDatabase = async (message) =>{
-            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/update-messages`,{
-                method:'POST',
-                headers:{'Content-Type':'application/x-www-form-urlencoded'},
-                body: `content=${message.content}&author=${message.author}&conversation=${props.conversationToSend}&date=${message.date}`
 
-            });
-            let response = await rawResponse.json();
-            console.log(response)
 
-        }
-
-        const options = {  day: '2-digit', month: '2-digit', year: '2-digit' }
-        let formattedDate =today.toLocaleString('fr-FR', options);
+        // const options = {  day: '2-digit', month: '2-digit', year: '2-digit' }
+        // let formattedDate =today.toLocaleString('fr-FR', options);
+        let formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(today)
 
 
         socket.emit("sendMessage", JSON.stringify({content: currentMessage,
@@ -58,7 +50,6 @@ function ChatScreen(props) {
             let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-chat-messages/${props.conversationToSend}/${props.userToSend}`)
             let response = await rawResponse.json();
             console.log("j'essaie de récupérer les messages")
-            console.log(response.chatMessages)
             setListMessages(response.chatMessages)
             setAuthor(response.author)}
         getChatMessages();
@@ -79,14 +70,25 @@ function ChatScreen(props) {
                 console.log(messageToFilter)
                 if (messageToFilter.conversation === props.conversationToSend){
                     setListMessages([...listMessages,messageToFilter ])}
-                    console.log(listMessages)
+                const loadNewMessageToDatabase = async (message) =>{
+                    let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/update-messages`,{
+                        method:'POST',
+                        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                        body: `content=${messageToFilter.content}&author=${messageToFilter.author}&conversation=${messageToFilter.conversationToSend}&date=${messageToFilter.date}`
+
+                    });
+                    let response = await rawResponse.json();
+                    console.log("envoyé en bdd")
+                }
+                loadNewMessageToDatabase();
+
 
 
                 }
         });
 
 
-    }, [listMessages]);
+    }, [isFocused]);
 
     const displayMessage = (message,i) => {
         if ( message.author === author ){

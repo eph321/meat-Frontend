@@ -4,6 +4,8 @@ import {Platform, StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text,RadioButton} from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { connect } from 'react-redux';
+import 'intl';
+import 'intl/locale-data/jsonp/fr-FR';
 
 
 
@@ -13,26 +15,78 @@ function RegisterScreenB(props) {
     const [userAddress, setUserAddress] = useState('');
     const [phone, setPhone] = useState('');
     const [gender, setGender] =useState("male")
-    const [dateOfBirth, setDateOfBirth] = useState(new Date(1598051730000));
-    const [inputProgress,setInputProgress] = useState(0);
-
+    const [dateOfBirth, setDateOfBirth] = useState(new Date(Date.now()));
     const [mode, setMode] = useState('date');
+    const [inputProgress,setInputProgress] = useState(0);
     const [show, setShow] = useState(false);
+    const [dateIsSelected, setDateIsSelected] = useState(false); // Pour changer le texte dans le button
+    const formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(dateOfBirth)
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || dateOfBirth;
         setShow(Platform.OS === 'ios');
         setDateOfBirth(currentDate);
-    };
+        setDateIsSelected(true);
 
+    };
     const showMode = (currentMode) => {
-        setShow(true);
+        setShow(!show);
         setMode(currentMode);
     };
 
     const showDatepicker = () => {
         showMode('date');
     };
+
+
+
+    const [inputErrorFirstname, setInputErrorFirstname] = useState("");
+    const [inputErrorLastname, setInputErrorLastname] = useState("");
+    const [inputErrorUserAddress, setInputErrorUserAddress] = useState("");
+    const [inputErrorPhone, setInputErrorPhone] = useState("");
+    const [inputErrorDateOfBirth, setInputErrorDateOfBirth] = useState("");
+
+
+
+
+    const connexionValidation = () => {
+        if (firstName && lastName && userAddress && phone && dateOfBirth) {
+            props.navigation.navigate('RegisterC')
+        } else {
+        
+        if (firstName === "") {
+            setInputErrorFirstname("*Prénom requis!")
+        } else {
+            setInputErrorFirstname("")
+        }
+
+        if (lastName === "") {
+            setInputErrorLastname("*Nom de famille requis!")
+        } else {
+            setInputErrorLastname("")
+        }
+
+        if (userAddress === "") {
+            setInputErrorUserAddress("*Adresse requise!")
+        } else {
+            setInputErrorUserAddress("")
+        }
+
+        if (phone === "") {
+            setInputErrorPhone("*Numéro de mobile requis!")
+        } else {
+            setInputErrorPhone("")
+        }
+
+        if (dateOfBirth === new Date(1598051730000)) {
+            setInputErrorDateOfBirth("*Champ requis!")
+        } else {
+            setInputErrorDateOfBirth("")
+        }
+    }   
+    }
+
+
 
 
 
@@ -52,7 +106,9 @@ function RegisterScreenB(props) {
                 outlineColor={'#0E9BA4'}
             />
 
-
+            <View style={{alignItems: "center", justifyContent: "flex-end"}}>
+                <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorFirstname}</Text>
+            </View>         
 
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
@@ -62,6 +118,11 @@ function RegisterScreenB(props) {
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
             />
+
+            <View style={{alignItems: "center", justifyContent: "flex-end"}}>
+                <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorLastname}</Text>
+            </View>
+
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
                        label="Adresse Postale"
@@ -70,6 +131,10 @@ function RegisterScreenB(props) {
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
             />
+
+            <View style={{alignItems: "center", justifyContent: "flex-end"}}>
+                <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorUserAddress}</Text>
+            </View>
 
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
@@ -80,13 +145,18 @@ function RegisterScreenB(props) {
                        outlineColor={'#0E9BA4'}
             />
 
+            <View style={{alignItems: "center", justifyContent: "flex-end"}}>
+                <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorPhone}</Text>
+            </View>
+
             <View>
                 <View>
                     <Button
                         mode="outlined"
                         color={"#0E9BA4"}
                         style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#FFFFFF",color:"#0E9BA4" }}
-                        onPress={showDatepicker} icon="calendar" ><Text  Style={{color:"#0E9BA4"}}>Date de naissance</Text></Button>
+                        onPress={showDatepicker} icon="calendar" ><Text  Style={{color:"#0E9BA4"}}>{(dateIsSelected) ? "Le " + formattedDate : "Date de Naissance"}</Text>
+                    </Button>
                 </View>
                 {show && (
                     <DateTimePicker
@@ -98,6 +168,10 @@ function RegisterScreenB(props) {
                         onChange={onChange}
                     />
                 )}
+            </View>
+
+            <View style={{alignItems: "center", justifyContent: "flex-end"}}>
+                <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorDateOfBirth}</Text>
             </View>
 
                 <RadioButton.Group
@@ -124,7 +198,7 @@ function RegisterScreenB(props) {
 
             <Button
                 style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
-                mode="contained" onPress={() =>{ props.navigation.navigate('RegisterC');props.sendPersonalData({firstName : firstName, lastName:lastName, userAddress:userAddress, inputPhone:phone, gender:gender, dateOfBirth:dateOfBirth}) }}>
+                mode="contained" onPress={() =>{ connexionValidation();props.sendPersonalData({firstName : firstName, lastName:lastName, userAddress:userAddress, inputPhone:phone, gender:gender, dateOfBirth:dateOfBirth}) }}>
                 <Text Style={{color:'#FFC960'}}>Press me</Text>
             </Button>
 

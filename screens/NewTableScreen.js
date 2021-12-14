@@ -38,10 +38,10 @@ function NewTableScreen(props) {
 
     const [restaurantType, setRestaurantType] = useState("");
     const [ageRange, setAgeRange] = useState("");
-    const [title, setTitle] = useState('');
-    const [restaurantName, setRestaurantName] = useState('');
-    const [restaurantAddress, setRestaurantAddress] = useState('');
-    const [description, setDescription] = useState('');
+    const [title, setTitle] = useState("");
+    const [restaurantName, setRestaurantName] = useState("");
+    const [restaurantAddress, setRestaurantAddress] = useState("");
+    const [description, setDescription] = useState("");
     const [planner, setPlanner] = useState(props.userToken);
 
     const [isTypeFocus, setIsTypeFocus] = useState(false); // pour style de la liste déroulante type restaurant
@@ -58,15 +58,15 @@ function NewTableScreen(props) {
 
 // AJOUTER UN MINIMUM DATE + TIME
 
-    const formattedDate = date.toLocaleString("fr-FR", options)
-    const options = { weekday: 'long', day: '2-digit', month: '2-digit', year: '2-digit' }
-
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
         setDateValue(true);
     };
+
+    const formattedDate = date.toLocaleString("fr-FR", options)
+    const options = { day: '2-digit', month: '2-digit', year: '2-digit' }
 
     const showMode = (currentMode) => {
         setShow(true);

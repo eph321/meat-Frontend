@@ -133,7 +133,7 @@ function JoinTableScreen(props) {
                      icon="message-text"
                      color={'#0E9BA4'}
                      size={25}
-                     onPress={() =>  props.navigation.navigate('Chat')}
+                     onPress={() =>  props.navigation.navigate('MyBuddies')}
                  />
                  <IconButton
                      icon="account"
