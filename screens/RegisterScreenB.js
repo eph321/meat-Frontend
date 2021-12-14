@@ -4,6 +4,7 @@ import {Platform, StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text,RadioButton} from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { connect } from 'react-redux';
+import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
 
 
 
@@ -69,6 +70,17 @@ function RegisterScreenB(props) {
                        placeholder ="56 boulevard Pereire, 75017 Paris"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
+            />
+            <GooglePlacesAutocomplete
+                placeholder='Search'
+                onPress={(data, details = null) => {
+                    // 'details' is provided when fetchDetails = true
+                    console.log(data, details);
+                }}
+                query={{
+                    key: 'AIzaSyDv42YKXmBgw6YrGJVtgjtwNNeUht-82I8',
+                    language: 'fr',
+                }}
             />
 
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}

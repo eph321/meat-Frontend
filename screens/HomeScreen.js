@@ -6,6 +6,8 @@ import { MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome5 } from '@
 import { connect } from "react-redux"
 import { MultiSelect } from 'react-native-element-dropdown';
 
+
+
 const FranckLacapsuleIP = "http://172.17.1.118:3000"
 const FranckIP = "http://192.168.1.41:3000"
 const herokuIP = "https://polar-stream-28883.herokuapp.com"
@@ -109,7 +111,7 @@ function HomeScreen(props) {
         }
 
         let dateParse = new Date(e.date)
-        // let formattedDate = new Intl.DateTimeFormat("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }).format(dateParse)
+
         let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
         formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
 
