@@ -4,6 +4,7 @@ import {StyleSheet, View, TouchableOpacity, Platform} from 'react-native';
 import {TextInput, Appbar, Button, ProgressBar, Text, Avatar} from "react-native-paper";
 import { connect } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
+import { renderNode } from 'react-native-elements/dist/helpers';
 
 
 
@@ -20,7 +21,6 @@ function RegisterScreen(props) {
     const [errorEmail, setErrorEmail] = useState("");
     const [errorPassword, setErrorPassword] = useState("");
     const [errorConfirmPassword, setErrorConfirmPassword] = useState("");
-
 
     // préparation de l'envoi dans le store
     const [tempAvatarUri,setTempAvatarUri] =useState("")
@@ -62,49 +62,44 @@ function RegisterScreen(props) {
             }
         }
 
+    // Messages d'erreur pour les champs obligatoires
+
     const connexionValidation = () => {
-        if (inputEmail && inputPassword && inputPasswordVerif && inputPassword === inputPasswordVerif) {
+        if (inputEmail && inputEmail.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/) && inputPassword && inputPassword.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) && inputPasswordVerif && inputPassword === inputPasswordVerif) {
             props.navigation.navigate('RegisterB')
-        } else {
+            } else {
         
         if (inputEmail === "") {
             setErrorEmail("*Email requis!")
-        } else {
+            } else if (!inputEmail.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/)) {
+            setErrorEmail("*Format de l'email invalide!")
+            } else {
             setErrorEmail("")
         }
 
         if (inputPassword === "") {
             setErrorPassword("*Mot de passe requis!")
-        } else { 
+            } else if (!inputPassword.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)) {
+            setErrorPassword("*Le mot de passe doit avoir au moins 8 charactères, une lettre et un nombre!")
+            } else { 
             setErrorPassword("")
         }
 
         if (inputPasswordVerif === "") {
             setErrorConfirmPassword("*Confirmation du mot de passe requise!")
-        } else {
+            } else {
             setErrorConfirmPassword("")
         }
 
         if (inputPassword !== inputPasswordVerif) {
             setErrorMessage("*Les mots de passe ne correspondent pas.")
-
-        } else{
+            } else{
             setErrorMessage("")
         }
-    }   
+      }   
     }
+
     
-
-   /*  const passwordVerification = () => {
-        if (inputPassword === inputPasswordVerif) {
-            setIsValid(true);
-            props.navigation.navigate('RegisterB')
-        } else {
-            setIsValid(false);
-            setErrorMessage("Les mots de passe ne correspondent pas.")
-        }
-    } */
-
 
     return (
                 <View style={{flex:1,justifyContent: 'space-evenly'}}>

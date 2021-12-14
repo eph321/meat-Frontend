@@ -42,8 +42,10 @@ function RegisterScreenB(props) {
     };
 
 
+    // Messages d'erreur pour les champs obligatoires
+    
     const connexionValidation = () => {
-        if (firstName && lastName && userAddress && phone && dateOfBirth) {
+        if (firstName && lastName && userAddress && phone && phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/) && dateOfBirth) {
             props.navigation.navigate('RegisterC')
         } else {
         
@@ -67,7 +69,9 @@ function RegisterScreenB(props) {
 
         if (phone === "") {
             setInputErrorPhone("*Numéro de mobile requis!")
-        } else {
+            } else if (!phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/)) {
+            setErrorPassword("*Le numéro de mobile doit comporter 10 chiffres!")
+            } else {
             setInputErrorPhone("")
         }
 
