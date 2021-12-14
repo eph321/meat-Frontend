@@ -44,12 +44,54 @@ function RegisterScreenB(props) {
     };
 
 
-
+    // Messages d'erreur pour les champs obligatoires
+    
     const [inputErrorFirstname, setInputErrorFirstname] = useState("");
     const [inputErrorLastname, setInputErrorLastname] = useState("");
     const [inputErrorUserAddress, setInputErrorUserAddress] = useState("");
     const [inputErrorPhone, setInputErrorPhone] = useState("");
     const [inputErrorDateOfBirth, setInputErrorDateOfBirth] = useState("");
+
+    const connexionValidation = () => {
+        if (firstName && lastName && userAddress && phone && phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/) && dateOfBirth) {
+            props.navigation.navigate('RegisterC')
+        } else {
+        
+        if (firstName === "") {
+            setInputErrorFirstname("*Prénom requis!")
+        } else {
+            setInputErrorFirstname("")
+        }
+
+        if (lastName === "") {
+            setInputErrorLastname("*Nom de famille requis!")
+        } else {
+            setInputErrorLastname("")
+        }
+
+        if (userAddress === "") {
+            setInputErrorUserAddress("*Adresse requise!")
+        } else {
+            setInputErrorUserAddress("")
+        }
+
+        if (phone === "") {
+            setInputErrorPhone("*Numéro de mobile requis!")
+            } else if (!phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/)) {
+            setErrorPassword("*Le numéro de mobile doit comporter 10 chiffres!")
+            } else {
+            setInputErrorPhone("")
+        }
+
+        if (dateOfBirth === new Date(1598051730000)) {
+            setInputErrorDateOfBirth("*Champ requis!")
+        } else {
+            setInputErrorDateOfBirth("")
+        }
+    }   
+    }
+
+
 
     const getCurrentLocation = async () => {
         let { status } = await Location.requestForegroundPermissionsAsync();
@@ -82,50 +124,10 @@ function RegisterScreenB(props) {
     };
 
 
-    const connexionValidation = () => {
-        if (firstName && lastName && userAddress && phone && dateOfBirth) {
-            props.navigation.navigate('RegisterC')
-        } else {
-        
-        if (firstName === "") {
-            setInputErrorFirstname("*Prénom requis!")
-        } else {
-            setInputErrorFirstname("")
-        }
-
-        if (lastName === "") {
-            setInputErrorLastname("*Nom de famille requis!")
-        } else {
-            setInputErrorLastname("")
-        }
-
-        if (userAddress === "") {
-            setInputErrorUserAddress("*Adresse requise!")
-        } else {
-            setInputErrorUserAddress("")
-        }
-
-        if (phone === "") {
-            setInputErrorPhone("*Numéro de mobile requis!")
-        } else {
-            setInputErrorPhone("")
-        }
-
-        if (dateOfBirth === new Date(1598051730000)) {
-            setInputErrorDateOfBirth("*Champ requis!")
-        } else {
-            setInputErrorDateOfBirth("")
-        }
-    }   
-    }
-
+    
     useEffect(() => {
         getCurrentLocation();
     }, []);
-
-
-
-
 
 
 

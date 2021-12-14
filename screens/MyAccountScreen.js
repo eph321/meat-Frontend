@@ -12,6 +12,13 @@ function MyAccountScreen(props) {
     const [address,setAddress] = useState("");
     const [setlistAddress,listAddress] = useState([])
 
+    const [errorEmail, setErrorEmail] = useState("");
+    const [errorPassword, setErrorPassword] = useState("");
+    const [inputErrorFirstname, setInputErrorFirstname] = useState("");
+    const [inputErrorLastname, setInputErrorLastname] = useState("");
+    const [inputErrorUserAddress, setInputErrorUserAddress] = useState("");
+    const [inputErrorPhone, setInputErrorPhone] = useState("");
+
     // préparation de l'envoi dans le store
     const [tempAvatarUri,setTempAvatarUri] =useState("")
 
@@ -51,6 +58,56 @@ function MyAccountScreen(props) {
         }
     }
 
+    // Messages d'erreur pour les champs obligatoires
+    
+    const connexionValidation = () => {
+        if (inputEmail && inputEmail.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/) && inputPassword && inputPassword.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) && firstName && lastName && userAddress && phone && phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/) && dateOfBirth) {
+            props.navigation.navigate('RegisterC')
+        } else {
+        
+        if (inputEmail === "") {
+            setErrorEmail("*Email requis!")
+            } else if (!inputEmail.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/)) {
+            setErrorEmail("*Format de l'email invalide!")
+            } else {
+            setErrorEmail("")
+        }
+    
+        if (inputPassword === "") {
+            setErrorPassword("*Mot de passe requis!")
+            } else if (!inputPassword.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)) {
+            setErrorPassword("*Le mot de passe doit avoir au moins 8 charactères, une lettre et un nombre!")
+            } else { 
+            setErrorPassword("")
+        }
+
+        if (firstName === "") {
+            setInputErrorFirstname("*Prénom requis!")
+        } else {
+            setInputErrorFirstname("")
+        }
+
+        if (lastName === "") {
+            setInputErrorLastname("*Nom de famille requis!")
+        } else {
+            setInputErrorLastname("")
+        }
+
+        if (userAddress === "") {
+            setInputErrorUserAddress("*Adresse requise!")
+        } else {
+            setInputErrorUserAddress("")
+        }
+
+        if (phone === "") {
+            setInputErrorPhone("*Numéro de mobile requis!")
+            } else if (!phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/)) {
+            setErrorPassword("*Le numéro de mobile doit comporter 10 chiffres!")
+            } else {
+            setInputErrorPhone("")
+        }
+      }   
+    }
     const fetchAddress = async (val) => {
         let valfiltered =val.replace('_',"+");
         let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${valfiltered }&limit=5`)
@@ -127,11 +184,16 @@ function MyAccountScreen(props) {
                         activeOutlineColor={"#FF3D00"}
                         outlineColor={'#0E9BA4'}
                     />
+
+                    <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
+                        <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{errorEmail}</Text>
+                    </View>  
+
                     <IconButton
                         icon="pencil"
                         color={"#FF3D00"}
                         size={35}
-                        onPress={() => console.log('Pressed')}
+                        onPress={() => {connexionValidation(); console.log('Pressed')}}
                     />
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"center"}}>
@@ -143,11 +205,15 @@ function MyAccountScreen(props) {
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
                     />
+                    <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
+                        <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{errorPassword}</Text>
+                    </View>
+
                         <IconButton
                             icon="pencil"
                             color={"#FF3D00"}
                             size={35}
-                            onPress={() => console.log('Pressed')}
+                            onPress={() => {connexionValidation(); console.log('Pressed')}}
                         />
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"center"}}>
@@ -160,11 +226,15 @@ function MyAccountScreen(props) {
                         activeOutlineColor={"#FF3D00"}
                         outlineColor={'#0E9BA4'}
                     />
+                    <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
+                        <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorFirstname}</Text>
+                    </View>
+
                         <IconButton
                             icon="pencil"
                             color={"#FF3D00"}
                             size={35}
-                            onPress={() => console.log('Pressed')}
+                            onPress={() => {connexionValidation(); console.log('Pressed')}}
                         />
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"center"}}>
@@ -176,11 +246,14 @@ function MyAccountScreen(props) {
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
                     />
+                    <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
+                        <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorLastname}</Text>
+                    </View>  
                         <IconButton
                             icon="pencil"
                             color={"#FF3D00"}
                             size={35}
-                            onPress={() => console.log('Pressed')}
+                            onPress={() => {connexionValidation(); console.log('Pressed')}}
                         />
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"center"}}>
@@ -193,11 +266,14 @@ function MyAccountScreen(props) {
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
                     />
+                    <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
+                        <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorUserAddress}</Text>
+                    </View>  
                         <IconButton
                             icon="pencil"
                             color={"#FF3D00"}
                             size={35}
-                            onPress={() => console.log('Pressed')}
+                            onPress={() => {connexionValidation(); console.log('Pressed')}}
                         />
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"center"}}>
@@ -209,11 +285,14 @@ function MyAccountScreen(props) {
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
                     />
+                    <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
+                        <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorPhone}</Text>
+                    </View>  
                         <IconButton
                             icon="pencil"
                             color={"#FF3D00"}
                             size={35}
-                            onPress={() => console.log('Pressed')}
+                            onPress={() => {connexionValidation(); console.log('Pressed')}}
                         />
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"center"}}>

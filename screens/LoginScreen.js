@@ -11,7 +11,8 @@ function LoginScreen(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const [setEye,Eye] = useState(false)
+    const [setEye,Eye] = useState(false);
+    const [errorLogin, setErrorLogin] = useState("");
 
 
     //Vérifie l'existence d'un userToken et redirige vers home si présence userToken
@@ -20,7 +21,7 @@ function LoginScreen(props) {
             console.log(data);
             let userData = JSON.parse(data);
             if (userData !== null){
-                console.log(userData + "hello je suis le user  token storé");
+                console.log(userData + "hello je suis le user token storé");
             }
 
             if (userData){
@@ -37,15 +38,23 @@ function LoginScreen(props) {
             body: `email=${email}&password=${password}`
         });
         var response = await rawResponse.json();
-        if (response.login) { props.navigation.navigate('Home')
+        if (response.login) { 
+            props.navigation.navigate('Home')
 
            let  {token} = response.searchUser
             console.log(token)
             await AsyncStorage.setItem("userToken", JSON.stringify(token))
             props.sendUserToken(token)
         } else {
-            setError("Wrong Credentials")
+
+            if (response.login = false) {
+                setErrorLogin("*Les mots de passe ne correspondent pas.")
+    
+            } else{
+                setErrorLogin("")
+            }
         }
+        
     }
 
     
@@ -79,7 +88,7 @@ function LoginScreen(props) {
                 onChangeText={(val) => setPassword(val)}
             />
 
-            <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000', marginBottom: 30}}>*Identifiant et/ou mot de passe erroné.</Text>
+            <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000', marginBottom: 30}}>{errorLogin}</Text>
 
 
             <Button style={styles.button}
