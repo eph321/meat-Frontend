@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View,  ScrollView, TouchableOpacity, Platform, AsyncStorage} from 'react-native';
-import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text,Portal,Modal,Provider,Button} from "react-native-paper";
+import {StyleSheet, View,  ScrollView, TouchableOpacity, Platform, AsyncStorage,KeyboardAvoidingView} from 'react-native';
+import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text,Button,List} from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 
 
@@ -9,8 +9,10 @@ function MyAccountScreen(props) {
     const [gender, setGender] =useState("male")
     const [image, setImage] = useState(null);
     const [visible, setVisible] = useState(true);
+    const [visibleList, setVisibleList] = useState(false);
+
     const [address,setAddress] = useState("");
-    const [setlistAddress,listAddress] = useState([])
+    const [setListAddress,listAddress] = useState([])
 
     const [errorEmail, setErrorEmail] = useState("");
     const [errorPassword, setErrorPassword] = useState("");
@@ -19,11 +21,6 @@ function MyAccountScreen(props) {
     const [inputErrorUserAddress, setInputErrorUserAddress] = useState("");
     const [inputErrorPhone, setInputErrorPhone] = useState("");
 
-    const [visibleModal, setVisibleModal] =useState(false);
-
-    const showModal = () => setVisible(true);
-    const hideModal = () => setVisible(false);
-    const containerStyle = {backgroundColor: 'white', padding: 20};
 
     // préparation de l'envoi dans le store
     const [tempAvatarUri,setTempAvatarUri] =useState("")
@@ -117,13 +114,18 @@ function MyAccountScreen(props) {
     const fetchAddress = async (val) => {
         let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
         let response = await rawResponse.json();
-        console.log(response.features[0].properties.label);
-        setVisibleModal(true)
-        setlistAddress(response.features[0].properties.label)
+        console.log(response.features);
+        setListAddress(response.features)
+        setVisibleList(true)
 
 
     }
-
+    const displayAddress = (place,i) => {
+        return   <List.Item
+            title={place.properties.label}
+            left={props => <List.Icon {...props} icon="map-marker" />}
+        />
+    }
 
     return (   <View style={{flex:1,justifyContent: 'space-evenly'}}>
             <View style={{ flex: 2,
@@ -175,6 +177,10 @@ function MyAccountScreen(props) {
             </View>
             <View style={{flex:7, backgroundColor:"#F2F2F2"}}>
                 <ScrollView>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === "ios" ? "padding" : "height"}
+                        style={styles.container}
+                    >
                     <TouchableOpacity onPress={() =>{ pickImage(); setVisible(!visible)}} >
                         <View >{(visible)?
                             <Avatar.Icon size={128} icon="camera" color={'#0E9BA4'} style={{marginTop: 80,marginLeft: 60,backgroundColor: "#FFFFFF"}}/>
@@ -274,6 +280,7 @@ function MyAccountScreen(props) {
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
                     />
+                        {(listAddress !== null)?listAddress.map((item,i)=>displayAddress(item,i)):<View></View>}
 
                     <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
                         <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorUserAddress}</Text>
@@ -286,7 +293,7 @@ function MyAccountScreen(props) {
                         />
                     </View>
 
-r                    <View style={{flexDirection:"row",justifyContent:"center"}}>
+                    <View style={{flexDirection:"row",justifyContent:"center"}}>
                     <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                                mode="outlined"
                                label="Numéro de mobile"
@@ -393,7 +400,7 @@ r                    <View style={{flexDirection:"row",justifyContent:"center"}}
                             </View>
                         </View>
                     </RadioButton.Group>
-
+                        </KeyboardAvoidingView>
                 </ScrollView>
 
             </View>

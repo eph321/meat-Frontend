@@ -9,7 +9,7 @@ import 'intl/locale-data/jsonp/fr-FR';
 
 
 
-var socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
+const socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
 
 function ChatScreen(props) {
 

@@ -7,6 +7,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from "react-redux";
 import { Dropdown } from 'react-native-element-dropdown';
+import socketIOClient from "socket.io-client/build/esm-debug";
 
 
 // Préférence culinaire Liste
@@ -33,6 +34,8 @@ const ageRangeList = [
 
 
 function NewTableScreen(props) {
+
+
 
     // ETATS INPUTS
 

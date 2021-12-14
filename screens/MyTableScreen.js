@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, ScrollView, KeyboardAvoidingView } from 'react-native'; 
-import { Title, Avatar, Button, Card, Paragraph, Subheading, Appbar, IconButton } from 'react-native-paper';
+import { StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native';
+import {Title, Button, Card, Paragraph, Subheading, Appbar, IconButton, TextInput} from 'react-native-paper';
 import { ListItem, Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -8,18 +8,83 @@ import { FontAwesome } from '@expo/vector-icons';
 import {connect} from "react-redux";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
+
+import socketIOClient from "socket.io-client";
+import {useIsFocused} from "@react-navigation/native";
+
 
 
 function MyTableScreen(props) {
+
+    const socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
+    const [currentMessage,setCurrentMessage] =useState("")
+    const [listMessages,setListMessages] = useState([])
+    const [author, setAuthor] =useState("");
+    const isFocused = useIsFocused();
+
+
+    const handlePress = async () => {
+        const today = new Date(Date.now());
+        const loadNewMessageToDatabase = async (message) =>{
+            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/update-table-messages`,{
+                method:'POST',
+                headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                body: `content=${message.content}&author=${message.author}&eventId=${props.tableId}&date=${message.date}`
+
+            });
+            let response = await rawResponse.json();
+            console.log("envoyé en bdd")
+            console.log(response)
+        }
+
+        let formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(today)
+
+
+        socket.emit("sendMessage", JSON.stringify({content: currentMessage,
+            author: author,
+            room : props.tableId,date: formattedDate  }));
+        //envoi d'une copie en database
+        loadNewMessageToDatabase({content: currentMessage,
+            author: author,
+            room: props.tableId,date: formattedDate  });
+        setCurrentMessage("");
+    }
+
+
+    useEffect( ()=> {
+        const getChatMessages = async () =>{
+            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-table-messages/${props.tableId}/${props.userToken}`)
+            let response = await rawResponse.json();
+            console.log("j'essaie de récupérer les messages")
+            setListMessages(response.chat_messages)
+            setAuthor(response.author)}
+        getChatMessages();
+        },[isFocused]);
+
+    useEffect(() => {
+
+        socket.on('sendMessageToAll', (newMessage)=> {
+            if(newMessage !== null){
+                let messageToFilter = JSON.parse(newMessage)
+                console.log(messageToFilter)
+                if (messageToFilter.room === props.tableId){
+                    setListMessages([...listMessages,messageToFilter ])}
+            }
+        });
+    }, [listMessages]);
+
+
+
+
+
 
     const [tableData, setTableData] = useState([''])
    
 
     const leaveTable = async (tableid, token ) => {
     
-        var dataRaw = await fetch(`http://192.168.1.9:3000/delete-guest/${props.tableId}/${props.userToken}`, {
-            method: 'DELETE'	
+        var dataRaw = await fetch(`http://192.168.1.9:3000/delete-guest/${props.tableId}/${props.userToken}`,{
+            method: 'DELETE'
         })
     };
 
@@ -27,14 +92,8 @@ function MyTableScreen(props) {
     useEffect( async() => {
            var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
            var response = await responseRaw.json();
-      
 
-        
             setTableData(response.result)
-        
-         
-            
-         
           }
 
          
@@ -63,29 +122,29 @@ function MyTableScreen(props) {
       var cardImage; 
         
       if(tableInfo.placeType === "Japonais") {
-          cardImage= 'https://www.terres-japonaises.com/app/media/26/files/2016/06/sushi-japon.jpg'  
+          cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/sushi-japon_bknpwf.jpg'
       }
       else if(tableInfo.placeType === "Fast-food") {
-          cardImage= 'https://medias.toutelanutrition.com/ressource/104/Fast%20Food.jpg'   
+          cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/Fast_Food_w1zlhh.jpg'
         }
       else if(tableInfo.placeType === "Italien") {
-          cardImage= 'https://cache.marieclaire.fr/data/photo/w1000_ci/5b/italianfood.jpg' 
+          cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/italianfood_buioqa.jpg'
         }
       else if(tableInfo.placeType === "Chinois") {
-            cardImage= 'https://www.takeaway.com/be-fr/foodwiki/uploads/sites/3/2018/02/chine.jpg'   
+            cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/chine_qdj6wj.jpg'
           }
        else if(tableInfo.placeType === "Mexicain") {
-            cardImage= 'https://images.radio-canada.ca/q_auto,w_960/v1/ici-premiere/16x9/mlarge-cuisine-mexicaine-nourriture-mexique-alimentation-tacos-salsa-mais.jpg' 
+            cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/mlarge-cuisine-mexicaine-nourriture-mexique-alimentation-tacos-salsa-mais_qwfuf8.jpg'
             
           }
        else if(tableInfo.placeType === "Coréen") {
-            cardImage= 'https://aconsommerdepreference.lexpress.fr/wp-content/uploads/2018/02/iStock-849756458.jpg'   
+            cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/iStock-849756458_f4rfrk.jpg'
           }
        else if(tableInfo.placeType === "Indien") {
-            cardImage= 'https://media.istockphoto.com/photos/assorted-indian-recipes-food-various-picture-id922783734' 
+            cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/istockphoto-922783734-1024x1024_vbrxdk.jpg'
           }
        else if(tableInfo.placeType === "Africain") {
-            cardImage= 'https://afrogadget.com/wp-content/uploads/2021/06/01-couscous-royal-traditionnel.jpeg' 
+            cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514590/foods/01-couscous-royal-traditionnel_pixn9t.jpg'
           }
 
     return (    
@@ -175,37 +234,38 @@ function MyTableScreen(props) {
        <Card style={{width : 350, height : 400, marginBottom:100}}>
                <Card.Content>
                <ScrollView style={{ marginTop: 50}}>
-        <ListItem>
-          <ListItem.Content>
-            <ListItem.Title>Parfait et toi ?</ListItem.Title>
-            <ListItem.Subtitle>Alex</ListItem.Subtitle>
-          </ListItem.Content>
-        </ListItem>
-        <ListItem>
-          <ListItem.Content>
-            <ListItem.Title>Coucou ça roule ?</ListItem.Title>
-            <ListItem.Subtitle>John</ListItem.Subtitle>
-          </ListItem.Content>
-        </ListItem>
+                   {listMessages.map((message,i)=>{
+                       return <ListItem key={{i}}>
+                                <ListItem.Content >
+                                   <ListItem.Title>message.content</ListItem.Title>
+                                   <ListItem.Subtitle>message.author</ListItem.Subtitle>
+                               </ListItem.Content>
+                   </ListItem>
+                   })}
       </ScrollView>
 
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-          <Input
-              containerStyle = {{marginBottom: 5}}
-              placeholder='Your message'
-          />
-          <Button
-              icon={
-                  <Icon
-                  name="envelope-o"
-                  size={20}
-                  color="#ffffff"
-                  />
-              } 
-              title="Send"
-              buttonStyle={{backgroundColor: "#eb4d4b"}}
-              type="solid"
-          />
+          <View style={{flexDirection:"row",justifyContent:"center"}}>
+              <TextInput
+
+                  multiline={true}
+                  style={{  textAlign:'center',width:'70%',justifyContent:"flex-end" }}
+                  mode="outlined"
+                  label="Message"
+                  onChangeText={(message)=>setCurrentMessage(message)}
+                  activeOutlineColor={"#FF3D00"}
+                  outlineColor={'#0E9BA4'}
+                  containerStyle = {{marginBottom: 5}}
+                  placeholder='Ecrire ici...'
+                  value={currentMessage}
+              />
+              <IconButton
+                  icon="send"
+                  color={'#0E9BA4'}
+                  size={25}
+                  onPress={() => handlePress()}
+              />
+          </View>
       </KeyboardAvoidingView>
                </Card.Content>
 
@@ -249,7 +309,9 @@ const stylesBar = StyleSheet.create({
 
 
 function mapStateToProps(state) {
-    return { tableId:  state.tableId}
+    return { tableId:  state.tableId,
+        userToken: state.userToken,
+    }
   }
   
   export default connect(
