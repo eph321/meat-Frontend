@@ -78,7 +78,7 @@ function RegisterScreenB(props) {
         if (phone === "") {
             setInputErrorPhone("*Numéro de mobile requis!")
             } else if (!phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/)) {
-            setErrorPassword("*Le numéro de mobile doit comporter 10 chiffres!")
+            setInputErrorPhone("*Le numéro de mobile doit être au format +33123456789!")
             } else {
             setInputErrorPhone("")
         }
