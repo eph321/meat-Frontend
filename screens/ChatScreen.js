@@ -30,7 +30,8 @@ function ChatScreen(props) {
 
             });
             let response = await rawResponse.json();
-            console.log(response)
+            console.log("envoyé en bdd")
+
 
         }
 
@@ -58,7 +59,6 @@ function ChatScreen(props) {
             let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-chat-messages/${props.conversationToSend}/${props.userToSend}`)
             let response = await rawResponse.json();
             console.log("j'essaie de récupérer les messages")
-            console.log(response.chatMessages)
             setListMessages(response.chatMessages)
             setAuthor(response.author)}
         getChatMessages();
@@ -79,14 +79,14 @@ function ChatScreen(props) {
                 console.log(messageToFilter)
                 if (messageToFilter.conversation === props.conversationToSend){
                     setListMessages([...listMessages,messageToFilter ])}
-                    console.log(listMessages)
+
 
 
                 }
         });
 
 
-    }, [listMessages]);
+    }, [isFocused]);
 
     const displayMessage = (message,i) => {
         if ( message.author === author ){

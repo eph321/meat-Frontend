@@ -16,7 +16,7 @@ function MyBuddiesScreen(props) {
 
                 let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-related-users/${props.userToSend}`)
                 let response = await rawResponse.json();
-                console.log(response)
+
                 setRelations([...response.listOfRelations])})()
 
         } , [relations])
