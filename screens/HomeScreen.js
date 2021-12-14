@@ -71,7 +71,7 @@ function HomeScreen(props) {
     // Affichage des tables existantes 
 
     useEffect(async () => {
-        var rawResponse = await fetch(`${FranckIP}/search-table`);
+        var rawResponse = await fetch(`${herokuIP}/search-table`);
         var response = await rawResponse.json();
         setTableDataList(response.result)
     }, [] //(restaurantType.length===0)?tableDataList:undefined
@@ -80,11 +80,11 @@ function HomeScreen(props) {
     useEffect(async () => {
         if (restaurantType[0]) {
             if (restaurantType[0].length > 0) {
-                const rawTypeFilterResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
+                const rawTypeFilterResponse = await fetch(`${herokuIP}/filter-table/${restaurantType}`);
                 const typeFilterResponse = await rawTypeFilterResponse.json();
                 setTableDataList(typeFilterResponse.result)
             } else {
-                var rawResponse = await fetch(`${FranckIP}/search-table`);
+                var rawResponse = await fetch(`${herokuIP}/search-table`);
                 var response = await rawResponse.json();
                 setTableDataList(response.result)
             }

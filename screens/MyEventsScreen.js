@@ -12,7 +12,7 @@ function MyEventsScreen(props) {
         const [myEventsList, setMyEventsList] = useState([])
 
         useEffect(async () => {
-                var rawResponse = await fetch(`${FranckIP}/my-events/${props.userToken}`);
+                var rawResponse = await fetch(`${herokuIP}/my-events/${props.userToken}`);
                 var response = await rawResponse.json();
                 setMyEventsList(response.result)           
         }, [])
