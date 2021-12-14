@@ -5,6 +5,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
 import { MultiSelect } from 'react-native-element-dropdown';
+import 'intl';
+import 'intl/locale-data/jsonp/fr-FR';
 
 
 
