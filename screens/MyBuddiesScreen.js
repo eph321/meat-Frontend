@@ -2,25 +2,24 @@ import React, {useEffect, useState} from 'react';
 import {  View } from 'react-native';
 import { Button, Appbar, Avatar, Title, IconButton} from "react-native-paper";
 import {connect} from "react-redux";
-
-
+import {useIsFocused} from "@react-navigation/native";
 
 
 function MyBuddiesScreen(props) {
+    const isFocused = useIsFocused();
     const [relations,setRelations] = useState([]);
-    useEffect(async () => {
-
-            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-related-users/${props.userToSend}`)
-            let response = await rawResponse.json();
-            // console.log(response)
-            setRelations([...response.listOfRelations])
-        return () => {
-                setRelations([]); // Clean up à l'unmount du composant.
-            };
 
 
-        }
-        , [relations])
+
+        useEffect( () => {
+                        ( async () => {
+
+                let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-related-users/${props.userToSend}`)
+                let response = await rawResponse.json();
+
+                setRelations([...response.listOfRelations])})()
+
+        } , [relations])
 
     const handleAcceptBuddy = async (buddyToken) => {
 
@@ -42,7 +41,7 @@ function MyBuddiesScreen(props) {
 
         })
         let sendResponse = await rawSend.json();
-
+        console.log(sendResponse)
     };
 
     const handleConversation = async (buddyToken) => {
@@ -54,6 +53,7 @@ function MyBuddiesScreen(props) {
         })
         let sendResponse = await rawSend.json();
         props.sendConversationToStore(sendResponse.conv)
+
         props.navigation.navigate('Chat');
 
     };
@@ -63,7 +63,7 @@ function MyBuddiesScreen(props) {
 
     const displayRelations = (user,i) => {
 
-        console.log(user.avatar)
+
         return <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start",marginBottom:5}} key={i}>
                         <Avatar.Image size={64} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(user.avatar)?{uri: user.avatar}:require("../assets/picture-4.png")} />
                         <View style={{marginTop:"3%", marginRight:"2%"}}>

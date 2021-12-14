@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, ScrollView, AsyncStorage } from 'react-native';
-import { Text, Button, Appbar, TextInput, Card, Title, Paragraph, IconButton } from "react-native-paper";
+import { Text, Appbar, TextInput, Card, Title, Paragraph, IconButton, Button } from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
 import { MultiSelect } from 'react-native-element-dropdown';
+
+
 
 const FranckLacapsuleIP = "http://172.17.1.118:3000"
 const FranckIP = "http://192.168.1.41:3000"
@@ -23,23 +25,35 @@ const restaurantTypeList = [
 
 function HomeScreen(props) {
 
-    const [tableDataList, setTableDataList] = useState([])
-    const [restaurantType, setRestaurantType] = useState([]);
+    const [tableDataList, setTableDataList] = useState([]);
+    const [restaurantType, setRestaurantType] = useState([]); // Pour filtre Type Restaurant
+    const [dateFilter, setDateFilter] = useState("") // Pour filtre Date
+
     const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
 
+    const [tableFilteredDataList, setTableFilteredDataList] = useState([]);
+
     // DATE PICKER - input "où"
-    const [date, setDate] = useState(new Date(1598051730000));
+    const [date, setDate] = useState(new Date(Date.now()));
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
+    const [dateIsSeleted, setDateIsSelected] = useState(false); // Pour changer le texte dans le button
+
+    /* let formattedDate = date.toLocaleString("fr-FR", options);
+    const options = { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' } */
+
+    const formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(date)
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
+        setDateIsSelected(true);
+        setDateFilter(currentDate)
     };
 
     const showMode = (currentMode) => {
-        setShow(true);
+        setShow(!show);
         setMode(currentMode);
     };
 
@@ -51,28 +65,41 @@ function HomeScreen(props) {
         showMode('time');
     };
 
+
     // Affichage des tables existantes 
 
     useEffect(async () => {
         var rawResponse = await fetch(`${herokuIP}/search-table`);
         var response = await rawResponse.json();
         setTableDataList(response.result)
-        console.log("initialisation",restaurantType)
     }, [] //(restaurantType.length===0)?tableDataList:undefined
     )
 
-    
     useEffect(async () => {
-        console.log("before", restaurantType)
-        if(restaurantType.length !== 0){
-        const rawFilteredResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
-        const filteredResponse = await rawFilteredResponse.json();
-        setTableDataList(filteredResponse.result)
+        if (restaurantType[0]) {
+            if (restaurantType[0].length > 0) {
+                const rawTypeFilterResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
+                const typeFilterResponse = await rawTypeFilterResponse.json();
+                setTableDataList(typeFilterResponse.result)
+            } else {
+                var rawResponse = await fetch(`${herokuIP}/search-table`);
+                var response = await rawResponse.json();
+                setTableDataList(response.result)
+            }
         }
-    },[restaurantType])
 
-    // Problème : si suppression des filtres après en avoir mis, restaurantType.length = 1 car dans la liste déroulante "item" ajoute un array à l'état restaurantType (array)
+        //// FILTRE Où ?
+        if (dateFilter){
+            const rawDateFilterResponse = await fetch(`${FranckIP}/filter-date/${dateFilter}`)
+            const dateFilterResponse = await rawDateFilterResponse.json();
+        }
+    }, [restaurantType, dateFilter])
+
+    // Conditions du useEffect
+    // lorsque setRestaurantType([item]) : ne détecte pas changement de l'état restaurantType
+    // si suppression des filtres après en avoir mis, restaurantType.length = 1 car dans la liste déroulante "item" ajoute un array à l'état restaurantType (array)
     // à l'initialisation, avant de filtrer, restaurantType.length = 0 (array vide)
+
 
     var tableList = tableDataList.map((e, i) => {
 
@@ -83,12 +110,16 @@ function HomeScreen(props) {
             )
         }
 
+        let dateParse = new Date(e.date)
+
+        let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
+        formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
 
         return (
             <Card key={i} style={{ marginBottom: 8 }} onPress={() => { props.onCardClick(e._id); props.navigation.navigate("JoinTable") }}>
                 <Card.Content>
                     <Title style={{ alignSelf: "center" }}>{e.title}</Title>
-                    <Paragraph style={{ alignSelf: "center" }}>{e.date}</Paragraph>
+                    <Paragraph style={{ alignSelf: "center" }}>{formattedDate}</Paragraph>
                     <View style={{ flexDirection: "row", alignSelf: "center", marginBottom: 4, marginTop: 4 }}>
                         {capacityAvatar}
                     </View>
@@ -146,7 +177,7 @@ function HomeScreen(props) {
                         icon="message"
                         color={'#0E9BA4'}
                         size={25}
-                        onPress={() => props.navigation.navigate('Chat')}
+                        onPress={() => props.navigation.navigate('MyBuddies')}
                     />
                     <IconButton
                         icon="calendar-month"
@@ -169,23 +200,25 @@ function HomeScreen(props) {
                     mode="contained" onPress={() => { props.navigation.navigate('JoinTable'); }}>
                     <Text Style={{ color: '#FFC960' }}>Go to join</Text>
                 </Button>*/}
-                <TextInput style={{ textAlign: 'center', width: '70%', alignSelf: "center", marginBottom: 5 }}
+                <TextInput style={{ textAlign: 'center', width: '70%', marginBottom: 5, alignSelf: "center", }}
                     mode="outlined"
                     label="Où ?"
                     placeholder="Paris 17"
-                    activeOutlineColor={"#FF3D00"}
+                    activeOutlineColor={"#FFC960"}
                     outlineColor={'#0E9BA4'}
                 />
-
+                <Button
+                    mode="contained"
+                    onPress={showDatepicker}
+                    style={styles.datePicker}
+                    labelStyle={{ color: "black", fontWeight: "400", fontSize: 14 }}
+                >
+                    {(dateIsSeleted) ? "Le " + formattedDate : "Choisissez une date"}
+                </Button>
                 <View>
-                    <TextInput style={{ textAlign: 'center', width: '70%', alignSelf: "center", marginBottom: 5 }}
-                        mode="outlined"
-                        label="Quand ? ?"
-                        placeholder="JJ/MM/AAAA"
-                        activeOutlineColor={"#FF3D00"}
-                        outlineColor={'#0E9BA4'}
-                        onFocus={showDatepicker}
-                    />
+                    {/* <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                        <Button onPress={showDatepicker}> Date </Button>
+                    </View> */}
                     {show && (
                         <DateTimePicker
                             testID="dateTimePicker"
@@ -197,6 +230,7 @@ function HomeScreen(props) {
                         />
                     )}
                 </View>
+
                 <View style={{ alignItems: "center", marginTop: 12, marginBottom: 8 }}>
                     <MultiSelect
                         style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
@@ -249,6 +283,17 @@ const styles = StyleSheet.create({
         width: "100%",
         top: 0,
         justifyContent: "flex-start",
+    },
+    datePicker: {
+        width: "70%",
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+        backgroundColor: "transparent",
+        alignSelf: "center",
+        justifyContent: "center"
     },
     dropdown: {
         width: "70%",

@@ -3,30 +3,36 @@ import React, { useState} from 'react';
 import {AsyncStorage, StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text} from "react-native-paper";
 import { connect } from 'react-redux';
+import {MultiSelect} from "react-native-element-dropdown/index";
+import {MaterialIcons} from "@expo/vector-icons";
+import {useIsFocused} from "@react-navigation/native";
+
 
 
 function RegisterScreenC(props) {
-
+    const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
+    const [setRestaurantType,RestaurantType] = useState([])
+    const restaurantTypeList = [
+        { label: 'Italien', value: 'Italien' },
+        { label: 'Japonais', value: 'Japonais' },
+        { label: 'Fast-food', value: 'Fast-food' },
+        { label: 'Chinois', value: 'Chinois' },
+        { label: 'Mexicain', value: 'Mexicain' },
+        { label: 'Indien', value: 'Indien' },
+        { label: 'Coréen', value: 'Coréen' },
+        { label: 'Africain', value: 'Africain' },
+    ]
 
     const signUpBackend = async () => {
-        var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/users/sign-up`,{
+
+
+        let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/users/sign-up`,{
             method:'POST',
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
             body: `lastname=${props.userToSend.lastName}&firstname=${props.userToSend.firstName}&password=${props.userToSend.inputPassword}&description=${userDesc}&email=${props.userToSend.inputEmail}&dateofbirth=${props.userToSend.dateOfBirth}&gender=${props.userToSend.gender}&addresses=${props.userToSend.userAddress}&avatar=${props.userToSend.inputAvatar}&phone=${props.userToSend.inputPhone}&preference1=${userPreference1}&preference2=${userPreference2}&preference3=${userPreference3}`
-            
-            
-            
-            
-            
-            
-            
-            
 
         });
-        var response = await rawResponse.json();
-        console.log("résumé des infos envoyés au backend")
-        console.log(response)
-        console.log(response.newUserSave.token)
+        let response = await rawResponse.json();
         let  {token} = response.newUserSave
         await AsyncStorage.setItem("userToken", JSON.stringify(token))
         props.sendUserTokenRegister(token)
@@ -72,6 +78,31 @@ function RegisterScreenC(props) {
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
             />
+{/*            <View style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center" }}>
+                <MultiSelect
+                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    search
+                    data={restaurantTypeList}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Préférences"
+                    searchPlaceholder="Search..."
+
+                    onChange={item => {
+                        setRestaurantType(item);
+                        setIsFocus(false);
+                    }}
+                    renderLeftIcon={() => (
+                        <MaterialIcons style={styles.icon} name="restaurant" size={24} color="#0E9BA4" />
+
+                    )}
+                    selectedStyle={styles.selectedStyle}
+                />
+            </View>*/}
             <TextInput style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
                        multiline={true}
@@ -116,7 +147,44 @@ const styles = StyleSheet.create({
         flex:1,
         alignItems: 'center',
         justifyContent: 'center',
-    }});
+    },viewHeader: {
+        flex: 2,
+        left: 0,
+        width: "100%",
+        top: 0,
+        justifyContent: "flex-start",
+    },
+    dropdown: {
+        width: "70%",
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+        backgroundColor: "transparent",
+    },
+    placeholderStyle: {
+        fontSize: 16,
+        textAlign: "center",
+    },
+    selectedTextStyle: {
+        fontSize: 14,
+    },
+    iconStyle: {
+        width: 20,
+        height: 20,
+    },
+    inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+    },
+    icon: {
+        marginRight: 5,
+    },
+    selectedStyle: {
+        borderRadius: 12,
+    }
+});
 
 
 
