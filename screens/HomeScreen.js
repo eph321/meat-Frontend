@@ -155,7 +155,7 @@ function HomeScreen(props) {
              const dataFilterResponse = await rawDataFilterResponse.json();
              setTableDataList(dataFilterResponse.result)  */
 
-        if (restaurantType[0] || dateFilter !== "") {
+       if (restaurantType[0] || dateFilter !== "") {
 
             let rawDataFilterResponse = await fetch(`${herokuIP}/filters`, {
                 method: "POST",
@@ -165,12 +165,11 @@ function HomeScreen(props) {
             let dataFilterResponse = await rawDataFilterResponse.json()
             console.log(dataFilterResponse)
             setTableDataList(dataFilterResponse.result)
-
         } else {
             let rawResponse = await fetch(`${herokuIP}/search-table`);
             let response = await rawResponse.json();
             setTableDataList(response.result)
-        }
+        } 
 
     }, [restaurantType, dateFilter])
 

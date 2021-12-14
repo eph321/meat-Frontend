@@ -7,8 +7,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from "react-redux";
 import { Dropdown } from 'react-native-element-dropdown';
-import socketIOClient from "socket.io-client/build/esm-debug";
 
+const FranckIP = "http://192.168.1.41:3000"
+const herokuIP = "https://polar-stream-28883.herokuapp.com"
 
 // Préférence culinaire Liste
 
@@ -32,10 +33,7 @@ const ageRangeList = [
     { label: "+ 55ans", value: "55+" },
 ];
 
-
 function NewTableScreen(props) {
-
-
 
     // ETATS INPUTS
 
@@ -58,8 +56,9 @@ function NewTableScreen(props) {
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [dateValue, setDateValue] = useState(false); // Pour affichage uniquement
+    const [clickOnTimeBtn, setClickOnTimeBtn] = useState(false)
 
-// AJOUTER UN MINIMUM DATE + TIME
+    // AJOUTER UN MINIMUM DATE + TIME
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -82,6 +81,7 @@ function NewTableScreen(props) {
 
     const showTimepicker = () => {
         showMode('time');
+        setClickOnTimeBtn(true);
     };
 
 
@@ -135,21 +135,36 @@ function NewTableScreen(props) {
 
     // Création de la table
     const createTable = async () => {
-        const tableDataRawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/add-table`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}`
-        });
-        const tableDataResponse = await tableDataRawResponse.json();
-        props.onCreateClick(tableDataResponse.newTable._id);
-        props.navigation.navigate("MyTable");
+
+        if (dateValue === false) {
+            alert("Veuillez renseigner la date")
+        } else if (clickOnTimeBtn === false) {
+            alert("Veuillez renseigner l'heure")
+        } else if (title === "") {
+            alert("Veuillez renseigner le titre de l'évènement")
+        } else if (restaurantName === "") {
+            alert("Veuillez renseigner le nom du restaurant")
+        } else if (restaurantAddress === "") {
+            alert("Veuillez renseigner l'adresse du restaurant")
+        } else if (restaurantType === "") {
+            alert("Veuillez renseigner le type de cuisine")
+        } else {
+            const tableDataRawResponse = await fetch(`${herokuIP}/add-table`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}`
+            });
+            const tableDataResponse = await tableDataRawResponse.json();
+            props.onCreateClick(tableDataResponse.newTable._id);
+            props.navigation.navigate("MyTable");
+        }
     }
 
     return (
         /*   <KeyboardAvoidingView
-  behavior={Platform.OS === "ios" ? "padding" : "height"}
-  style={styles.container}
-> */
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={styles.container}
+    > */
 
         <ScrollView style={{ flex: 1, marginTop: 50 }}>
             <View style={styles.viewHeader}>
