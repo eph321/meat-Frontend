@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect} from 'react';
 
 import {Platform, StyleSheet, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text,RadioButton} from "react-native-paper";
@@ -6,10 +6,15 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { connect } from 'react-redux';
 import 'intl';
 import 'intl/locale-data/jsonp/fr-FR';
+import * as Location from 'expo-location';
 
 
 
 function RegisterScreenB(props) {
+
+
+    const [location, setLocation] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null);
     const [firstName,setFirstName] =useState('');
     const [lastName, setLastName] = useState('');
     const [userAddress, setUserAddress] = useState('');
@@ -46,7 +51,30 @@ function RegisterScreenB(props) {
     const [inputErrorPhone, setInputErrorPhone] = useState("");
     const [inputErrorDateOfBirth, setInputErrorDateOfBirth] = useState("");
 
+    const getCurrentLocation = async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
 
+        if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
+        }
+
+        let { coords } = await Location.getCurrentPositionAsync();
+
+        if (coords) {
+            const { latitude, longitude } = coords;
+            let response = await Location.reverseGeocodeAsync({
+                latitude,
+                longitude
+            });
+
+            for (let item of response) {
+                let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
+
+                setUserAddress(address);
+            }
+        }
+    };
 
 
     const connexionValidation = () => {
@@ -85,6 +113,13 @@ function RegisterScreenB(props) {
         }
     }   
     }
+
+    useEffect(() => {
+        getCurrentLocation();
+    }, []);
+
+
+
 
 
 
@@ -125,12 +160,14 @@ function RegisterScreenB(props) {
 
             <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                        mode="outlined"
+                       value={userAddress}
                        label="Adresse Postale"
                        onChangeText={(userAddressValue)=> {setUserAddress(userAddressValue); setInputProgress(inputProgress + 0.01)}}
                        placeholder ="56 boulevard Pereire, 75017 Paris"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
             />
+
 
             <View style={{alignItems: "center", justifyContent: "flex-end"}}>
                 <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorUserAddress}</Text>

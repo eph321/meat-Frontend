@@ -23,10 +23,20 @@ function ChatScreen(props) {
     // props.userRegister.firstName
     const handlePress = async () => {
         const today = new Date(Date.now());
+        const loadNewMessageToDatabase = async (message) =>{
+            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/update-messages`,{
+                method:'POST',
+                headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                body: `content=${message.content}&author=${message.author}&conversation=${props.conversationToSend}&date=${message.date}`
+
+            });
+            let response = await rawResponse.json();
+            console.log("envoyé en bdd")
+            console.log(response)
 
 
-        // const options = {  day: '2-digit', month: '2-digit', year: '2-digit' }
-        // let formattedDate =today.toLocaleString('fr-FR', options);
+        }
+
         let formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(today)
 
 
@@ -39,11 +49,6 @@ function ChatScreen(props) {
             conversation: props.conversationToSend,date: formattedDate  });
         setCurrentMessage("");
     }
-
-
-
-
-
 
     useEffect( ()=> {
         const getChatMessages = async () =>{
@@ -62,33 +67,18 @@ function ChatScreen(props) {
 
     useEffect(() => {
 
-
-
         socket.on('sendMessageToAll', (newMessage)=> {
             if(newMessage !== null){
                 let messageToFilter = JSON.parse(newMessage)
                 console.log(messageToFilter)
                 if (messageToFilter.conversation === props.conversationToSend){
                     setListMessages([...listMessages,messageToFilter ])}
-                const loadNewMessageToDatabase = async (message) =>{
-                    let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/update-messages`,{
-                        method:'POST',
-                        headers:{'Content-Type':'application/x-www-form-urlencoded'},
-                        body: `content=${messageToFilter.content}&author=${messageToFilter.author}&conversation=${messageToFilter.conversationToSend}&date=${messageToFilter.date}`
-
-                    });
-                    let response = await rawResponse.json();
-                    console.log("envoyé en bdd")
-                }
-                loadNewMessageToDatabase();
-
-
 
                 }
         });
 
 
-    }, [isFocused]);
+    }, [listMessages]);
 
     const displayMessage = (message,i) => {
         if ( message.author === author ){
