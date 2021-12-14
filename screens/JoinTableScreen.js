@@ -7,21 +7,24 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import {connect} from "react-redux";
+import userToken from '../reducers/userToken';
 
+const FranckIP = "http://192.168.1.41:3000"
+const herokuIP = "https://polar-stream-28883.herokuapp.com"
 
 function JoinTableScreen(props) {
 
     const [tableData, setTableData] = useState([''])
+    const [userData, setUserData] = useState([''])
    
-
+    // `http://192.168.1.9:3000/join-table/${props.tableId}`
     useEffect( async() => {
-           var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
-           var response = await responseRaw.json();
-        console.log(response)
+        var responseRaw = await fetch(`${herokuIP}/join-table/${props.tableId}/${props.userToken}`)
+        var response = await responseRaw.json();
 
-        
+        console.log(response, 'ok'),
             setTableData(response.result)
-        
+            setUserData(response.user)
          
             
          
@@ -29,17 +32,34 @@ function JoinTableScreen(props) {
 
          
         , []);
-       
-       
 
+        var handleJoinTable = async () => {
+
+
+            var dataRaw = await fetch(`${herokuIP}/enter-table`, {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                            body: `id=${props.tableId}&token=${props.userToken}`
+                          })
+            props.navigation.navigate('MyTable'); 
+
+            //   var body =  await data.json()
+            
+                 
+            }
+
+     
        var tableInfo = tableData;
+       var userInfo = userData;
 
       var tabCapacity = []
       for(let i = 0; i < tableInfo.capacity; i++) {
       
         
         tabCapacity.push(<MaterialCommunityIcons key={i}  name="seat" size={24} color="black"/>)
-
+    
+    
+    
 
       }
 
@@ -164,7 +184,7 @@ function JoinTableScreen(props) {
 
 
          
-         <Button style={{ marginBottom : 60, marginTop : 50, width : 300, height : 50, backgroundColor : "#0E9BA4"}} type='text' mode="contained" onPress={() => { props.navigation.navigate('MyTable'); }}>
+         <Button style={{ marginBottom : 60, marginTop : 50, width : 300, height : 50, backgroundColor : "#0E9BA4"}} type='text' mode="contained" onPress={() => handleJoinTable()}>
               <Text style={{color:"#FFC960", fontWeight:"bold"}}> Rejoindre la table</Text>
         </Button>
         </View>
@@ -192,7 +212,7 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-    return { tableId:  state.tableId}
+    return { tableId:  state.tableId, userToken: state.userToken}
   }
   
   export default connect(

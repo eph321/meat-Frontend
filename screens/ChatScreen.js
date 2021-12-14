@@ -4,7 +4,8 @@ import {Appbar, IconButton,  List,  TextInput, Text} from "react-native-paper";
 import socketIOClient from "socket.io-client";
 import { useIsFocused } from '@react-navigation/native';
 import {connect} from "react-redux";
-
+import 'intl';
+import 'intl/locale-data/jsonp/fr-FR';
 
 
 
@@ -15,8 +16,6 @@ function ChatScreen(props) {
     const [currentMessage,setCurrentMessage] = useState("")
     const [listMessages,setListMessages] = useState([])
     const [author, setAuthor] =useState("");
-    const [isDisplay,setIsDisplay] =useState(true)
-    const [dateToSend,setDateToSend] =useState("")
     const isFocused = useIsFocused();
 
     // props.userRegister.firstName
@@ -31,12 +30,11 @@ function ChatScreen(props) {
             });
             let response = await rawResponse.json();
             console.log("envoyé en bdd")
-
+            console.log(response)
 
         }
 
-        const options = {  day: '2-digit', month: '2-digit', year: '2-digit' }
-        let formattedDate =today.toLocaleString('fr-FR', options);
+        let formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(today)
 
 
         socket.emit("sendMessage", JSON.stringify({content: currentMessage,
@@ -48,11 +46,6 @@ function ChatScreen(props) {
             conversation: props.conversationToSend,date: formattedDate  });
         setCurrentMessage("");
     }
-
-
-
-
-
 
     useEffect( ()=> {
         const getChatMessages = async () =>{
@@ -71,8 +64,6 @@ function ChatScreen(props) {
 
     useEffect(() => {
 
-
-
         socket.on('sendMessageToAll', (newMessage)=> {
             if(newMessage !== null){
                 let messageToFilter = JSON.parse(newMessage)
@@ -80,13 +71,11 @@ function ChatScreen(props) {
                 if (messageToFilter.conversation === props.conversationToSend){
                     setListMessages([...listMessages,messageToFilter ])}
 
-
-
                 }
         });
 
 
-    }, [isFocused]);
+    }, [listMessages]);
 
     const displayMessage = (message,i) => {
         if ( message.author === author ){

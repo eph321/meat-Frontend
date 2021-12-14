@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, KeyboardAvoidingView } from 'react-native'; 
-import { Title, Button, Card, Paragraph, Subheading, Appbar } from 'react-native-paper';
+import { Title, Avatar, Button, Card, Paragraph, Subheading, Appbar, IconButton } from 'react-native-paper';
 import { ListItem, Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -8,6 +8,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import {connect} from "react-redux";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 
 
 function MyTableScreen(props) {
@@ -15,10 +16,18 @@ function MyTableScreen(props) {
     const [tableData, setTableData] = useState([''])
    
 
+    const leaveTable = async (tableid, token ) => {
+    
+        var dataRaw = await fetch(`http://192.168.1.9:3000/delete-guest/${props.tableId}/${props.userToken}`, {
+            method: 'DELETE'	
+        })
+    };
+
+
     useEffect( async() => {
            var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
            var response = await responseRaw.json();
-        console.log(response)
+      
 
         
             setTableData(response.result)
@@ -83,56 +92,87 @@ function MyTableScreen(props) {
     
     
     <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>  
-     <View style={stylesBar.viewHeader}>
-                <Appbar style={{ flex: 1, backgroundColor: "#FFC960", height: 20 }}>
-                    <Appbar.Content title="Ma table" style={{ textAlign: 'center' }} />
-                </Appbar>
-                <Appbar style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", justifyContent: "space-evenly", height: 40 }}>
-                    <Appbar.Action icon="home" onPress={() => props.navigation.navigate('Home')} />
-                    <Appbar.Action icon="plus-circle" onPress={() => props.navigation.navigate('NewTable')} />
-                    <Appbar.Action icon="calendar-month" onPress={() => props.navigation.navigate('MyEvents')} />
-                    <Appbar.Action icon="message-text" onPress={() => props.navigation.navigate('Chat')} />
-                    <Appbar.Action icon="account" onPress={() => props.navigation.navigate('MyAccount')}
-                    />
-                </Appbar>
-            </View>
-       <View style={{flex : 1,alignItems: 'center', justifyContent: 'center', height: 10, marginBottom : 100}}>
-       <Button style={{ marginBottom : 60, marginTop : 50, width : 300, height : 50, backgroundColor : "#0E9BA4"}} type='text' mode="contained" onPress={() => { props.navigation.navigate('Home'); }}>
-              <Text style={{color:"#FFC960", fontWeight:"bold"}}> Quitter la table</Text>
-        </Button>
-     
-       </View>
-   
-        <View style={{ flex: 1, marginBottom: 200, flexBasis : "auto", flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', }}>
-               <Card style={{ marginLeft : 60, marginBottom : 60, marginTop : 50, height : 250, width : 180 }}>
-                       <Card.Content>
-                           <Title>M.Eaters : 3/{tableInfo.capacity}</Title>
-                           <View style={{flexDirection: "row"}}>{tabCapacity}</View>
+     <View style={{ flex: 2,
+             left: 0,
+             width:"100%",
+             top: 0,
+             justifyContent:"flex-start",}}>
+             <Appbar style={{ backgroundColor: "#FFC960", flex:1}}>
+                 <Appbar.Content title="Rejoindre une table" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
 
-                           <Title>Budget : {bugdetInfo} </Title>
-                           <Title ><FontAwesome5 name="walking" size={24} color="black" />  à 150 mètres</Title>
+             </Appbar>
+             <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
+                 <IconButton
+                     icon="home"
+                     color={'#0E9BA4'}
+                     size={25}
+                     onPress={() => props.navigation.navigate('Home')}
+                 />
+                 <IconButton
+                     icon="plus-circle"
+                     color={'#0E9BA4'}
+                     size={25}
+                     onPress={() => props.navigation.navigate('NewTable')}
+                 />
+                 <IconButton
+                     icon="calendar-month"
+                     color={'#0E9BA4'}
+                     size={25}
+                     onPress={() =>props.navigation.navigate('MyEvents')}
+                 />
+                 <IconButton
+                     icon="message-text"
+                     color={'#0E9BA4'}
+                     size={25}
+                     onPress={() =>  props.navigation.navigate('Chat')}
+                 />
+                 <IconButton
+                     icon="account"
+                     color={'#0E9BA4'}
+                     size={25}
+                     onPress={() =>  props.navigation.navigate('MyAccount')}
+                 />
+                 <IconButton
+                     icon="account"
+                     color={'#0E9BA4'}
+                     size={25}
+                     onPress={() => {leaveTable(props.tableId, props.userToken); props.navigation.navigate('MyAccount')}}
+                 />
+
+             </View>
+         </View>
+        <View style={{flex : 1, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
+        <Title>{tableInfo.title}</Title>
+        <Subheading>{tableInfo.date}</Subheading>
+        </View>
+    
+         <View style={{ flex: 3 , marginBottom:150, flexBasis : "auto", flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', }}>
+                <Card style={{ marginLeft : 60, marginBottom : 60, marginTop : 50, height : 250, width : 180 }}>
+                        <Card.Content>
+                            <Title>M.Eaters : 1/{tableInfo.capacity}</Title>
+                            <View style={{flexDirection: "row"}}>{tabCapacity}</View>
+                            <Title>Budget : {bugdetInfo}</Title>
+                            
+                            <Title ><FontAwesome5 name="walking" size={24} color="black" />  à 150 mètres</Title>
                             <Title><MaterialIcons name="restaurant" size={24} color="black" />  {tableInfo.placeType}</Title>
                             <Title><FontAwesome name="birthday-cake" size={24} color="black" />  {tableInfo.age}</Title>
-                            <Title>{tableInfo.title}</Title>
-                            <Subheading>{tableInfo.date}</Subheading>
-                       </Card.Content>
-               </Card>
-               
-               <Card style={{marginLeft : 10 , marginRight : 60, marginBottom : 60, marginTop : 50, height : 250, width : 180 }}>
-               <Card.Cover style = {{height : 150, widht : 80}}source={{ uri: cardImage }} />
-
-                       <Card.Content>
+                        </Card.Content>
+                </Card>
+                
+                <Card style={{marginLeft : 10 , marginRight : 60, marginBottom : 60, marginTop : 50, height : 250, width : 180 }}>
+                <Card.Cover style = {{height : 150, widht : 80}} source={{ uri: cardImage }} /> 
+                
+                        <Card.Content>
 
                             <Title>{tableInfo.placeName}</Title>
                             <Paragraph>{tableInfo.placeAddress}</Paragraph>
-                       </Card.Content>
+                        </Card.Content>
 
-               </Card>
-               
-       </View>
+                </Card>
+        </View>
        
-       <View style={{flex : 3, alignItems: 'strech', justifyContent: 'center'}}>
-       <Card style={{width : 350, height : 400}}>
+       <View style={{flex : 3, justifyContent: 'center'}}>
+       <Card style={{width : 350, height : 400, marginBottom:100}}>
                <Card.Content>
                <ScrollView style={{ marginTop: 50}}>
         <ListItem>

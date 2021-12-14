@@ -5,6 +5,9 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
 import { MultiSelect } from 'react-native-element-dropdown';
+import { useIsFocused } from '@react-navigation/native';
+import 'intl';
+import 'intl/locale-data/jsonp/fr-FR';
 
 
 
@@ -25,6 +28,7 @@ const restaurantTypeList = [
 
 function HomeScreen(props) {
 
+    const isFocused = useIsFocused();
     const [tableDataList, setTableDataList] = useState([]);
     const [restaurantType, setRestaurantType] = useState([]); // Pour filtre Type Restaurant
     const [dateFilter, setDateFilter] = useState("") // Pour filtre Date
@@ -38,6 +42,8 @@ function HomeScreen(props) {
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [dateIsSeleted, setDateIsSelected] = useState(false); // Pour changer le texte dans le button
+    const [redirect, setRedirect] = useState(false)
+    const [userId, setUserId] = useState("")
 
     /* let formattedDate = date.toLocaleString("fr-FR", options);
     const options = { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' } */
@@ -69,31 +75,42 @@ function HomeScreen(props) {
     // Affichage des tables existantes 
 
     useEffect(async () => {
-        var rawResponse = await fetch(`${herokuIP}/search-table`);
-        var response = await rawResponse.json();
+        let rawResponse = await fetch(`${herokuIP}/search-table`);
+        let response = await rawResponse.json();
         setTableDataList(response.result)
-    }, [] //(restaurantType.length===0)?tableDataList:undefined
+
+        let rawUserResponse = await fetch(`${herokuIP}/users/search-userId/${props.userToken}`);
+        let userResponse = await rawUserResponse.json();
+        setUserId(userResponse.result._id);
+
+        for (let i = 0; i < response.result.length; i++) {
+            if (response.result[i].planner === props.userToken || response.result[i].guests[i] === userId) {
+                setRedirect(true)
+            }
+        }
+
+    }, [isFocused]
     )
 
     useEffect(async () => {
         if (restaurantType[0]) {
             if (restaurantType[0].length > 0) {
-                const rawTypeFilterResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
+                const rawTypeFilterResponse = await fetch(`${herokuIP}/filter-table/${restaurantType}`);
                 const typeFilterResponse = await rawTypeFilterResponse.json();
                 setTableDataList(typeFilterResponse.result)
             } else {
-                var rawResponse = await fetch(`${herokuIP}/search-table`);
-                var response = await rawResponse.json();
+                let rawResponse = await fetch(`${herokuIP}/search-table`);
+                let response = await rawResponse.json();
                 setTableDataList(response.result)
             }
         }
 
         //// FILTRE Où ?
-        if (dateFilter){
-            const rawDateFilterResponse = await fetch(`${FranckIP}/filter-date/${dateFilter}`)
-            const dateFilterResponse = await rawDateFilterResponse.json();
-        }
-    }, [restaurantType, dateFilter])
+        /*  if (dateFilter){
+             const rawDateFilterResponse = await fetch(`${FranckIP}/filter-date/${dateFilter}`)
+             const dateFilterResponse = await rawDateFilterResponse.json();
+         } */
+    }, [restaurantType]) //dateFilter
 
     // Conditions du useEffect
     // lorsque setRestaurantType([item]) : ne détecte pas changement de l'état restaurantType
@@ -111,12 +128,12 @@ function HomeScreen(props) {
         }
 
         let dateParse = new Date(e.date)
-
+        // let formattedDate = new Intl.DateTimeFormat("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }).format(dateParse)
         let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
         formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
 
         return (
-            <Card key={i} style={{ marginBottom: 8 }} onPress={() => { props.onCardClick(e._id); props.navigation.navigate("JoinTable") }}>
+            <Card key={i} style={{ marginBottom: 8 }} onPress={() => { props.onCardClick(e._id);(redirect)?props.navigation.navigate("MyTable") : props.navigation.navigate("JoinTable") }}>
                 <Card.Content>
                     <Title style={{ alignSelf: "center" }}>{e.title}</Title>
                     <Paragraph style={{ alignSelf: "center" }}>{formattedDate}</Paragraph>
@@ -258,7 +275,7 @@ function HomeScreen(props) {
                 </View>
 
             </View>
-            <View style={{ flex:10 }}>
+            <View style={{ flex: 10 }}>
                 <ScrollView >
 
                     {tableList}
@@ -329,37 +346,38 @@ const styles = StyleSheet.create({
 
 
 const pickerStyle = {
-	inputIOS: {
-		color: 'white',
-		paddingTop: 13,
-		paddingHorizontal: 10,
-		paddingBottom: 12,
-	},
-	inputAndroid: {
-		color: 'white',
-	},
-	placeholderColor: 'white',
-	underline: { borderTopWidth: 0 },
-	icon: {
-		position: 'absolute',
-		backgroundColor: 'transparent',
-		borderTopWidth: 5,
-		borderTopColor: '#00000099',
-		borderRightWidth: 5,
-		borderRightColor: 'transparent',
-		borderLeftWidth: 5,
-		borderLeftColor: 'transparent',
-		width: 0,
-		height: 0,
-		top: 20,
-		right: 15,
-	},
+    inputIOS: {
+        color: 'white',
+        paddingTop: 13,
+        paddingHorizontal: 10,
+        paddingBottom: 12,
+    },
+    inputAndroid: {
+        color: 'white',
+    },
+    placeholderColor: 'white',
+    underline: { borderTopWidth: 0 },
+    icon: {
+        position: 'absolute',
+        backgroundColor: 'transparent',
+        borderTopWidth: 5,
+        borderTopColor: '#00000099',
+        borderRightWidth: 5,
+        borderRightColor: 'transparent',
+        borderLeftWidth: 5,
+        borderLeftColor: 'transparent',
+        width: 0,
+        height: 0,
+        top: 20,
+        right: 15,
+    },
 };
 
 
 function mapStateToProps(state) {
     return {
-        tableId: state.tableId
+        tableId: state.tableId,
+        userToken: state.userToken,
     }
 }
 

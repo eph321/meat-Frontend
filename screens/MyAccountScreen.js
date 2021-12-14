@@ -9,6 +9,7 @@ function MyAccountScreen(props) {
     const [gender, setGender] =useState("male")
     const [image, setImage] = useState(null);
     const [visible, setVisible] = useState(true);
+    const [address,setAddress] = useState("");
 
     const [errorEmail, setErrorEmail] = useState("");
     const [errorPassword, setErrorPassword] = useState("");
@@ -106,6 +107,14 @@ function MyAccountScreen(props) {
         }
       }   
     }
+    const fetchAddress = async (val) => {
+        let valfiltered =val.replace('_',"+");
+        let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${valfiltered }`)
+        let response = await rawResponse.json();
+        console.log(response.features[0].properties.label);
+
+    }
+
 
     return (   <View style={{flex:1,justifyContent: 'space-evenly'}}>
             <View style={{ flex: 2,
@@ -147,7 +156,6 @@ function MyAccountScreen(props) {
                         size={25}
                         onPress={() =>  props.navigation.navigate('BuddyProfile')}
                     />
-
                     <IconButton
                         icon="exit-to-app"
                         color={'#0E9BA4'}
@@ -249,8 +257,9 @@ function MyAccountScreen(props) {
                     <View style={{flexDirection:"row",justifyContent:"center"}}>
                     <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                                mode="outlined"
+                               value={address}
                                label="Adresse Postale"
-                               onChangeText={(val)=> {setUserAddress(val); setInputProgress(inputProgress + 0.01)}}
+                               onChangeText={(val)=> {setAddress(val); fetchAddress(val)}}
                                placeholder ="56 boulevard Pereire, 75017 Paris"
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
