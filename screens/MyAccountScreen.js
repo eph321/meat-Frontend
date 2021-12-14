@@ -10,6 +10,7 @@ function MyAccountScreen(props) {
     const [image, setImage] = useState(null);
     const [visible, setVisible] = useState(true);
     const [address,setAddress] = useState("");
+    const [setlistAddress,listAddress] = useState([])
 
     // préparation de l'envoi dans le store
     const [tempAvatarUri,setTempAvatarUri] =useState("")
@@ -52,9 +53,10 @@ function MyAccountScreen(props) {
 
     const fetchAddress = async (val) => {
         let valfiltered =val.replace('_',"+");
-        let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${valfiltered }`)
+        let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${valfiltered }&limit=5`)
         let response = await rawResponse.json();
-        console.log(response.features[0].properties.label);
+        setlistAddress(response.features[0].properties.label)
+        console.log();
 
     }
 
