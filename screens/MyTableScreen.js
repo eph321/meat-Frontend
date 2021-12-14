@@ -83,7 +83,7 @@ function MyTableScreen(props) {
 
     const leaveTable = async (tableid, token ) => {
     
-        var dataRaw = await fetch(`http://192.168.1.9:3000/delete-guest/${props.tableId}/${props.userToken}`,{
+        var dataRaw = await fetch(`https://polar-stream-28883.herokuapp.com/delete-guest/${props.tableId}/${props.userToken}`,{
             method: 'DELETE'
         })
     };
@@ -157,7 +157,7 @@ function MyTableScreen(props) {
              top: 0,
              justifyContent:"flex-start",}}>
              <Appbar style={{ backgroundColor: "#FFC960", flex:1}}>
-                 <Appbar.Content title="Rejoindre une table" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
+                 <Appbar.Content title="Ma Table" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
 
              </Appbar>
              <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>

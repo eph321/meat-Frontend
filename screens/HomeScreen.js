@@ -33,6 +33,7 @@ function HomeScreen(props) {
     const [restaurantType, setRestaurantType] = useState([]); // Pour filtre Type Restaurant
     const [dateFilter, setDateFilter] = useState("") // Pour filtre Date
 
+
     const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
 
     // DATE PICKER - input "où"
@@ -81,11 +82,11 @@ function HomeScreen(props) {
         let userResponse = await rawUserResponse.json();
         setUserId(userResponse.result._id);
 
-        for (let i = 0; i < response.result.length; i++) {
-            if (response.result[i].planner === props.userToken || response.result[i].guests[i] === userId) {
-                setRedirect(true)
-            }
-        }
+            for (let i = 0; i < response.result.length; i++) {
+                if (response.result[i].planner === props.userToken || response.result[i].guests[i] === userId) {
+                    setRedirect(true)
+                }
+            };
 
     }, [isFocused]
     )
@@ -154,20 +155,20 @@ function HomeScreen(props) {
              const dataFilterResponse = await rawDataFilterResponse.json();
              setTableDataList(dataFilterResponse.result)  */
 
-        if (dateFilter != "") { //restaurantType[0] || 
- 
-            const rawDataFilterResponse = await fetch(`${FranckIP}/filters`, {
+        if (restaurantType[0] || dateFilter !== "") {
+
+            let rawDataFilterResponse = await fetch(`${herokuIP}/filters`, {
                 method: "POST",
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `date=${dateFilter}&type=${restaurantType}`
             })
-            const dataFilterResponse = await rawDataFilterResponse.json()
+            let dataFilterResponse = await rawDataFilterResponse.json()
             console.log(dataFilterResponse)
             setTableDataList(dataFilterResponse.result)
 
         } else {
-            const rawResponse = await fetch(`${FranckIP}/search-table`);
-            const response = await rawResponse.json();
+            let rawResponse = await fetch(`${herokuIP}/search-table`);
+            let response = await rawResponse.json();
             setTableDataList(response.result)
         }
 
@@ -193,8 +194,19 @@ function HomeScreen(props) {
         let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
         formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
 
+        const onCardClick = async () => {
+            props.saveTableId(e._id);
+
+            if (redirect) {
+                props.navigation.navigate("MyTable")
+            } else {
+                props.navigation.navigate("JoinTable")
+            };
+        }
+
+
         return (
-            <Card key={i} style={{ marginBottom: 8 }} onPress={() => { props.onCardClick(e._id); (redirect) ? props.navigation.navigate("MyTable") : props.navigation.navigate("JoinTable") }}>
+            <Card key={i} style={{ marginBottom: 8 }} onPress={() => onCardClick()}>
                 <Card.Content>
                     <Title style={{ alignSelf: "center" }}>{e.title}</Title>
                     <Paragraph style={{ alignSelf: "center" }}>{formattedDate}</Paragraph>
@@ -444,7 +456,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onCardClick: function (tableId) {
+        saveTableId: function (tableId) {
             dispatch({ type: "saveTableId", tableId: tableId })
         }
     }
