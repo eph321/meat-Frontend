@@ -16,10 +16,18 @@ function MyTableScreen(props) {
     const [tableData, setTableData] = useState([''])
    
 
+    const leaveTable = async (tableid, token ) => {
+    
+        var dataRaw = await fetch(`http://192.168.1.9:3000/delete-guest/${props.tableId}/${props.userToken}`, {
+            method: 'DELETE'	
+        })
+    };
+
+
     useEffect( async() => {
            var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
            var response = await responseRaw.json();
-        console.log(response)
+      
 
         
             setTableData(response.result)
@@ -123,6 +131,12 @@ function MyTableScreen(props) {
                      color={'#0E9BA4'}
                      size={25}
                      onPress={() =>  props.navigation.navigate('MyAccount')}
+                 />
+                 <IconButton
+                     icon="account"
+                     color={'#0E9BA4'}
+                     size={25}
+                     onPress={() => {leaveTable(props.tableId, props.userToken); props.navigation.navigate('MyAccount')}}
                  />
 
              </View>

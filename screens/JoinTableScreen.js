@@ -31,22 +31,22 @@ function JoinTableScreen(props) {
          
         , []);
 
-        // useEffect( async() => {
-        //     var responseRaw = await fetch(`http://192.168.1.9:3000/join-table/${props.tableId}/token`)
-        //     var response = await responseRaw.json();
-        //  console.log(response,'okokok')
- 
-                  
-          
-             
-          
-        //    }
- 
-          
-        //  , []);
-       
-       
+        var handleJoinTable = async () => {
 
+
+            var dataRaw = await fetch(`http://192.168.1.9:3000/enter-table`, {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                            body: `id=${props.tableId}&token=${props.userToken}`
+                          })
+            props.navigation.navigate('MyTable'); 
+
+            //   var body =  await data.json()
+            
+                 
+            }
+
+     
        var tableInfo = tableData;
        var userInfo = userData;
 
@@ -182,7 +182,7 @@ function JoinTableScreen(props) {
 
 
          
-         <Button style={{ marginBottom : 60, marginTop : 50, width : 300, height : 50, backgroundColor : "#0E9BA4"}} type='text' mode="contained" onPress={() => { props.navigation.navigate('MyTable'); }}>
+         <Button style={{ marginBottom : 60, marginTop : 50, width : 300, height : 50, backgroundColor : "#0E9BA4"}} type='text' mode="contained" onPress={() => handleJoinTable()}>
               <Text style={{color:"#FFC960", fontWeight:"bold"}}> Rejoindre la table</Text>
         </Button>
         </View>
