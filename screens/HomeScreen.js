@@ -23,25 +23,31 @@ const restaurantTypeList = [
 
 function HomeScreen(props) {
 
-    const [tableDataList, setTableDataList] = useState([])
-    const [restaurantType, setRestaurantType] = useState([]);
+    const [tableDataList, setTableDataList] = useState([]);
+    const [restaurantType, setRestaurantType] = useState([]); // Pour filtre Type Restaurant
+    const [dateFilter, setDateFilter] = useState("") // Pour filtre Date
+
     const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
+
+    const [tableFilteredDataList, setTableFilteredDataList] = useState([]);
 
     // DATE PICKER - input "où"
     const [date, setDate] = useState(new Date(Date.now()));
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
-    const [dateValue, setDateValue] = useState(false);
+    const [dateIsSeleted, setDateIsSelected] = useState(false); // Pour changer le texte dans le button
 
-    const formattedDate = date.toLocaleString("fr-FR", options);
-    const options = { weekday:"long", day: '2-digit', month: '2-digit', year: '2-digit' }
-    // l'affichage de l'heure à enlever !
+    /* let formattedDate = date.toLocaleString("fr-FR", options);
+    const options = { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' } */
+
+    const formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(date)
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
-        setDateValue(true);
+        setDateIsSelected(true);
+        setDateFilter(currentDate)
     };
 
     const showMode = (currentMode) => {
@@ -70,16 +76,22 @@ function HomeScreen(props) {
     useEffect(async () => {
         if (restaurantType[0]) {
             if (restaurantType[0].length > 0) {
-                const rawFilteredResponse = await fetch(`${herokuIP}/filter-table/${restaurantType}`);
-                const filteredResponse = await rawFilteredResponse.json();
-                setTableDataList(filteredResponse.result)
+                const rawTypeFilterResponse = await fetch(`${FranckIP}/filter-table/${restaurantType}`);
+                const typeFilterResponse = await rawTypeFilterResponse.json();
+                setTableDataList(typeFilterResponse.result)
             } else {
                 var rawResponse = await fetch(`${herokuIP}/search-table`);
                 var response = await rawResponse.json();
                 setTableDataList(response.result)
             }
         }
-    }, [restaurantType])
+
+        //// FILTRE Où ?
+        if (dateFilter){
+            const rawDateFilterResponse = await fetch(`${FranckIP}/filter-date/${dateFilter}`)
+            const dateFilterResponse = await rawDateFilterResponse.json();
+        }
+    }, [restaurantType, dateFilter])
 
     // Conditions du useEffect
     // lorsque setRestaurantType([item]) : ne détecte pas changement de l'état restaurantType
@@ -97,8 +109,9 @@ function HomeScreen(props) {
         }
 
         let dateParse = new Date(e.date)
+        // let formattedDate = new Intl.DateTimeFormat("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }).format(dateParse)
         let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
-        formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1) // Première lettre en Maj sur la card
+        formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
 
         return (
             <Card key={i} style={{ marginBottom: 8 }} onPress={() => { props.onCardClick(e._id); props.navigation.navigate("JoinTable") }}>
@@ -185,14 +198,21 @@ function HomeScreen(props) {
                     mode="contained" onPress={() => { props.navigation.navigate('JoinTable'); }}>
                     <Text Style={{ color: '#FFC960' }}>Go to join</Text>
                 </Button>*/}
-                <TextInput style={{ textAlign: 'center', width: '70%', alignSelf: "center", marginBottom: 5 }}
+                <TextInput style={{ textAlign: 'center', width: '70%', marginBottom: 5, alignSelf: "center", }}
                     mode="outlined"
                     label="Où ?"
                     placeholder="Paris 17"
-                    activeOutlineColor={"#FF3D00"}
+                    activeOutlineColor={"#FFC960"}
                     outlineColor={'#0E9BA4'}
                 />
-                <Button onPress={showDatepicker} style={{ height: 30, alignSelf: "center" }}>{(dateValue) ? "Le " + formattedDate : "Choisissez une date"} </Button>
+                <Button
+                    mode="contained"
+                    onPress={showDatepicker}
+                    style={styles.datePicker}
+                    labelStyle={{ color: "black", fontWeight: "400", fontSize: 14 }}
+                >
+                    {(dateIsSeleted) ? "Le " + formattedDate : "Choisissez une date"}
+                </Button>
                 <View>
                     {/* <View style={{ flexDirection: "row", justifyContent: "center" }}>
                         <Button onPress={showDatepicker}> Date </Button>
@@ -261,6 +281,17 @@ const styles = StyleSheet.create({
         width: "100%",
         top: 0,
         justifyContent: "flex-start",
+    },
+    datePicker: {
+        width: "70%",
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+        backgroundColor: "transparent",
+        alignSelf: "center",
+        justifyContent: "center"
     },
     dropdown: {
         width: "70%",
