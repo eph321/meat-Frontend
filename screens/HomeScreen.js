@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, AsyncStorage, Button } from 'react-native';
-import { Text, Appbar, TextInput, Card, Title, Paragraph, IconButton } from "react-native-paper";
+import { StyleSheet, View, ScrollView, AsyncStorage } from 'react-native';
+import { Text, Appbar, TextInput, Card, Title, Paragraph, IconButton, Button } from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
@@ -34,14 +34,14 @@ function HomeScreen(props) {
     const [dateValue, setDateValue] = useState(false);
 
     const formattedDate = date.toLocaleString("fr-FR", options);
-    const options = { weekday: 'long', day: '2-digit', month: '2-digit', year: '2-digit' }
+    const options = { weekday:"long", day: '2-digit', month: '2-digit', year: '2-digit' }
+    // l'affichage de l'heure à enlever !
 
     const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date.toLocaleString("fr-FR", options);
+        const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
         setDateValue(true);
-        console.log(formattedDate)
     };
 
     const showMode = (currentMode) => {
@@ -96,12 +96,15 @@ function HomeScreen(props) {
             )
         }
 
+        let dateParse = new Date(e.date)
+        let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
+        formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1) // Première lettre en Maj sur la card
 
         return (
             <Card key={i} style={{ marginBottom: 8 }} onPress={() => { props.onCardClick(e._id); props.navigation.navigate("JoinTable") }}>
                 <Card.Content>
                     <Title style={{ alignSelf: "center" }}>{e.title}</Title>
-                    <Paragraph style={{ alignSelf: "center" }}>{e.date}</Paragraph>
+                    <Paragraph style={{ alignSelf: "center" }}>{formattedDate}</Paragraph>
                     <View style={{ flexDirection: "row", alignSelf: "center", marginBottom: 4, marginTop: 4 }}>
                         {capacityAvatar}
                     </View>
@@ -189,15 +192,11 @@ function HomeScreen(props) {
                     activeOutlineColor={"#FF3D00"}
                     outlineColor={'#0E9BA4'}
                 />
-
+                <Button onPress={showDatepicker} style={{ height: 30, alignSelf: "center" }}>{(dateValue) ? "Le " + formattedDate : "Choisissez une date"} </Button>
                 <View>
-                   
-                    <View>
-                        <Button onPress={showDatepicker} title={(dateValue)?formattedDate:"Choisissez une date"} />
-                    </View>
-                    <View>
-                        <Button onPress={showTimepicker} title="Show time picker!" />
-                    </View>
+                    {/* <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                        <Button onPress={showDatepicker}> Date </Button>
+                    </View> */}
                     {show && (
                         <DateTimePicker
                             testID="dateTimePicker"
@@ -208,9 +207,8 @@ function HomeScreen(props) {
                             onChange={onChange}
                         />
                     )}
-                        
-
                 </View>
+
                 <View style={{ alignItems: "center", marginTop: 12, marginBottom: 8 }}>
                     <MultiSelect
                         style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
