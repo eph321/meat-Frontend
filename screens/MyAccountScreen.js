@@ -280,7 +280,7 @@ function MyAccountScreen(props) {
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
                     />
-                        {(listAddress !== null)?listAddress.map((item,i)=>displayAddress(item,i)):<View></View>}
+                        {/*{(listAddress !== null)?listAddress.map((item,i)=>displayAddress(item,i)):<View></View>}*/}
 
                     <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
                         <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorUserAddress}</Text>
