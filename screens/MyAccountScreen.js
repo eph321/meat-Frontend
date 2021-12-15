@@ -300,14 +300,14 @@ function MyAccountScreen(props) {
                             selectedTextStyle={styles.selectedTextStyle}
                             inputSearchStyle={styles.inputSearchStyle}
                             iconStyle={styles.iconStyle}
-                            data={listAddress.map((el) => el.properties.label)}
+                            data={listAddress}
                             search
                             maxHeight={300}
                             labelField="label"
                             valueField="value"
                             placeholder="Adresse?"
                             searchPlaceholder="Search..."
-                            value={item}
+                            value=""
                             onFocus={() => setIsTypeFocus(true)}
                             onBlur={() => setIsTypeFocus(false)}
                             onChange={item => {
