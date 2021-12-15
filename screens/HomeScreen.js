@@ -78,6 +78,7 @@ function HomeScreen(props) {
         let response = await rawResponse.json();
         setTableDataList(response.result)
 
+        setRedirect(false)
         let rawUserResponse = await fetch(`${herokuIP}/users/search-userId/${props.userToken}`);
         let userResponse = await rawUserResponse.json();
         setUserId(userResponse.result._id);
