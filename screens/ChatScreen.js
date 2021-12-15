@@ -9,15 +9,13 @@ import 'intl/locale-data/jsonp/fr-FR';
 
 
 
-var socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
+const socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
 
 function ChatScreen(props) {
 
     const [currentMessage,setCurrentMessage] = useState("")
     const [listMessages,setListMessages] = useState([])
     const [author, setAuthor] =useState("");
-    const [isDisplay,setIsDisplay] =useState(true)
-    const [dateToSend,setDateToSend] =useState("")
     const isFocused = useIsFocused();
 
     // props.userRegister.firstName
@@ -33,7 +31,6 @@ function ChatScreen(props) {
             let response = await rawResponse.json();
             console.log("envoyé en bdd")
             console.log(response)
-
 
         }
 

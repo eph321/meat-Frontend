@@ -17,6 +17,7 @@ function RegisterScreenB(props) {
     const [errorMsg, setErrorMsg] = useState(null);
     const [firstName,setFirstName] =useState('');
     const [lastName, setLastName] = useState('');
+
     const [userAddress, setUserAddress] = useState('');
     const [phone, setPhone] = useState('');
     const [gender, setGender] =useState("male")
@@ -44,41 +45,16 @@ function RegisterScreenB(props) {
     };
 
 
-
+    // Messages d'erreur pour les champs obligatoires
+    
     const [inputErrorFirstname, setInputErrorFirstname] = useState("");
     const [inputErrorLastname, setInputErrorLastname] = useState("");
     const [inputErrorUserAddress, setInputErrorUserAddress] = useState("");
     const [inputErrorPhone, setInputErrorPhone] = useState("");
     const [inputErrorDateOfBirth, setInputErrorDateOfBirth] = useState("");
 
-    const getCurrentLocation = async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-
-        if (status !== 'granted') {
-            setErrorMsg('Permission to access location was denied');
-            return;
-        }
-
-        let { coords } = await Location.getCurrentPositionAsync();
-
-        if (coords) {
-            const { latitude, longitude } = coords;
-            let response = await Location.reverseGeocodeAsync({
-                latitude,
-                longitude
-            });
-
-            for (let item of response) {
-                let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
-
-                setUserAddress(address);
-            }
-        }
-    };
-
-
     const connexionValidation = () => {
-        if (firstName && lastName && userAddress && phone && dateOfBirth) {
+        if (firstName && lastName && userAddress && phone && phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/) && dateOfBirth) {
             props.navigation.navigate('RegisterC')
         } else {
         
@@ -102,7 +78,9 @@ function RegisterScreenB(props) {
 
         if (phone === "") {
             setInputErrorPhone("*Numéro de mobile requis!")
-        } else {
+            } else if (phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/)) {
+            setInputErrorPhone("*Le numéro de mobile doit être au format +33123456789!")
+            } else {
             setInputErrorPhone("")
         }
 
@@ -114,13 +92,43 @@ function RegisterScreenB(props) {
     }   
     }
 
+
+
+    const getCurrentLocation = async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+
+        if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
+        }
+
+        let { coords } = await Location.getCurrentPositionAsync();
+
+        if (coords) {
+            const { latitude, longitude } = coords;
+            let response = await Location.reverseGeocodeAsync({
+                latitude,
+                longitude
+            });
+
+            for (let item of response) {
+                let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
+                if (address.length > 0) {
+                    //attend 2 secondes avant de définir l'adresse
+                    setTimeout(() => {
+                        setUserAddress(address);
+                    }, 2000);
+                }
+
+            }
+        }
+    };
+
+
+    
     useEffect(() => {
         getCurrentLocation();
     }, []);
-
-
-
-
 
 
 

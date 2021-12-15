@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {  View } from 'react-native';
-import { Button, Appbar, Avatar, Title, IconButton} from "react-native-paper";
+import { Button, Appbar, Avatar, Title, IconButton,Colors   } from "react-native-paper";
 import {connect} from "react-redux";
 import {useIsFocused} from "@react-navigation/native";
+import userToken from "../reducers/userToken";
 
 
 function MyBuddiesScreen(props) {
     const isFocused = useIsFocused();
     const [relations,setRelations] = useState([]);
+    const [currentUserStatus,setCurrentUserStatus] =useState([]);
 
 
 
@@ -16,8 +18,10 @@ function MyBuddiesScreen(props) {
 
                 let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-related-users/${props.userToSend}`)
                 let response = await rawResponse.json();
+                setCurrentUserStatus(response.currentUser.buddies)
 
                 setRelations([...response.listOfRelations])})()
+
 
         } , [relations])
 
@@ -41,7 +45,7 @@ function MyBuddiesScreen(props) {
 
         })
         let sendResponse = await rawSend.json();
-        console.log(sendResponse)
+
     };
 
     const handleConversation = async (buddyToken) => {
@@ -62,45 +66,57 @@ function MyBuddiesScreen(props) {
 
 
     const displayRelations = (user,i) => {
+        let toDisplay;
+        let friends = <IconButton
+            icon="forum"
+            mode="contained"
+            color={'#0E9BA4'}
+            style={{borderColor: "#009788", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2}}
+            size={32}
+            onPress={() => handleConversation(user.token)}
+        />
+        let waiter = <IconButton
+            icon="account"
+            mode="contained"
+            color={Colors.grey400}
+            style={{borderColor: Colors.grey400, backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2}}
+            size={32}
+            onPress={() => console.log(userToken)}
+        />
+        let add =  <IconButton
+            icon="account-plus"
+            mode="contained"
+            color={'#0E9BA4'}
+            style={{borderColor: "#009788", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2 }}
+            size={32}
+            onPress={() => handleAcceptBuddy(user.token)}
+        />
+       if (
+            (currentUserStatus.some((el) => el.token === user.token && el.status === true) )
+            &&
+            (user.buddies.some((el) => el.token === props.userToSend && el.status === true))
+            ){
+                toDisplay = friends;
 
-
+        } else if (
+            (currentUserStatus.some((el) => el.token === user.token && el.status === true) )
+            &&
+            (user.buddies.some((el) => el.token === props.userToSend && el.status === false))
+        ){
+            toDisplay = add;
+        } else {
+            toDisplay = waiter;
+        }
         return <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start",marginBottom:5}} key={i}>
                         <Avatar.Image size={64} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(user.avatar)?{uri: user.avatar}:require("../assets/picture-4.png")} />
                         <View style={{marginTop:"3%", marginRight:"2%"}}>
                             <Title style={{fontWeight:"bold"}}>{user.firstname}</Title>
 
                         </View>
-                            {(user.buddies.filter((buddy) => buddy.status === true && buddy.token === props.userToSend).length !== 0 )
-                            ?
-                            <View style={{flexDirection: "row"}}>
-                                <IconButton
-                                    icon="forum"
-                                    mode="contained"
-                                    color={'#0E9BA4'}
-                                    style={{borderColor: "#009788", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2}}
-                                    size={32}
-                                    onPress={() => handleConversation(user.token)}
-                                />
-                                <IconButton
-                                    icon="account-remove"
-                                    mode="contained"
-                                    color={'#FF3D00'}
-                                    style={{borderColor: "#FF3D00", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2}}
-                                    size={32}
-                                    onPress={() => handleDeclineBuddy(user.token)}
-                                />
 
-                            </View>
-                            :
                             <View style={{flexDirection: "row"}}>
-                                         <IconButton
-                                    icon="account-plus"
-                                    mode="contained"
-                                    color={'#0E9BA4'}
-                                    style={{borderColor: "#009788", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2 }}
-                                    size={32}
-                                    onPress={() => handleAcceptBuddy(user.token)}
-                                />
+                                {toDisplay}
+
                                 <IconButton
                                     icon="account-cancel"
                                     mode="contained"
@@ -109,7 +125,7 @@ function MyBuddiesScreen(props) {
                                     size={32}
                                     onPress={() => handleDeclineBuddy(user.token)}
                                 />
-                            </View>}
+                            </View>
         </View>
 
                         }
@@ -157,29 +173,6 @@ function MyBuddiesScreen(props) {
 
                 <View  style={{flex:7, backgroundColor:"#F2F2F2"}}>
                     {relations.map((user,i)=> displayRelations(user,i))}
-                    {/*<View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center",marginBottom:5}}>
-                        <Avatar.Image size={60} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={require('../assets/picture-4.png')} />
-                        <View style={{marginTop:"3%", marginRight:"2%"}}>
-                            <Title style={{fontWeight:"bold", fontSize:30, marginBottom:"-8%"}}>Arthur</Title>
-                            <Title style={{fontStyle:"italic", fontSize:11}}>Buddy depuis le 10/10/2021</Title>
-                        </View>
-                        <View style={{flexDirection: "row"}}>
-                            <Button style={{borderColor: Colors.grey400, backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "3%"}}
-                                    mode="contained"
-                                    icon="account-clock"
-                                    labelStyle={{marginTop: "50%", marginLeft: 1, color: Colors.grey400, fontSize: 30}}
-                                    onPress={() => props.navigation.navigate('MyMessages')}
-                            >
-                            </Button>
-                            <Button style={{borderColor: "#FF3D00", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: "5%"}}
-                                    mode="contained"
-                                    icon="account-cancel"
-                                    labelStyle={{marginTop: "50%", marginLeft: 0, color: "#FF3D00", fontSize: 35 }}
-                                    onPress={() => props.navigation.navigate('MyMessages')}
-                            >
-                            </Button>
-                        </View>
-                    </View>*/}
 
                 </View>
 

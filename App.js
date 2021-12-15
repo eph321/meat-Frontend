@@ -20,7 +20,7 @@ import MyTableScreen from "./screens/MyTableScreen";
 import NewTableScreen from "./screens/NewTableScreen";
 import MyAccountScreen from "./screens/MyAccountScreen";
 import MyBuddiesScreen from "./screens/MyBuddiesScreen";
-import MyMessagesScreen from "./screens/MyMessagesScreen";
+
 import ChatScreen from "./screens/ChatScreen";
 import BuddyScreen from "./screens/BuddyScreen";
 import MyEventsScreen from "./screens/MyEventsScreen";
@@ -66,7 +66,6 @@ export default function App() {
                 <Stack.Screen name="MyAccount" component={MyAccountScreen} />
                 <Stack.Screen name="MyAddresses" component={MyAddressesScreen} />
                 <Stack.Screen name="MyBuddies" component={MyBuddiesScreen} />
-                <Stack.Screen name="MyMessages" component={MyMessagesScreen} />
                 <Stack.Screen name="Chat" component={ChatScreen} />
                 <Stack.Screen name="MyEvents" component={MyEventsScreen} />
               </Stack.Navigator>
