@@ -92,24 +92,6 @@ function HomeScreen(props) {
     )
 
     useEffect(async () => {
-<<<<<<< HEAD
-        if (restaurantType[0]) {
-            if (restaurantType[0].length > 0) {
-                const rawTypeFilterResponse = await fetch(`${herokuIP}/filter-table/${restaurantType}`);
-                const typeFilterResponse = await rawTypeFilterResponse.json();
-                setTableDataList(typeFilterResponse.result)
-            } else {
-                var rawResponse = await fetch(`${herokuIP}/search-table`);
-                var response = await rawResponse.json();
-                setTableDataList(response.result)
-            }
-        }
-
-        //// FILTRE Où ?
-        /*  if (dateFilter){
-             const rawDateFilterResponse = await fetch(`${FranckIP}/filter-date/${dateFilter}`)
-             const dateFilterResponse = await rawDateFilterResponse.json();
-=======
         /*  if (restaurantType[0]) {
              if (restaurantType[0].length > 0) {
                  const rawTypeFilterResponse = await fetch(`${herokuIP}/filter-table/${restaurantType}`);
@@ -120,7 +102,6 @@ function HomeScreen(props) {
                  let response = await rawResponse.json();
                  setTableDataList(response.result)
              }
->>>>>>> 1c3fba9c100ed9003ccf160f1423b65f511d092f
          } */
 
         //// FILTRE Quand ?
