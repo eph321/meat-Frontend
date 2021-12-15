@@ -16,6 +16,7 @@ function JoinTableScreen(props) {
 
     const [tableData, setTableData] = useState([''])
     const [userData, setUserData] = useState([''])
+    const [tableCapacity, setTableCapacity] = useState(0)
    
     // `http://192.168.1.9:3000/join-table/${props.tableId}`
     useEffect( async() => {
@@ -97,8 +98,32 @@ function JoinTableScreen(props) {
        else if(tableInfo.placeType === "Africain") {
             cardImage= 'https://afrogadget.com/wp-content/uploads/2021/06/01-couscous-royal-traditionnel.jpeg' 
           }
-       
-    //    var guestCount = tableInfo.guests.lenght + 1;
+    
+//           var tableCapacity = tableInfo.capacity;
+//             if(capacity < tableInfo.capacity){
+//               capacity = 1
+//             }
+        
+//             if(capacity > tableInfo.capacity){
+//               rating = table.capacity.length
+//             }
+        
+//             setTableCapacity(capacity)
+//             setIsRatingMovie(true)
+          
+    
+//           var tableAvatar = []
+//             for(var i=0;i<tableCapacity.length;i++){
+//             var avatar = {}
+//              if(i<tableCapacity){
+//              avatar = userInfo.avatar
+//          }
+//                 let count = i+1
+//             tableAvatar.push(<Avatar.Image size={24} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(user.avatar)?{uri: user.avatar}:require("../assets/picture-4.png")} />)
+//   }
+
+    
+    // var guestCount = tableInfo.guests.length + 1;
 
     return (  
         

@@ -72,11 +72,7 @@ function MyTableScreen(props) {
         });
     }, [listMessages]);
 
-
-
-
-
-
+    
     const [tableData, setTableData] = useState([''])
    
 
