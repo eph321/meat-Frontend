@@ -27,9 +27,9 @@ function JoinTableScreen(props) {
 
         var responseRaw = await fetch(`${herokuIP}/join-table/${props.tableId}`)
         var response = await responseRaw.json();
-console.log(response.result)
+        // console.log(response.result)
 
-        console.log(response, 'ok'),
+       // console.log(response, 'ok'),
             setTableData(response.result)
             setGuestList(response.result.guests)
           }
