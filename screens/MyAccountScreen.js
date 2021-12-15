@@ -11,12 +11,12 @@ function MyAccountScreen(props) {
     const [gender, setGender] =useState("male")
     const [image, setImage] = useState(null);
     const [visible, setVisible] = useState(true);
-    const [visibleList, setVisibleList] = useState(false);
-    const [isTypeFocus, setIsTypeFocus] = useState(false); // pour style de la liste déroulante type restaurant
 
+    const [isTypeFocus, setIsTypeFocus] = useState(false); // pour style de la liste déroulante type restaurant
+    const [listAddress,setListAddress] = useState([])
 
     const [address,setAddress] = useState("");
-    const [listAddress,setListAddress] = useState([])
+    const [visibleList, setVisibleList] = useState(false);
     const [listLabelAddress,setListLabelAddress] = useState([])
     const [errorEmail, setErrorEmail] = useState("");
     const [errorPassword, setErrorPassword] = useState("");
@@ -59,7 +59,7 @@ function MyAccountScreen(props) {
                 type: 'image/jpeg',
                 name: 'avatar.jpg'});
 
-            var rawResponse = await fetch("http://192.168.1.246:3000/uploadAvatar",{
+            var rawResponse = await fetch("https://polar-stream-28883.herokuapp.com/users/uploadAvatar",{
                 method: 'POST',
                 body: dataAvatar});
             var response = await rawResponse.json();

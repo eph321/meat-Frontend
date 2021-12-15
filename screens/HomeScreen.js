@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, AsyncStorage } from 'react-native';
+import {StyleSheet, View, ScrollView, AsyncStorage, TouchableOpacity} from 'react-native';
 import { Text, Appbar, TextInput, Card, Title, Paragraph, IconButton, Button } from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
@@ -29,11 +29,45 @@ const restaurantTypeList = [
 
 function HomeScreen(props) {
 
+    useEffect(()=>{
+        const fetchAddress = async (val) => {
+            let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
+            let response = await rawResponse.json();
+            let tempList = response.features
+            setListLabelAddress(tempList.map((el) =>{ return {label: el.properties.label, values: el.properties}}))
+            console.log(listLabelAddress)
+            setListAddress(tempList)
+
+            setVisibleList(true)}
+        fetchAddress(address)
+
+    },[address])
+
+    let addresses = listLabelAddress.map((el,i)=>{
+        return(<TouchableOpacity key={i}  onPress={() => {handlePressAddress(el); }}>
+            <Text style={{ margin:5}}>{el.label}</Text>
+        </TouchableOpacity>)    })
+    let listOfAddresses;
+
+    if (visibleList){
+        listOfAddresses = addresses}
+    else {
+        listOfAddresses = <Text></Text>}
+
+    const handlePressAddress = (el) => {
+        setAddress(el.label);
+        setVisibleList(false)
+    }
+
+
     const isFocused = useIsFocused();
     const [tableDataList, setTableDataList] = useState([]);
     const [restaurantType, setRestaurantType] = useState([]); // Pour filtre Type Restaurant
     const [dateFilter, setDateFilter] = useState("") // Pour filtre Date
     const [userLocation, setUserLocation] = useState("")
+    const [address,setAddress] = useState("");
+    const [visibleList, setVisibleList] = useState(false);
+    const [listLabelAddress,setListLabelAddress] = useState([])
 
     const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
 
@@ -325,7 +359,11 @@ function HomeScreen(props) {
                     placeholder="Paris 17"
                     activeOutlineColor={"#FFC960"}
                     outlineColor={'#0E9BA4'}
+                    onChangeText={(val)=> setAddress(val)}
                 />
+                <View >
+                    {listOfAddresses}
+                </View>
                 <Button
                     mode="contained"
                     onPress={showDatepicker}
