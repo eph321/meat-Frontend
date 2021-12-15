@@ -15,20 +15,18 @@ const herokuIP = "https://polar-stream-28883.herokuapp.com"
 function JoinTableScreen(props) {
 
     const [tableData, setTableData] = useState([''])
-    const [userData, setUserData] = useState([''])
-    const [tableCapacity, setTableCapacity] = useState(0)
+    const [guestList, setGuestList] = useState([''])
+
+
    
     // `http://192.168.1.9:3000/join-table/${props.tableId}`
     useEffect( async() => {
-        var responseRaw = await fetch(`${herokuIP}/join-table/${props.tableId}/${props.userToken}`)
+        var responseRaw = await fetch(`${herokuIP}/join-table/${props.tableId}`)
         var response = await responseRaw.json();
 
         console.log(response, 'ok'),
             setTableData(response.result)
-            setUserData(response.user)
-         
-            
-         
+            setGuestList(response.result.guests)
           }
 
          
@@ -51,17 +49,26 @@ function JoinTableScreen(props) {
 
      
        var tableInfo = tableData;
-       var userInfo = userData;
 
-      var tabCapacity = []
-      for(let i = 0; i < tableInfo.capacity; i++) {
+    
+
+
       
-        
-        tabCapacity.push(<MaterialCommunityIcons key={i}  name="seat" size={24} color="black"/>)
-    
-    
-    
+     
 
+      let avatarList = guestList.map((e,i)=> {
+          return(
+            <Avatar.Image key={i} size={24} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(e.avatar)?{uri: e.avatar}:require("../assets/picture-4.png")} />
+          )
+      })
+
+       var tabCapacity= []
+      
+      for(let i = 0; i < tableInfo.capacity - guestList.length; i++) {
+      
+       
+        tabCapacity.push(<MaterialCommunityIcons key={i}  name="seat" size={24} color="black"/>)
+     
       }
 
       var bugdetInfo = []
@@ -99,31 +106,29 @@ function JoinTableScreen(props) {
             cardImage= 'https://afrogadget.com/wp-content/uploads/2021/06/01-couscous-royal-traditionnel.jpeg' 
           }
     
-//           var tableCapacity = tableInfo.capacity;
-//             if(capacity < tableInfo.capacity){
-//               capacity = 1
-//             }
         
-//             if(capacity > tableInfo.capacity){
-//               rating = table.capacity.length
-//             }
-        
-//             setTableCapacity(capacity)
-//             setIsRatingMovie(true)
-          
+   
     
-//           var tableAvatar = []
-//             for(var i=0;i<tableCapacity.length;i++){
-//             var avatar = {}
-//              if(i<tableCapacity){
-//              avatar = userInfo.avatar
-//          }
+        //   var tableAvatar = []
+        //     for(var i=0;i< tableInfo.capacity;i++){
+           
+        //         if(i<tableInfo.capacity) {
+        //           tableAvatar.push(<Avatar.Image size={24} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(user.avatar)?{uri: user.avatar}:require("../assets/picture-4.png")} />)
+        //           }
+        //         else {
+
+        //         }
+                //   tableAvatar.push(<Avatar.Image size={24} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(user.avatar)?{uri: user.avatar}:require("../assets/picture-4.png")} />)
+
+
+
+        //  }
 //                 let count = i+1
 //             tableAvatar.push(<Avatar.Image size={24} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(user.avatar)?{uri: user.avatar}:require("../assets/picture-4.png")} />)
-//   }
+  
 
     
-    // var guestCount = tableInfo.guests.length + 1;
+    var guestCount = guestList.length + 1;
 
     return (  
         
@@ -179,8 +184,8 @@ function JoinTableScreen(props) {
          <View style={{ flex: 2, flexBasis : "auto", flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', }}>
                 <Card style={{ marginLeft : 60, marginBottom : 60, marginTop : 50, height : 250, width : 180 }}>
                         <Card.Content>
-                            <Title>M.Eaters : 1/{tableInfo.capacity}</Title>
-                            <View style={{flexDirection: "row"}}>{tabCapacity}</View>
+                            <Title>M.Eaters : {guestCount}/{tableInfo.capacity}</Title>
+                            <View style={{flexDirection: "row"}}>{avatarList}{tabCapacity}</View>
                             <Title>Budget : {bugdetInfo}</Title>
                             
                             <Title ><FontAwesome5 name="walking" size={24} color="black" />  à 150 mètres</Title>
