@@ -58,6 +58,7 @@ function MyTableScreen(props) {
             console.log(response)
             setAuthor(response.author)}
         getChatMessages();
+
         return () => {
             abortController.abort();}
         },[isFocused]);
@@ -203,7 +204,9 @@ function MyTableScreen(props) {
 
              </View>
          </View>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <View style={{flex:8,alignItems:"center",flexShrink: 10}}>
+
             <View style={{flex : 1, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
             <Title>{tableInfo.title}</Title>
             <Subheading>{tableInfo.date}</Subheading>
@@ -251,7 +254,7 @@ function MyTableScreen(props) {
 
                      </ScrollView>
 
-                      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+
                           <View style={{flexDirection:"row",justifyContent:"center",marginBottom:10}}>
                               <TextInput
 
@@ -274,13 +277,14 @@ function MyTableScreen(props) {
                               />
                           </View>
 
-                      </KeyboardAvoidingView>
+
 
 
 
            </View>
+
        </View>
-      
+        </KeyboardAvoidingView>
        </View>
 
     );
