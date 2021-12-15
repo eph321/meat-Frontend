@@ -133,10 +133,10 @@ function MyTableScreen(props) {
                      onPress={() =>  props.navigation.navigate('MyAccount')}
                  />
                  <IconButton
-                     icon="account"
+                     icon="door-open"
                      color={'#0E9BA4'}
                      size={25}
-                     onPress={() => {leaveTable(props.tableId, props.userToken); props.navigation.navigate('MyAccount')}}
+                     onPress={() => {leaveTable(props.tableId, props.userToken); props.navigation.navigate('Home')}}
                  />
 
              </View>
