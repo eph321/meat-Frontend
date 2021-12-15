@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native';
-import {Title,  Card, Paragraph, Subheading, Appbar, IconButton, TextInput} from 'react-native-paper';
-import { ListItem} from 'react-native-elements';
+import {Title, Card, Paragraph, Subheading, Appbar, IconButton, TextInput, List, Text} from 'react-native-paper';
+
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import {connect} from "react-redux";
@@ -10,6 +10,10 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 import socketIOClient from "socket.io-client";
 import {useIsFocused} from "@react-navigation/native";
+import 'intl';
+import 'intl/locale-data/jsonp/fr-FR';
+
+
 
 
 
@@ -28,36 +32,35 @@ function MyTableScreen(props) {
             let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/update-table-messages`,{
                 method:'POST',
                 headers:{'Content-Type':'application/x-www-form-urlencoded'},
-                body: `content=${message.content}&author=${message.author}&eventId=${props.tableId}&date=${message.date}`
-
+                body: `content=${message.content}&=${message.author}&eventId=${props.tableId}&date=${message.date}`
             });
             let response = await rawResponse.json();
-            console.log("envoyé en bdd")
-            console.log(response)
+
         }
-
         let formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(today)
-
-
-        socket.emit("sendMessage", JSON.stringify({content: currentMessage,
-            author: author,
-            room : props.tableId,date: formattedDate  }));
-        //envoi d'une copie en database
-        await loadNewMessageToDatabase({content: currentMessage,
-            author: author,
-            room: props.tableId,date: formattedDate  });
+        let messageToSend = {content: currentMessage, author: author, room : props.tableId,date: formattedDate  }
         setCurrentMessage("");
+
+
+        socket.emit("sendMessage", JSON.stringify(messageToSend));
+        //envoi d'une copie en database
+      loadNewMessageToDatabase(messageToSend);
+
     }
 
 
     useEffect( ()=> {
+        const abortController = new AbortController();
         const getChatMessages = async () =>{
             let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-table-messages/${props.tableId}/${props.userToken}`)
             let response = await rawResponse.json();
-            console.log("j'essaie de récupérer les messages")
-            setListMessages(response.chat_messages)
+            setListMessages(response.chatMessages)
+            console.log(response)
             setAuthor(response.author)}
         getChatMessages();
+
+        return () => {
+            abortController.abort();}
         },[isFocused]);
 
     useEffect(() => {
@@ -65,11 +68,13 @@ function MyTableScreen(props) {
         socket.on('sendMessageToAll', (newMessage)=> {
             if(newMessage !== null){
                 let messageToFilter = JSON.parse(newMessage)
-                console.log(messageToFilter)
+
                 if (messageToFilter.room === props.tableId){
+
                     setListMessages([...listMessages,messageToFilter ])}
             }
         });
+
     }, [listMessages]);
 
 
@@ -182,7 +187,7 @@ function MyTableScreen(props) {
                      icon="message-text"
                      color={'#0E9BA4'}
                      size={25}
-                     onPress={() =>  props.navigation.navigate('Chat')}
+                     onPress={() =>  props.navigation.navigate('MyBuddies')}
                  />
                  <IconButton
                      icon="account"
@@ -199,7 +204,9 @@ function MyTableScreen(props) {
 
              </View>
          </View>
-        <View style={{flex:8,alignItems:"center"}}>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <View style={{flex:8,alignItems:"center",flexShrink: 10}}>
+
             <View style={{flex : 1, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
             <Title>{tableInfo.title}</Title>
             <Subheading>{tableInfo.date}</Subheading>
@@ -230,23 +237,25 @@ function MyTableScreen(props) {
                 </Card>
         </View>
        
-       <View style={{flex : 4, justifyContent: 'center'}}>
-           <Card style={{width:"100%"}}>
-                   <Card.Content>
-                   <ScrollView style={{flex:1, marginTop: 50}}>
+       <View style={{flex : 4, justifyContent: 'center',marginHorizontal:5,width:"90%",marginTop:10,backgroundColor:"rgba(14, 155, 164, 0.22)"}}>
+
+                   <ScrollView style={{marginTop: 10,flexGrow:10}}>
                        {listMessages.map((message,i)=>{
-                           return <ListItem key={i}>
-                               <ListItem.Content >
-                                       <ListItem.Title>message.content</ListItem.Title>
-                                       <ListItem.Subtitle>message.author</ListItem.Subtitle>
-                                   </ListItem.Content>
-                       </ListItem>
+                           return <View  key={i} style={{width:"90%",marginHorizontal:5,marginVertical:5,alignSelf:"flex-start"}}>
+                               <List.Item
+                                           title={message.author}
+                                           description={message.content}/>
+                               <Text>{message.date}</Text>
+                           </View>
+
+
+
                        })}
 
                      </ScrollView>
 
-                      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                          <View style={{flexDirection:"row",justifyContent:"center"}}>
+
+                          <View style={{flexDirection:"row",justifyContent:"center",marginBottom:10}}>
                               <TextInput
 
                                   multiline={true}
@@ -268,17 +277,14 @@ function MyTableScreen(props) {
                               />
                           </View>
 
-                      </KeyboardAvoidingView>
-                   </Card.Content>
 
-
-           </Card>
 
 
 
            </View>
+
        </View>
-      
+        </KeyboardAvoidingView>
        </View>
 
     );

@@ -14,6 +14,7 @@ function MyBuddiesScreen(props) {
 
 
         useEffect( () => {
+            const abortController = new AbortController();
                         ( async () => {
 
                 let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-related-users/${props.userToSend}`)
@@ -21,6 +22,8 @@ function MyBuddiesScreen(props) {
                 setCurrentUserStatus(response.currentUser.buddies)
 
                 setRelations([...response.listOfRelations])})()
+            return () => {
+                abortController.abort();}
 
 
         } , [relations])
