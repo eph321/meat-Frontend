@@ -42,7 +42,7 @@ function HomeScreen(props) {
     const [show, setShow] = useState(false);
     const [dateIsSeleted, setDateIsSelected] = useState(false); // Pour changer le texte dans le button
     const [redirect, setRedirect] = useState(false)
-    const [userId, setUserId] = useState("")
+   // const [userId, setUserId] = useState("")
 
     /* let formattedDate = date.toLocaleString("fr-FR", options);
     const options = { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' } */
@@ -78,11 +78,12 @@ function HomeScreen(props) {
         let rawResponse = await fetch(`${herokuIP}/search-table`);
         let response = await rawResponse.json();
         setTableDataList(response.result)
-        setRedirect(false)
-        let rawUserResponse = await fetch(`${herokuIP}/users/search-userId/${props.userToken}`);
+       //  console.log(response.result, "-----------> RESPONSE RESULT")
+
+       /*  let rawUserResponse = await fetch(`${herokuIP}/users/search-userId/${props.userToken}`);
         let userResponse = await rawUserResponse.json();
         setUserId(userResponse.result._id);
-
+ */
 
         /*  for (let i = 0; i < response.result.length; i++) {
              if (response.result[i].planner === props.userToken || response.result[i].guests[i] === userId) {
@@ -195,25 +196,22 @@ function HomeScreen(props) {
         let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
         formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
 
+      
         const onCardClick = async () => {
-            setRedirect(false);
             props.saveTableId(e._id);
-            for (let el = 0; el < e.guests.length; el++) {
-                if (e.planner === props.userToken || e.guests[el] === userId) {
-                    setRedirect(true)
-                }
-            };
-
-            if (redirect) {
-                props.navigation.navigate("MyTable")
+            let guestCheck = e.guests.some(el => el.token === props.userToken)
+            if (e.planner === props.userToken || guestCheck === true){ 
+                setRedirect(true)
             } else {
-                props.navigation.navigate("JoinTable")
-            };
+                setRedirect(false)
+            }
+    
         }
 
 
         return (
-            <Card key={i} style={{ marginBottom: 8 }} onPress={() => onCardClick()}>
+            <Card key={i} style={{ marginBottom: 8 }} onPress={() =>{ onCardClick(), (redirect)?props.navigation.navigate("MyTable"):props.navigation.navigate("JoinTable") }}>
+           
                 <Card.Content>
                     <Title style={{ alignSelf: "center" }}>{e.title}</Title>
                     <Paragraph style={{ alignSelf: "center" }}>{formattedDate}</Paragraph>
