@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native';
+import {StyleSheet, View, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
 import {Title, Card, Paragraph, Subheading, Appbar, IconButton, TextInput, List, Text} from 'react-native-paper';
 
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -204,8 +204,13 @@ function MyTableScreen(props) {
 
              </View>
          </View>
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+
+
+
         <View style={{flex:8,alignItems:"center",flexShrink: 10}}>
+            <ScrollView>
+                <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+
 
             <View style={{flex : 1, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
             <Title>{tableInfo.title}</Title>
@@ -239,7 +244,7 @@ function MyTableScreen(props) {
        
        <View style={{flex : 4, justifyContent: 'center',marginHorizontal:5,width:"90%",marginTop:10,backgroundColor:"rgba(14, 155, 164, 0.22)"}}>
 
-                   <ScrollView style={{marginTop: 10,flexGrow:10}}>
+
                        {listMessages.map((message,i)=>{
                            return <View  key={i} style={{width:"90%",marginHorizontal:5,marginVertical:5,alignSelf:"flex-start"}}>
                                <List.Item
@@ -252,7 +257,7 @@ function MyTableScreen(props) {
 
                        })}
 
-                     </ScrollView>
+
 
 
                           <View style={{flexDirection:"row",justifyContent:"center",marginBottom:10}}>
@@ -275,6 +280,7 @@ function MyTableScreen(props) {
                                   size={25}
                                   onPress={() => handlePress()}
                               />
+
                           </View>
 
 
@@ -282,9 +288,12 @@ function MyTableScreen(props) {
 
 
            </View>
+                </KeyboardAvoidingView>
+            </ScrollView>
 
        </View>
-        </KeyboardAvoidingView>
+
+
        </View>
 
     );
