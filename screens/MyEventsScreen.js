@@ -4,6 +4,7 @@ import { Appbar, Card, Title, Paragraph, IconButton } from "react-native-paper";
 
 import { connect } from "react-redux";
 
+const FranckLacapsuleIP = "http://172.17.1.118:3000"
 const herokuIP = "https://polar-stream-28883.herokuapp.com"
 const FranckIP = "http://192.168.1.41:3000"
 

@@ -1,7 +1,9 @@
-import React, {useEffect, useState,useCallback} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View,  ScrollView, TouchableOpacity, Platform, AsyncStorage,KeyboardAvoidingView} from 'react-native';
-import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text,Button,List,Chip} from "react-native-paper";
+import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text,List} from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
+import { Dropdown } from 'react-native-element-dropdown';
+import {MaterialIcons} from "@expo/vector-icons";
 
 
 
@@ -12,7 +14,8 @@ function MyAccountScreen(props) {
     const [visibleList, setVisibleList] = useState(false);
     const [isTypeFocus, setIsTypeFocus] = useState(false); // pour style de la liste déroulante type restaurant
 
-    const [address,setAddress] = useState(null);
+
+    const [address,setAddress] = useState("");
     const [listAddress,setListAddress] = useState([])
     const [listLabelAddress,setListLabelAddress] = useState([])
     const [errorEmail, setErrorEmail] = useState("");
@@ -148,9 +151,6 @@ function MyAccountScreen(props) {
         setAddress(el.label);
         setVisibleList(false)
     }
-
-
-
 
     return (   <View style={{flex:1,justifyContent: 'space-evenly'}}>
             <View style={{ flex: 2,
