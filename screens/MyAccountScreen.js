@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, View,  ScrollView, TouchableOpacity, Platform, AsyncStorage,KeyboardAvoidingView} from 'react-native';
 import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text,Button,List} from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
+import { Dropdown } from 'react-native-element-dropdown';
+import {MaterialIcons} from "@expo/vector-icons";
 
 
 
@@ -10,9 +12,12 @@ function MyAccountScreen(props) {
     const [image, setImage] = useState(null);
     const [visible, setVisible] = useState(true);
     const [visibleList, setVisibleList] = useState(false);
+    const [isTypeFocus, setIsTypeFocus] = useState(false); // pour style de la liste déroulante type restaurant
+
 
     const [address,setAddress] = useState("");
-    const [setListAddress,listAddress] = useState([])
+    const [listAddress,setListAddress] = useState([])
+    const [listLabelAddress,setListLabelAddress] = useState([])
 
     const [errorEmail, setErrorEmail] = useState("");
     const [errorPassword, setErrorPassword] = useState("");
@@ -20,6 +25,10 @@ function MyAccountScreen(props) {
     const [inputErrorLastname, setInputErrorLastname] = useState("");
     const [inputErrorUserAddress, setInputErrorUserAddress] = useState("");
     const [inputErrorPhone, setInputErrorPhone] = useState("");
+    const [value, setValue] = useState(null);
+    const [isFocus, setIsFocus] = useState(false);
+
+
 
 
     // préparation de l'envoi dans le store
@@ -56,7 +65,7 @@ function MyAccountScreen(props) {
                 method: 'POST',
                 body: dataAvatar});
             var response = await rawResponse.json();
-            console.log(response)
+
             setTempAvatarUri(response);
         }
     }
@@ -114,8 +123,11 @@ function MyAccountScreen(props) {
     const fetchAddress = async (val) => {
         let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
         let response = await rawResponse.json();
-        console.log(response.features);
-        setListAddress(response.features)
+        let tempList = response.features
+
+        setListAddress(tempList)
+
+
         setVisibleList(true)
 
 
@@ -126,7 +138,7 @@ function MyAccountScreen(props) {
             left={props => <List.Icon {...props} icon="map-marker" />}
         />
     }
-
+    console.log(listAddress)
     return (   <View style={{flex:1,justifyContent: 'space-evenly'}}>
             <View style={{ flex: 2,
                 left: 0,
@@ -280,7 +292,34 @@ function MyAccountScreen(props) {
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
                     />
-                        {/*{(listAddress !== null)?listAddress.map((item,i)=>displayAddress(item,i)):<View></View>}*/}
+
+
+                        <Dropdown
+                            style={[styles.dropdown, isTypeFocus && { borderColor: '#0E9BA4' }]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={listAddress.map((el) => el.properties.label)}
+                            search
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Adresse?"
+                            searchPlaceholder="Search..."
+                            value={item}
+                            onFocus={() => setIsTypeFocus(true)}
+                            onBlur={() => setIsTypeFocus(false)}
+                            onChange={item => {
+                                setAddress(item)
+                                fetchAddress(item)
+                                setIsTypeFocus(false);
+                            }}
+                            renderLeftIcon={() => (
+                                <MaterialIcons style={styles.icon} name="map" size={24} color="#0E9BA4" />
+                            )}
+                        />
+
 
                     <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
                         <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorUserAddress}</Text>
@@ -415,14 +454,51 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-    },viewHeader: {
+    },dropDownContainer: {
+        backgroundColor: 'white',
+        padding: 16,
+    },
+    viewHeader: {
         flex: 2,
         left: 0,
         width:"100%",
         top: 0,
         justifyContent:"flex-start",
 
-
+},
+    dropdown: {
+    height: 50,
+        textAlign:'center',width:'70%',alignSelf:"center",
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+},
+icon: {
+    marginRight: 5,
+},
+label: {
+    position: 'absolute',
+        backgroundColor: 'white',
+        left: 22,
+        top: 8,
+        zIndex: 999,
+        paddingHorizontal: 8,
+        fontSize: 14,
+},
+placeholderStyle: {
+    fontSize: 16,
+},
+selectedTextStyle: {
+    fontSize: 16,
+},
+iconStyle: {
+    width: 20,
+        height: 20,
+},
+inputSearchStyle: {
+    height: 40,
+        fontSize: 16,
 },
 });
 

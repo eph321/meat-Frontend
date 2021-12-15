@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native';
+import {StyleSheet, View, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
 import {Title, Card, Paragraph, Subheading, Appbar, IconButton, TextInput, List, Text} from 'react-native-paper';
 
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -50,17 +50,21 @@ function MyTableScreen(props) {
 
 
     useEffect( ()=> {
+
         const abortController = new AbortController();
+
         const getChatMessages = async () =>{
             let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-table-messages/${props.tableId}/${props.userToken}`)
             let response = await rawResponse.json();
             setListMessages(response.chatMessages)
            // console.log(response)
             setAuthor(response.author)}
-        getChatMessages();
+        if(isFocused){
+            getChatMessages();
+        } else {
+            abortController.abort()
+        }
 
-        return () => {
-            abortController.abort();}
         },[isFocused]);
 
     useEffect(() => {

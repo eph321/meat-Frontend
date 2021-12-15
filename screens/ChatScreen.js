@@ -55,11 +55,11 @@ function ChatScreen(props) {
 
             setListMessages(response.chatMessages)
             setAuthor(response.author)}
-        getChatMessages();
-        return () => {
-            abortController.abort();}
-
-
+        if(isFocused){
+            getChatMessages();
+        } else {
+            abortController.abort()
+        }
     },[isFocused])
 
 
