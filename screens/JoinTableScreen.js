@@ -31,7 +31,9 @@ function JoinTableScreen(props) {
 
        // console.log(response, 'ok'),
             setTableData(response.result)
+          //  console.log(tableData, "=======> TABLE DATA")
             setGuestList(response.result.guests)
+          //  console.log(guestList, "------> GUEST LIST")
           }
        // setUserData(response.user)
 
@@ -50,17 +52,15 @@ function JoinTableScreen(props) {
 
         var handleJoinTable = async () => {
 
-
             var dataRaw = await fetch(`${herokuIP}/enter-table`, {
                             method: 'POST',
                             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                             body: `id=${props.tableId}&token=${props.userToken}`
-                          })
+                          });
             props.navigation.navigate('MyTable'); 
 
             //   var body =  await data.json()
             
-                 
             }
 
      

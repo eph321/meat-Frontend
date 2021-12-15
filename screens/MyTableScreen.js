@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native';
-import {Title, Avatar,  Card, Paragraph, Subheading, Appbar, IconButton, TextInput} from 'react-native-paper';
-import { ListItem} from 'react-native-elements';
+import {StyleSheet, View, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
+import {Title, Card, Paragraph, Subheading, Appbar, IconButton, TextInput, List, Text} from 'react-native-paper';
+
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import {connect} from "react-redux";
@@ -53,13 +53,21 @@ function MyTableScreen(props) {
 
 
     useEffect( ()=> {
+
+        const abortController = new AbortController();
+
         const getChatMessages = async () =>{
             let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-table-messages/${props.tableId}/${props.userToken}`)
             let response = await rawResponse.json();
-            console.log("j'essaie de récupérer les messages")
-            setListMessages(response.chat_messages)
+            setListMessages(response.chatMessages)
+           // console.log(response)
             setAuthor(response.author)}
-        getChatMessages();
+        if(isFocused){
+            getChatMessages();
+        } else {
+            abortController.abort()
+        }
+
         },[isFocused]);
 
     useEffect(() => {
@@ -94,10 +102,10 @@ function MyTableScreen(props) {
     const leaveTable = async () => {
     
         var dataRaw = await fetch(`https://polar-stream-28883.herokuapp.com/delete-guest/${props.tableId}/${props.userToken}`,{
-            method: 'DELETE'
-            
-        }) 
-        console.log(dataRaw, "okokokokok")
+            method: 'DELETE' 
+        }) ;
+     //   console.log("guest delete");
+        props.navigation.navigate('Home')
 
     };
 
@@ -217,7 +225,7 @@ function MyTableScreen(props) {
                      icon="cancel"
                      color={'#0E9BA4'}
                      size={25}
-                     onPress={() => {leaveTable(); props.navigation.navigate('Home')}}
+                     onPress={() => {leaveTable()}}
                  />
 
              </View>
