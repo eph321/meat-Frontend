@@ -74,20 +74,21 @@ function HomeScreen(props) {
     // Affichage des tables existantes 
 
     useEffect(async () => {
+
         let rawResponse = await fetch(`${herokuIP}/search-table`);
         let response = await rawResponse.json();
         setTableDataList(response.result)
 
-        setRedirect(false)
         let rawUserResponse = await fetch(`${herokuIP}/users/search-userId/${props.userToken}`);
         let userResponse = await rawUserResponse.json();
         setUserId(userResponse.result._id);
 
-            for (let i = 0; i < response.result.length; i++) {
-                if (response.result[i].planner === props.userToken || response.result[i].guests[i] === userId) {
-                    setRedirect(true)
-                }
-            };
+
+        /*  for (let i = 0; i < response.result.length; i++) {
+             if (response.result[i].planner === props.userToken || response.result[i].guests[i] === userId) {
+                 setRedirect(true)
+             }
+         }; */
 
     }, [isFocused]
     )
@@ -156,7 +157,7 @@ function HomeScreen(props) {
              const dataFilterResponse = await rawDataFilterResponse.json();
              setTableDataList(dataFilterResponse.result)  */
 
-       if (restaurantType[0] || dateFilter !== "") {
+        if (restaurantType[0] || dateFilter !== "") {
 
             let rawDataFilterResponse = await fetch(`${herokuIP}/filters`, {
                 method: "POST",
@@ -164,13 +165,13 @@ function HomeScreen(props) {
                 body: `date=${dateFilter}&type=${restaurantType}`
             })
             let dataFilterResponse = await rawDataFilterResponse.json()
-            console.log(dataFilterResponse)
+            // console.log(dataFilterResponse)
             setTableDataList(dataFilterResponse.result)
         } else {
             let rawResponse = await fetch(`${herokuIP}/search-table`);
             let response = await rawResponse.json();
             setTableDataList(response.result)
-        } 
+        }
 
     }, [restaurantType, dateFilter])
 
@@ -195,7 +196,13 @@ function HomeScreen(props) {
         formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
 
         const onCardClick = async () => {
+            setRedirect(false);
             props.saveTableId(e._id);
+            for (let el = 0; el < e.guests.length; el++) {
+                if (e.planner === props.userToken || e.guests[el] === userId) {
+                    setRedirect(true)
+                }
+            };
 
             if (redirect) {
                 props.navigation.navigate("MyTable")
