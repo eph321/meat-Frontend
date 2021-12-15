@@ -55,7 +55,7 @@ function MyTableScreen(props) {
             let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-table-messages/${props.tableId}/${props.userToken}`)
             let response = await rawResponse.json();
             setListMessages(response.chatMessages)
-            console.log(response)
+           // console.log(response)
             setAuthor(response.author)}
         getChatMessages();
 
@@ -84,10 +84,10 @@ function MyTableScreen(props) {
     const leaveTable = async () => {
     
         var dataRaw = await fetch(`https://polar-stream-28883.herokuapp.com/delete-guest/${props.tableId}/${props.userToken}`,{
-            method: 'DELETE'
-            
-        }) 
-        console.log(dataRaw, "okokokokok")
+            method: 'DELETE' 
+        }) ;
+     //   console.log("guest delete");
+        props.navigation.navigate('Home')
 
     };
 
@@ -197,7 +197,7 @@ function MyTableScreen(props) {
                      icon="cancel"
                      color={'#0E9BA4'}
                      size={25}
-                     onPress={() => {leaveTable(); props.navigation.navigate('Home')}}
+                     onPress={() => {leaveTable()}}
                  />
 
              </View>

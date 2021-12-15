@@ -41,8 +41,7 @@ function HomeScreen(props) {
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [dateIsSeleted, setDateIsSelected] = useState(false); // Pour changer le texte dans le button
-    const [redirect, setRedirect] = useState(false)
-   // const [userId, setUserId] = useState("")
+    // const [userId, setUserId] = useState("")
 
     /* let formattedDate = date.toLocaleString("fr-FR", options);
     const options = { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' } */
@@ -73,17 +72,23 @@ function HomeScreen(props) {
 
     // Affichage des tables existantes 
 
-    useEffect(async () => {
-
-        let rawResponse = await fetch(`${herokuIP}/search-table`);
-        let response = await rawResponse.json();
-        setTableDataList(response.result)
-       //  console.log(response.result, "-----------> RESPONSE RESULT")
-
-       /*  let rawUserResponse = await fetch(`${herokuIP}/users/search-userId/${props.userToken}`);
-        let userResponse = await rawUserResponse.json();
-        setUserId(userResponse.result._id);
- */
+    useEffect(() => {
+        if (isFocused === true) {
+            const getTableList = async () => {
+                    let rawResponse = await fetch(`${herokuIP}/search-table`);
+                    let response = await rawResponse.json();
+                    setTableDataList(response.result)
+                   // console.log(response.result[0].guests.map(item => item._id), "-----------> RESPONSE RESULT")
+                   // console.log(new Date(), "useeffect")
+            };
+            getTableList()
+        } /* else {
+    setTableDataList([])
+} */
+        /*  let rawUserResponse = await fetch(`${herokuIP}/users/search-userId/${props.userToken}`);
+         let userResponse = await rawUserResponse.json();
+         setUserId(userResponse.result._id);
+  */
 
         /*  for (let i = 0; i < response.result.length; i++) {
              if (response.result[i].planner === props.userToken || response.result[i].guests[i] === userId) {
@@ -196,22 +201,29 @@ function HomeScreen(props) {
         let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
         formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
 
-      
-        const onCardClick = async () => {
+        var redirect = false
+
+       // console.log(e.guests.map(item => item._id), "--------> E GUEST")
+       // console.log(new Date(), "e guest")
+
+        const onCardClick = () => {
             props.saveTableId(e._id);
             let guestCheck = e.guests.some(el => el.token === props.userToken)
-            if (e.planner === props.userToken || guestCheck === true){ 
-                setRedirect(true)
-            } else {
-                setRedirect(false)
+            if (e.planner === props.userToken || guestCheck === true) {
+                redirect = true
             }
-    
+
+            if (redirect) {
+                props.navigation.navigate("MyTable")
+            } else {
+                props.navigation.navigate("JoinTable")
+            }
         }
 
 
         return (
-            <Card key={i} style={{ marginBottom: 8 }} onPress={() =>{ onCardClick(), (redirect)?props.navigation.navigate("MyTable"):props.navigation.navigate("JoinTable") }}>
-           
+            <Card key={i} style={{ marginBottom: 8 }} onPress={() => { onCardClick() }}>
+
                 <Card.Content>
                     <Title style={{ alignSelf: "center" }}>{e.title}</Title>
                     <Paragraph style={{ alignSelf: "center" }}>{formattedDate}</Paragraph>
