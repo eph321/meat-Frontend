@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import {Title, Avatar, Button, Card, Paragraph, Subheading, Appbar, Text, IconButton} from 'react-native-paper';
+import { Title, Avatar, Button, Card, Paragraph, Subheading, Appbar, Text, IconButton } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-import {connect} from "react-redux";
-import userToken from '../reducers/userToken';
+import { connect } from "react-redux";
+import { useIsFocused } from '@react-navigation/native';
 
+const FranckLacapsuleIP = "http://172.17.1.118:3000"
 const FranckIP = "http://192.168.1.41:3000"
 const herokuIP = "https://polar-stream-28883.herokuapp.com"
 
@@ -18,19 +19,34 @@ function JoinTableScreen(props) {
     const [guestList, setGuestList] = useState([''])
 
 
+    const isFocused = useIsFocused();
+
    
-    // `http://192.168.1.9:3000/join-table/${props.tableId}`
-    useEffect( async() => {
+
+    useEffect(async () => {
+
         var responseRaw = await fetch(`${herokuIP}/join-table/${props.tableId}`)
         var response = await responseRaw.json();
+console.log(response.result)
 
         console.log(response, 'ok'),
             setTableData(response.result)
             setGuestList(response.result.guests)
           }
+       // setUserData(response.user)
 
-         
-        , []);
+
+        /* let rawUserResponse = await fetch(`${herokuIP}/users/search-userId/${props.userToken}`);
+        let userResponse = await rawUserResponse.json();
+        setUserId(userResponse.result._id);
+
+        for (let i = 0; i < response.result.length; i++) {
+            if (response.result.planner === props.userToken || response.result.guests[i] === userId) {
+                props.navigation.navigate("MyTable")
+            }
+        }; */
+    
+        , [isFocused]);
 
         var handleJoinTable = async () => {
 
@@ -193,32 +209,32 @@ function JoinTableScreen(props) {
                             <Title><FontAwesome name="birthday-cake" size={24} color="black" />  {tableInfo.age}</Title>
                         </Card.Content>
                 </Card>
-                
-                <Card style={{marginLeft : 10 , marginRight : 60, marginBottom : 60, marginTop : 50, height : 250, width : 180 }}>
-                <Card.Cover style = {{height : 150, widht : 80}} source={{ uri: cardImage }} /> 
-                
-                        <Card.Content>
 
-                            <Title>{tableInfo.placeName}</Title>
-                            <Paragraph>{tableInfo.placeAddress}</Paragraph>
-                        </Card.Content>
+                <Card style={{ marginLeft: 10, marginRight: 60, marginBottom: 60, marginTop: 50, height: 250, width: 180 }}>
+                    <Card.Cover style={{ height: 150, widht: 80 }} source={{ uri: cardImage }} />
+
+                    <Card.Content>
+
+                        <Title>{tableInfo.placeName}</Title>
+                        <Paragraph>{tableInfo.placeAddress}</Paragraph>
+                    </Card.Content>
 
                 </Card>
-        </View>
-        <View style={{flex : 2, alignItems: 'center', justifyContent: 'center'}}>
-        <Card style={{marginBottom : 5, marginTop : 40, width : 350, height : 100}}>
-                <Card.Content>
-                    <Paragraph>{tableInfo.description}</Paragraph>
-                </Card.Content>
-        </Card>
+            </View>
+            <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center' }}>
+                <Card style={{ marginBottom: 5, marginTop: 40, width: 350, height: 100 }}>
+                    <Card.Content>
+                        <Paragraph>{tableInfo.description}</Paragraph>
+                    </Card.Content>
+                </Card>
 
 
-         
-         <Button style={{ marginBottom : 60, marginTop : 50, width : 300, height : 50, backgroundColor : "#0E9BA4"}} type='text' mode="contained" onPress={() => handleJoinTable()}>
-              <Text style={{color:"#FFC960", fontWeight:"bold"}}> Rejoindre la table</Text>
-        </Button>
-        </View>
-       
+
+                <Button style={{ marginBottom: 60, marginTop: 50, width: 300, height: 50, backgroundColor: "#0E9BA4" }} type='text' mode="contained" onPress={() => handleJoinTable()}>
+                    <Text style={{ color: "#FFC960", fontWeight: "bold" }}> Rejoindre la table</Text>
+                </Button>
+            </View>
+
         </View>
     );
 }
@@ -242,11 +258,11 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-    return { tableId:  state.tableId, userToken: state.userToken}
-  }
-  
-  export default connect(
-      mapStateToProps, 
-      null
-      
-  )(JoinTableScreen);
+    return { tableId: state.tableId, userToken: state.userToken }
+}
+
+export default connect(
+    mapStateToProps,
+    null
+
+)(JoinTableScreen);

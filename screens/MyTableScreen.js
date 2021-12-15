@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native';
 import {Title, Card, Paragraph, Subheading, Appbar, IconButton, TextInput, List, Text} from 'react-native-paper';
-import { ListItem} from 'react-native-elements';
+
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import {connect} from "react-redux";
@@ -12,6 +12,7 @@ import socketIOClient from "socket.io-client";
 import {useIsFocused} from "@react-navigation/native";
 import 'intl';
 import 'intl/locale-data/jsonp/fr-FR';
+
 
 
 
@@ -31,12 +32,11 @@ function MyTableScreen(props) {
             let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/update-table-messages`,{
                 method:'POST',
                 headers:{'Content-Type':'application/x-www-form-urlencoded'},
-                body: `content=${message.content}&author=${message.author}&eventId=${props.tableId}&date=${message.date}`
+                body: `content=${message.content}&=${message.author}&eventId=${props.tableId}&date=${message.date}`
             });
             let response = await rawResponse.json();
 
         }
-
         let formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(today)
         let messageToSend = {content: currentMessage, author: author, room : props.tableId,date: formattedDate  }
         setCurrentMessage("");
@@ -44,7 +44,7 @@ function MyTableScreen(props) {
 
         socket.emit("sendMessage", JSON.stringify(messageToSend));
         //envoi d'une copie en database
-        await loadNewMessageToDatabase(messageToSend);
+      loadNewMessageToDatabase(messageToSend);
 
     }
 
@@ -58,6 +58,7 @@ function MyTableScreen(props) {
             console.log(response)
             setAuthor(response.author)}
         getChatMessages();
+
         return () => {
             abortController.abort();}
         },[isFocused]);
@@ -201,7 +202,8 @@ function MyTableScreen(props) {
 
              </View>
          </View>
-        <View style={{flex:8,alignItems:"center"}}>
+        <View style={{flex:2,alignItems:"center",flexShrink: 10}}>
+
             <View style={{flex : 1, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
             <Title>{tableInfo.title}</Title>
             <Subheading>{tableInfo.date}</Subheading>
@@ -232,7 +234,8 @@ function MyTableScreen(props) {
                 </Card>
         </View>
        
-       <View style={{flex : 4, justifyContent: 'center',width:"100%",marginTop:10,backgroundColor:"rgba(14, 155, 164, 0.22)"}}>
+       <View style={{flex : 4, justifyContent: 'center',marginHorizontal:5,width:"90%",marginTop:10,backgroundColor:"rgba(14, 155, 164, 0.22)"}}>
+       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
 
                    <ScrollView style={{marginTop: 10,flexGrow:10}}>
                        {listMessages.map((message,i)=>{
@@ -249,7 +252,7 @@ function MyTableScreen(props) {
 
                      </ScrollView>
 
-                      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+
                           <View style={{flexDirection:"row",justifyContent:"center",marginBottom:10}}>
                               <TextInput
 
@@ -272,13 +275,14 @@ function MyTableScreen(props) {
                               />
                           </View>
 
-                      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+
 
 
 
            </View>
+
        </View>
-      
        </View>
 
     );
