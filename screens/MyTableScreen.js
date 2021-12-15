@@ -209,7 +209,7 @@ function MyTableScreen(props) {
 
         <View style={{flex:8,alignItems:"center",flexShrink: 10}}>
             <ScrollView>
-                <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+       {/*         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>*/}
 
 
             <View style={{flex : 1, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
@@ -260,37 +260,39 @@ function MyTableScreen(props) {
 
 
 
-                          <View style={{flexDirection:"row",justifyContent:"center",marginBottom:10}}>
-                              <TextInput
 
-                                  multiline={true}
-                                  style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
-                                  mode="outlined"
-                                  label="Message"
-                                  onChangeText={(message)=>setCurrentMessage(message)}
-                                  activeOutlineColor={"#FF3D00"}
-                                  outlineColor={'#0E9BA4'}
-                                  containerStyle = {{marginBottom: 5}}
-                                  placeholder='Ecrire ici...'
-                                  value={currentMessage}
-                              />
-                              <IconButton
-                                  icon="send"
-                                  color={'#0E9BA4'}
-                                  size={25}
-                                  onPress={() => handlePress()}
-                              />
-
-                          </View>
 
 
 
 
 
            </View>
-                </KeyboardAvoidingView>
+                {/*</KeyboardAvoidingView>*/}
             </ScrollView>
+            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+            <View style={{flexDirection:"row",justifyContent:"center",marginBottom:10}}>
+                <TextInput
 
+                    multiline={true}
+                    style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
+                    mode="outlined"
+                    label="Message"
+                    onChangeText={(message)=>setCurrentMessage(message)}
+                    activeOutlineColor={"#FF3D00"}
+                    outlineColor={'#0E9BA4'}
+                    containerStyle = {{marginBottom: 5}}
+                    placeholder='Ecrire ici...'
+                    value={currentMessage}
+                />
+                <IconButton
+                    icon="send"
+                    color={'#0E9BA4'}
+                    size={25}
+                    onPress={() => handlePress()}
+                />
+
+            </View>
+            </KeyboardAvoidingView>
        </View>
 
 
