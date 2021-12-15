@@ -66,12 +66,6 @@ function JoinTableScreen(props) {
      
        var tableInfo = tableData;
 
-    
-
-
-      
-     
-
       let avatarList = guestList.map((e,i)=> {
           return(
             <Avatar.Image key={i} size={24} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(e.avatar)?{uri: e.avatar}:require("../assets/picture-4.png")} />
@@ -192,7 +186,7 @@ function JoinTableScreen(props) {
 
              </View>
          </View>
-        <View style={{flex : 1, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
+        <View style={{flex : 2, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
         <Title>{tableInfo.title}</Title>
         <Subheading>{tableInfo.date}</Subheading>
         </View>
