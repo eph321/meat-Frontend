@@ -1,9 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState,useCallback} from 'react';
 import {StyleSheet, View,  ScrollView, TouchableOpacity, Platform, AsyncStorage,KeyboardAvoidingView} from 'react-native';
-import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text,Button,List} from "react-native-paper";
+import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text,Button,List,Chip} from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
-import { Dropdown } from 'react-native-element-dropdown';
-import {MaterialIcons} from "@expo/vector-icons";
 
 
 
@@ -14,19 +12,16 @@ function MyAccountScreen(props) {
     const [visibleList, setVisibleList] = useState(false);
     const [isTypeFocus, setIsTypeFocus] = useState(false); // pour style de la liste déroulante type restaurant
 
-
-    const [address,setAddress] = useState("");
+    const [address,setAddress] = useState(null);
     const [listAddress,setListAddress] = useState([])
     const [listLabelAddress,setListLabelAddress] = useState([])
-
     const [errorEmail, setErrorEmail] = useState("");
     const [errorPassword, setErrorPassword] = useState("");
     const [inputErrorFirstname, setInputErrorFirstname] = useState("");
     const [inputErrorLastname, setInputErrorLastname] = useState("");
     const [inputErrorUserAddress, setInputErrorUserAddress] = useState("");
     const [inputErrorPhone, setInputErrorPhone] = useState("");
-    const [value, setValue] = useState(null);
-    const [isFocus, setIsFocus] = useState(false);
+
 
 
 
@@ -120,25 +115,43 @@ function MyAccountScreen(props) {
         }
       }   
     }
-    const fetchAddress = async (val) => {
-        let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
-        let response = await rawResponse.json();
-        let tempList = response.features
-
-        setListAddress(tempList)
 
 
-        setVisibleList(true)
 
 
+    useEffect(()=>{
+        const fetchAddress = async (val) => {
+            let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
+            let response = await rawResponse.json();
+            let tempList = response.features
+            setListLabelAddress(tempList.map((el) =>{ return {label: el.properties.label, values: el.properties}}))
+            console.log(listLabelAddress)
+            setListAddress(tempList)
+
+            setVisibleList(true)}
+        fetchAddress(address)
+
+    },[address])
+
+    let addresses = listLabelAddress.map((el,i)=>{
+        return(<TouchableOpacity key={i}  onPress={() => {handlePressAddress(el); }}>
+            <Text style={{ margin:5}}>{el.label}</Text>
+        </TouchableOpacity>)    })
+    let listOfAddresses;
+
+    if (visibleList){
+        listOfAddresses = addresses}
+    else {
+        listOfAddresses = <Text></Text>}
+
+    const handlePressAddress = (el) => {
+        setAddress(el.label);
+        setVisibleList(false)
     }
-    const displayAddress = (place,i) => {
-        return   <List.Item
-            title={place.properties.label}
-            left={props => <List.Icon {...props} icon="map-marker" />}
-        />
-    }
-    console.log(listAddress)
+
+
+
+
     return (   <View style={{flex:1,justifyContent: 'space-evenly'}}>
             <View style={{ flex: 2,
                 left: 0,
@@ -283,55 +296,31 @@ function MyAccountScreen(props) {
                         />
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"center"}}>
-                    <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
-                               mode="outlined"
-                               value={address}
-                               label="Adresse Postale"
-                               onChangeText={(val)=> {setAddress(val); fetchAddress(val)}}
-                               placeholder ="56 boulevard Pereire, 75017 Paris"
-                               activeOutlineColor={"#FF3D00"}
-                               outlineColor={'#0E9BA4'}
-                    />
+
+                            <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
+                                       mode="outlined"
+                                       value={address}
+                                       label="Adresse Postale"
+                                       onChangeText={(val)=> setAddress(val)}
+                                       placeholder ="56 boulevard Pereire, 75017 Paris"
+                                       activeOutlineColor={"#FF3D00"}
+                                       outlineColor={'#0E9BA4'}
+                            />
 
 
-                        <Dropdown
-                            style={[styles.dropdown, isTypeFocus && { borderColor: '#0E9BA4' }]}
-                            placeholderStyle={styles.placeholderStyle}
-                            selectedTextStyle={styles.selectedTextStyle}
-                            inputSearchStyle={styles.inputSearchStyle}
-                            iconStyle={styles.iconStyle}
-                            data={listAddress.map((el) => el.properties.label)}
-                            search
-                            maxHeight={300}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Adresse?"
-                            searchPlaceholder="Search..."
-                            value={item}
-                            onFocus={() => setIsTypeFocus(true)}
-                            onBlur={() => setIsTypeFocus(false)}
-                            onChange={item => {
-                                setAddress(item)
-                                fetchAddress(item)
-                                setIsTypeFocus(false);
-                            }}
-                            renderLeftIcon={() => (
-                                <MaterialIcons style={styles.icon} name="map" size={24} color="#0E9BA4" />
-                            )}
-                        />
-
-
-                    <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
-                        <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorUserAddress}</Text>
-                    </View>  
-                        <IconButton
-                            icon="pencil"
-                            color={"#FF3D00"}
-                            size={35}
-                            onPress={() => {connexionValidation(); console.log('Pressed')}}
-                        />
+                            <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
+                                <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorUserAddress}</Text>
+                            </View>
+                                <IconButton
+                                    icon="pencil"
+                                    color={"#FF3D00"}
+                                    size={35}
+                                    onPress={() => {setAddress(""); console.log('Pressed')}}
+                                />
                     </View>
-
+                        <View >
+                        {listOfAddresses}
+                        </View>
                     <View style={{flexDirection:"row",justifyContent:"center"}}>
                     <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                                mode="outlined"
