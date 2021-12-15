@@ -17,6 +17,7 @@ function MyAccountScreen(props) {
 
     const [address,setAddress] = useState("");
     const [listAddress,setListAddress] = useState([])
+    const [listLabelAddress,setListLabelAddress] = useState([])
 
     const [errorEmail, setErrorEmail] = useState("");
     const [errorPassword, setErrorPassword] = useState("");
@@ -124,7 +125,6 @@ function MyAccountScreen(props) {
         let response = await rawResponse.json();
         let tempList = response.features
 
-        // console.log(tempList)
         setListAddress(tempList)
 
 
@@ -292,38 +292,33 @@ function MyAccountScreen(props) {
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
                     />
-                        <View>
-                        {
-                            listAddress.map((el,i)=> {
-                            return (<Text key={i}>{el.properties.label}</Text>)
-                            })
-                        }
-                        </View>
 
-                        {/*<Dropdown*/}
-                        {/*    style={[styles.dropdown, isTypeFocus && { borderColor: '#0E9BA4' }]}*/}
-                        {/*    placeholderStyle={styles.placeholderStyle}*/}
-                        {/*    selectedTextStyle={styles.selectedTextStyle}*/}
-                        {/*    inputSearchStyle={styles.inputSearchStyle}*/}
-                        {/*    iconStyle={styles.iconStyle}*/}
-                        {/*    data={listAddress}*/}
-                        {/*    search*/}
-                        {/*    maxHeight={300}*/}
-                        {/*    labelField="label"*/}
-                        {/*    valueField="value"*/}
-                        {/*    placeholder="Adresse?"*/}
-                        {/*    searchPlaceholder="Search..."*/}
-                        {/*    value={address}*/}
-                        {/*    onFocus={() => setIsTypeFocus(true)}*/}
-                        {/*    onBlur={() => setIsTypeFocus(false)}*/}
-                        {/*    onChange={item => {*/}
-                        {/*        fetchAddress(item)*/}
-                        {/*        setIsTypeFocus(false);*/}
-                        {/*    }}*/}
-                        {/*    renderLeftIcon={() => (*/}
-                        {/*        <MaterialIcons style={styles.icon} name="map" size={24} color="#0E9BA4" />*/}
-                        {/*    )}*/}
-                        {/*/>*/}
+
+                        <Dropdown
+                            style={[styles.dropdown, isTypeFocus && { borderColor: '#0E9BA4' }]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={listAddress.map((el) => el.properties.label)}
+                            search
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Adresse?"
+                            searchPlaceholder="Search..."
+                            value={item}
+                            onFocus={() => setIsTypeFocus(true)}
+                            onBlur={() => setIsTypeFocus(false)}
+                            onChange={item => {
+                                setAddress(item)
+                                fetchAddress(item)
+                                setIsTypeFocus(false);
+                            }}
+                            renderLeftIcon={() => (
+                                <MaterialIcons style={styles.icon} name="map" size={24} color="#0E9BA4" />
+                            )}
+                        />
 
 
                     <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
@@ -473,6 +468,7 @@ const styles = StyleSheet.create({
 },
     dropdown: {
     height: 50,
+        textAlign:'center',width:'70%',alignSelf:"center",
         borderColor: 'gray',
         borderWidth: 0.5,
         borderRadius: 8,
