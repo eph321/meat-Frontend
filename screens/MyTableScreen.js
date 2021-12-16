@@ -299,7 +299,7 @@ function MyTableScreen(props) {
 
 
 </Card>
-    <View>  
+    <View style={{flex:1, alignItems: flex-end}}>  
         <IconButton
                      icon="door-open"
                      color={'#0E9BA4'}
