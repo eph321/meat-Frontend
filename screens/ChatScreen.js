@@ -9,7 +9,7 @@ import 'intl/locale-data/jsonp/fr-FR';
 
 
 
-var socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
+const socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
 
 function ChatScreen(props) {
 
@@ -48,18 +48,19 @@ function ChatScreen(props) {
     }
 
     useEffect( ()=> {
+        const abortController = new AbortController();
         const getChatMessages = async () =>{
             let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-chat-messages/${props.conversationToSend}/${props.userToSend}`)
             let response = await rawResponse.json();
-            console.log("j'essaie de récupérer les messages")
+
             setListMessages(response.chatMessages)
             setAuthor(response.author)}
-        getChatMessages();
-
-
-
+        if(isFocused){
+            getChatMessages();
+        } else {
+            abortController.abort()
+        }
     },[isFocused])
-
 
 
     useEffect(() => {
@@ -73,6 +74,15 @@ function ChatScreen(props) {
 
                 }
         });
+        return () => socket.off("sendMessageToAll",(newMessage)=> {
+            if(newMessage !== null){
+                let messageToFilter = JSON.parse(newMessage)
+                console.log("composant détruit")
+                if (messageToFilter.conversation === props.conversationToSend){
+                    setListMessages([...listMessages,messageToFilter ])}
+
+            }
+        })
 
 
     }, [listMessages]);

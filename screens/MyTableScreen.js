@@ -1,57 +1,142 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, ScrollView, KeyboardAvoidingView } from 'react-native'; 
-import { Title, Avatar, Button, Card, Paragraph, Subheading, Appbar, IconButton } from 'react-native-paper';
-import { ListItem, Input} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {StyleSheet, View, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
+import {Title, Card, Paragraph, Subheading, Appbar, IconButton, TextInput, List, Text, Avatar} from 'react-native-paper';
+
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import {connect} from "react-redux";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
+
+import socketIOClient from "socket.io-client";
+import {useIsFocused} from "@react-navigation/native";
+
 
 
 function MyTableScreen(props) {
 
+    const socket = socketIOClient("https://polar-stream-28883.herokuapp.com/");
+    const [currentMessage,setCurrentMessage] =useState("")
+    const [listMessages,setListMessages] = useState([])
+    const [author, setAuthor] =useState("");
+    const isFocused = useIsFocused();
+    const [guestList, setGuestList] = useState([''])
+
+
+
+    const handlePress = async () => {
+        const today = new Date(Date.now());
+        const loadNewMessageToDatabase = async (message) =>{
+            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/update-table-messages`,{
+                method:'POST',
+                headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                body: `content=${message.content}&author=${message.author}&eventId=${props.tableId}&date=${message.date}`
+
+            });
+            let response = await rawResponse.json();
+            console.log("envoyé en bdd")
+            console.log(response)
+        }
+
+        let formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(today)
+
+
+        socket.emit("sendMessage", JSON.stringify({content: currentMessage,
+            author: author,
+            room : props.tableId,date: formattedDate  }));
+        //envoi d'une copie en database
+        await loadNewMessageToDatabase({content: currentMessage,
+            author: author,
+            room: props.tableId,date: formattedDate  });
+        setCurrentMessage("");
+    }
+
+
+    useEffect( ()=> {
+
+        const abortController = new AbortController();
+
+        const getChatMessages = async () =>{
+            let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-table-messages/${props.tableId}/${props.userToken}`)
+            let response = await rawResponse.json();
+            setListMessages(response.chatMessages)
+           // console.log(response)
+            setAuthor(response.author)}
+        if(isFocused){
+            getChatMessages();
+        } else {
+            abortController.abort()
+        }
+
+        },[isFocused]);
+
+    useEffect(() => {
+
+        socket.on('sendMessageToAll', (newMessage)=> {
+            if(newMessage !== null){
+                let messageToFilter = JSON.parse(newMessage)
+                console.log(messageToFilter)
+                if (messageToFilter.room === props.tableId){
+                    setListMessages([...listMessages,messageToFilter ])}
+            }
+        });
+    }, [listMessages]);
+
+
+    useEffect(async () => {
+
+        var responseRaw = await fetch(`${herokuIP}/join-table/${props.tableId}`)
+        var response = await responseRaw.json();
+      
+            setTableData(response.result)
+            setGuestList(response.result.guests)
+            console.log(response, "okokokok")
+          }
+  
+        , []);
+
+
     const [tableData, setTableData] = useState([''])
    
 
-    const leaveTable = async (tableid, token ) => {
+    const leaveTable = async () => {
     
-        var dataRaw = await fetch(`http://192.168.1.9:3000/delete-guest/${props.tableId}/${props.userToken}`, {
-            method: 'DELETE'	
-        })
-    };
+        var dataRaw = await fetch(`https://polar-stream-28883.herokuapp.com/delete-guest/${props.tableId}/${props.userToken}`,{
+            method: 'DELETE' 
+        }) ;
+     //   console.log("guest delete");
+        props.navigation.navigate('Home')
 
+    };
 
     useEffect( async() => {
            var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
            var response = await responseRaw.json();
-      
 
-        
             setTableData(response.result)
-        
-         
-            
-         
           }
 
-         
+
         , []);
        
        
 
        var tableInfo = tableData;
 
-      var tabCapacity = []
-      for(let i = 0; i < tableInfo.capacity; i++) {
-      
-        
-        tabCapacity.push(<MaterialCommunityIcons key={i}  name="seat" size={24} color="black"/>)
+    let avatarList = guestList.map((e,i)=> {
+        return(
+          <Avatar.Image key={i} size={24} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(e.avatar)?{uri: e.avatar}:require("../assets/picture-4.png")} />
+        )
+    })
 
-
-      }
+     var tabCapacity= []
+    
+    for(let i = 0; i < tableInfo.capacity - guestList.length; i++) {
+    
+     
+      tabCapacity.push(<MaterialCommunityIcons key={i}  name="seat" size={24} color="black"/>)
+   
+    }
 
       var bugdetInfo = []
       for(let j = 0; j < tableInfo.budget; j ++) {
@@ -63,30 +148,34 @@ function MyTableScreen(props) {
       var cardImage; 
         
       if(tableInfo.placeType === "Japonais") {
-          cardImage= 'https://www.terres-japonaises.com/app/media/26/files/2016/06/sushi-japon.jpg'  
+          cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/sushi-japon_bknpwf.jpg'
       }
       else if(tableInfo.placeType === "Fast-food") {
-          cardImage= 'https://medias.toutelanutrition.com/ressource/104/Fast%20Food.jpg'   
+          cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/Fast_Food_w1zlhh.jpg'
         }
       else if(tableInfo.placeType === "Italien") {
-          cardImage= 'https://cache.marieclaire.fr/data/photo/w1000_ci/5b/italianfood.jpg' 
+          cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/italianfood_buioqa.jpg'
         }
       else if(tableInfo.placeType === "Chinois") {
-            cardImage= 'https://www.takeaway.com/be-fr/foodwiki/uploads/sites/3/2018/02/chine.jpg'   
+            cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/chine_qdj6wj.jpg'
           }
        else if(tableInfo.placeType === "Mexicain") {
-            cardImage= 'https://images.radio-canada.ca/q_auto,w_960/v1/ici-premiere/16x9/mlarge-cuisine-mexicaine-nourriture-mexique-alimentation-tacos-salsa-mais.jpg' 
+            cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/mlarge-cuisine-mexicaine-nourriture-mexique-alimentation-tacos-salsa-mais_qwfuf8.jpg'
             
           }
        else if(tableInfo.placeType === "Coréen") {
-            cardImage= 'https://aconsommerdepreference.lexpress.fr/wp-content/uploads/2018/02/iStock-849756458.jpg'   
+            cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/iStock-849756458_f4rfrk.jpg'
           }
        else if(tableInfo.placeType === "Indien") {
-            cardImage= 'https://media.istockphoto.com/photos/assorted-indian-recipes-food-various-picture-id922783734' 
+            cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514591/foods/istockphoto-922783734-1024x1024_vbrxdk.jpg'
           }
        else if(tableInfo.placeType === "Africain") {
-            cardImage= 'https://afrogadget.com/wp-content/uploads/2021/06/01-couscous-royal-traditionnel.jpeg' 
+            cardImage= 'https://res.cloudinary.com/da3gufsec/image/upload/v1639514590/foods/01-couscous-royal-traditionnel_pixn9t.jpg'
           }
+        
+         
+  var guestCount = guestList.length + 1;
+
 
     return (    
     
@@ -98,7 +187,7 @@ function MyTableScreen(props) {
              top: 0,
              justifyContent:"flex-start",}}>
              <Appbar style={{ backgroundColor: "#FFC960", flex:1}}>
-                 <Appbar.Content title="Rejoindre une table" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
+                 <Appbar.Content title="Ma Table" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
 
              </Appbar>
              <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
@@ -133,24 +222,25 @@ function MyTableScreen(props) {
                      onPress={() =>  props.navigation.navigate('MyAccount')}
                  />
                  <IconButton
-                     icon="account"
+                     icon="cancel"
                      color={'#0E9BA4'}
                      size={25}
-                     onPress={() => {leaveTable(props.tableId, props.userToken); props.navigation.navigate('MyAccount')}}
+                     onPress={() => {leaveTable()}}
                  />
 
              </View>
          </View>
-        <View style={{flex : 1, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
-        <Title>{tableInfo.title}</Title>
-        <Subheading>{tableInfo.date}</Subheading>
-        </View>
+        <View style={{flex:8,alignItems:"center"}}>
+            <View style={{flex : 1, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
+            <Title>{tableInfo.title}</Title>
+            <Subheading>{tableInfo.date}</Subheading>
+            </View>
     
-         <View style={{ flex: 3 , marginBottom:150, flexBasis : "auto", flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', }}>
-                <Card style={{ marginLeft : 60, marginBottom : 60, marginTop : 50, height : 250, width : 180 }}>
+         <View style={{ flex: 5 , flexBasis : "auto", flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', }}>
+                <Card style={{ width : "45%" }}>
                         <Card.Content>
-                            <Title>M.Eaters : 1/{tableInfo.capacity}</Title>
-                            <View style={{flexDirection: "row"}}>{tabCapacity}</View>
+                            <Title>M.Eaters : {guestCount}/{tableInfo.capacity}</Title>
+                            <View style={{flexDirection: "row"}}>{avatarList}{tabCapacity}</View>
                             <Title>Budget : {bugdetInfo}</Title>
                             
                             <Title ><FontAwesome5 name="walking" size={24} color="black" />  à 150 mètres</Title>
@@ -159,8 +249,8 @@ function MyTableScreen(props) {
                         </Card.Content>
                 </Card>
                 
-                <Card style={{marginLeft : 10 , marginRight : 60, marginBottom : 60, marginTop : 50, height : 250, width : 180 }}>
-                <Card.Cover style = {{height : 150, widht : 80}} source={{ uri: cardImage }} /> 
+                <Card style={{marginLeft : 10 ,  width : "45%"  }}>
+                <Card.Cover style = {{height : 150}} source={{ uri: cardImage }} />
                 
                         <Card.Content>
 
@@ -171,50 +261,53 @@ function MyTableScreen(props) {
                 </Card>
         </View>
        
-       <View style={{flex : 3, justifyContent: 'center'}}>
-       <Card style={{width : 350, height : 400, marginBottom:100}}>
-               <Card.Content>
-               <ScrollView style={{ marginTop: 50}}>
-        <ListItem>
-          <ListItem.Content>
-            <ListItem.Title>Parfait et toi ?</ListItem.Title>
-            <ListItem.Subtitle>Alex</ListItem.Subtitle>
-          </ListItem.Content>
-        </ListItem>
-        <ListItem>
-          <ListItem.Content>
-            <ListItem.Title>Coucou ça roule ?</ListItem.Title>
-            <ListItem.Subtitle>John</ListItem.Subtitle>
-          </ListItem.Content>
-        </ListItem>
-      </ScrollView>
+       <View style={{flex : 4, justifyContent: 'center'}}>
+           <Card style={{width:"100%"}}>
+                   <Card.Content>
+                   <ScrollView style={{flex:1, marginTop: 50}}>
+                       {listMessages.map((message,i)=>{
+                           return <ListItem key={i}>
+                               <ListItem.Content >
+                                       <ListItem.Title>{message.content}</ListItem.Title>
+                                       <ListItem.Subtitle>{message.author}</ListItem.Subtitle>
+                                   </ListItem.Content>
+                       </ListItem>
+                       })}
 
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-          <Input
-              containerStyle = {{marginBottom: 5}}
-              placeholder='Your message'
-          />
-          <Button
-              icon={
-                  <Icon
-                  name="envelope-o"
-                  size={20}
-                  color="#ffffff"
-                  />
-              } 
-              title="Send"
-              buttonStyle={{backgroundColor: "#eb4d4b"}}
-              type="solid"
-          />
-      </KeyboardAvoidingView>
-               </Card.Content>
+                     </ScrollView>
 
-               
-       </Card>
+                      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                          <View style={{flexDirection:"row",justifyContent:"center"}}>
+                              <TextInput
 
-       
-        
-       
+                                  multiline={true}
+                                  style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
+                                  mode="outlined"
+                                  label="Message"
+                                  onChangeText={(message)=>setCurrentMessage(message)}
+                                  activeOutlineColor={"#FF3D00"}
+                                  outlineColor={'#0E9BA4'}
+                                  containerStyle = {{marginBottom: 5}}
+                                  placeholder='Ecrire ici...'
+                                  value={currentMessage}
+                              />
+                              <IconButton
+                                  icon="send"
+                                  color={'#0E9BA4'}
+                                  size={25}
+                                  onPress={() => handlePress()}
+                              />
+                          </View>
+
+                      </KeyboardAvoidingView>
+                   </Card.Content>
+
+
+           </Card>
+
+
+
+           </View>
        </View>
       
        </View>
@@ -249,7 +342,9 @@ const stylesBar = StyleSheet.create({
 
 
 function mapStateToProps(state) {
-    return { tableId:  state.tableId}
+    return { tableId:  state.tableId,
+        userToken: state.userToken,
+    }
   }
   
   export default connect(

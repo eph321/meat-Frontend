@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View,  ScrollView, TouchableOpacity, Platform, AsyncStorage} from 'react-native';
-import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text} from "react-native-paper";
+import {StyleSheet, View,  ScrollView, TouchableOpacity, Platform, AsyncStorage,KeyboardAvoidingView} from 'react-native';
+import {Appbar, Avatar, TextInput, IconButton, RadioButton, Text,List} from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import {connect} from 'react-redux';
+import { Dropdown } from 'react-native-element-dropdown';
+import {MaterialIcons} from "@expo/vector-icons";
+
 
 
 function MyAccountScreen(props) {
-    const [gender, setGender] =useState("male")
     const [image, setImage] = useState(null);
     const [visible, setVisible] = useState(true);
-    const [address,setAddress] = useState("");
 
     const [errorEmail, setErrorEmail] = useState("");
     const [errorPassword, setErrorPassword] = useState("");
@@ -17,6 +18,7 @@ function MyAccountScreen(props) {
     const [inputErrorLastname, setInputErrorLastname] = useState("");
     const [inputErrorUserAddress, setInputErrorUserAddress] = useState("");
     const [inputErrorPhone, setInputErrorPhone] = useState("");
+
 
     // préparation de l'envoi dans le store
     const [tempAvatarUri,setTempAvatarUri] =useState("")
@@ -48,11 +50,11 @@ function MyAccountScreen(props) {
                 type: 'image/jpeg',
                 name: 'avatar.jpg'});
 
-            var rawResponse = await fetch("http://192.168.1.246:3000/uploadAvatar",{
+            var rawResponse = await fetch("https://polar-stream-28883.herokuapp.com/users/uploadAvatar",{
                 method: 'POST',
                 body: dataAvatar});
             var response = await rawResponse.json();
-            console.log(response)
+
             setTempAvatarUri(response);
         }
     }
@@ -60,11 +62,11 @@ function MyAccountScreen(props) {
     // Messages d'erreur pour les champs obligatoires
     
     const connexionValidation = () => {
-        if (inputEmail && inputEmail.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/) && inputPassword && inputPassword.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) && firstName && lastName && userAddress && phone && phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/) && dateOfBirth) {
+       /*  if (inputEmail && inputEmail.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/) && inputPassword && inputPassword.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) && firstName && lastName && userAddress && phone && phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/) && dateOfBirth) {
             props.navigation.navigate('RegisterC')
         } else {
         
-        if (inputEmail === "") {
+        if (inputEmail && inputEmail === "") {
             setErrorEmail("*Email requis!")
             } else if (!inputEmail.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/)) {
             setErrorEmail("*Format de l'email invalide!")
@@ -105,16 +107,9 @@ function MyAccountScreen(props) {
             } else {
             setInputErrorPhone("")
         }
-      }   
+      }    */
     }
 
-
-    const fetchAddress = async (val) => {
-        let valfiltered =val.replace('_',"+");
-        let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${valfiltered }`)
-        let response = await rawResponse.json();
-        console.log(response.features[0].properties.label);
-    }
 
     // Récupération des données dans le backend
 
@@ -142,6 +137,7 @@ function MyAccountScreen(props) {
         newUserData.firstname = value
         setUserData(newUserData)
     }
+
 
     let updateLastname = (value) => {
         var newUserData = {...userData}
@@ -177,6 +173,7 @@ function MyAccountScreen(props) {
         var newUserData = {...userData}
         newUserData.preference3 = value
         setUserData(newUserData)
+        console.log(userData)
     }
 
     
@@ -186,14 +183,49 @@ function MyAccountScreen(props) {
         var rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/users/update-account/${props.userToken}`, {
             method: 'PUT',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `token=${props.userToSend}&userToken=${userToken}`
+            body: `user=${JSON.stringify(userData)}`
         })
         var response = await rawResponse.json();
         console.log(response);
         setUserData(response.result)
+        console.log("click maj détecté",userData)
         }
 
 
+    // Adresses proposées via API
+
+    const [address,setAddress] = useState("");
+    const [visibleList, setVisibleList] = useState(false);
+    const [listLabelAddress,setListLabelAddress] = useState([])
+    useEffect(()=>{
+        const fetchAddress = async (val) => {
+            let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
+            let response = await rawResponse.json();
+            let tempList = response.features.map((el) =>{ return {label: el.properties.label, values: el.properties}})
+            setListLabelAddress(tempList)
+            console.log(listLabelAddress)
+
+
+            setVisibleList(true)}
+        fetchAddress(address)
+
+    },[address])
+
+    let addresses = listLabelAddress.map((el,i)=>{
+        return(<TouchableOpacity key={i}  onPress={() => {handlePressAddress(el); }}>
+            <Text style={{ margin:5}}>{el.label}</Text>
+        </TouchableOpacity>)    })
+    let listOfAddresses;
+
+    if (visibleList){
+        listOfAddresses = addresses}
+    else {
+        listOfAddresses = <Text></Text>}
+
+    const handlePressAddress = (el) => {
+        setAddress(el.label);
+        setVisibleList(false)
+    }
 
     return (   <View style={{flex:1,justifyContent: 'space-evenly'}}>
             <View style={{ flex: 2,
@@ -245,6 +277,10 @@ function MyAccountScreen(props) {
             </View>
             <View style={{flex:7, backgroundColor:"#F2F2F2"}}>
                 <ScrollView>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === "ios" ? "padding" : "height"}
+                        style={styles.container}
+                    >
                     <TouchableOpacity onPress={() =>{ pickImage(); setVisible(!visible)}} >
                         <View >{(visible)?
                             <Avatar.Icon size={128} icon="camera" color={'#0E9BA4'} style={{marginTop: 80,marginLeft: 60,backgroundColor: "#FFFFFF"}}/>
@@ -264,24 +300,27 @@ function MyAccountScreen(props) {
                         outlineColor={'#0E9BA4'}
                     />
 
+
                     <View style={{alignItems: "center", justifyContent: "flex-end", marginTop: "-5%"}}>
                         <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{errorEmail}</Text>
                     </View>  
 
                     <IconButton
                         icon="pencil"
-                        color={"#FF3D00"}
-                        size={35}
+                        mode="contained"
+                        color={'#FFC960'}
+                        style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2, marginTop:15 }}
+                        size={32}
                         onPress={() => {props.sendUpdatedInformations({email: email})}}
                     />
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"center"}}>
                     <TextInput style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
                                mode="outlined"
-                               label="Mot de passe"
+                               label="Nouveau mot de passe"
                                /* onChangeText={(val)=> {setInputPassword(val);setInputProgress(inputProgress + 0.01)}} */
                                onChangeText={(value)=>{updatePassword(value)}}
-                               placeholder ="hello@matable.com"
+                               placeholder ="Nouveau mot de passe"
                                activeOutlineColor={"#FF3D00"}
                                outlineColor={'#0E9BA4'}
                     />
@@ -291,8 +330,10 @@ function MyAccountScreen(props) {
 
                         <IconButton
                             icon="pencil"
-                            color={"#FF3D00"}
-                            size={35}
+                            mode="contained"
+                            color={'#FFC960'}
+                            style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2, marginTop:15 }}
+                            size={32}
                             onPress={() => {connexionValidation(); props.sendUpdatedInformations({password: password})}}
                         />
                     </View>
@@ -314,9 +355,11 @@ function MyAccountScreen(props) {
 
                         <IconButton
                             icon="pencil"
-                            color={"#FF3D00"}
-                            size={35}
-                            onPress={() => {connexionValidation(); props.sendUpdatedInformations({firstname: firstname})}}
+                            mode="contained"
+                            color={'#FFC960'}
+                            style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2, marginTop:15 }}
+                            size={32}
+                            onPress={() => {connexionValidation();updatedUserInformations()}}
                         />
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"center"}}>
@@ -335,8 +378,10 @@ function MyAccountScreen(props) {
                     </View>  
                         <IconButton
                             icon="pencil"
-                            color={"#FF3D00"}
-                            size={35}
+                            mode="contained"
+                            color={'#FFC960'}
+                            style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2, marginTop:15 }}
+                            size={32}
                             onPress={() => {connexionValidation(); props.sendUpdatedInformations({lastname: lastname})}}
                         />
                     </View>
@@ -345,7 +390,7 @@ function MyAccountScreen(props) {
                                mode="outlined"
                                label="Adresse Postale"
                                value={userData.addresses}
-                               onChangeText={(val)=> {setAddress(val); fetchAddress(val)}}
+                               onChangeText={(val)=> {setAddress(val)}}
                                onChangeText={(value)=>{updateAdresses(value)}}
                                placeholder ="56 boulevard Pereire, 75017 Paris"
                                activeOutlineColor={"#FF3D00"}
@@ -356,11 +401,18 @@ function MyAccountScreen(props) {
                     </View>  
                         <IconButton
                             icon="pencil"
-                            color={"#FF3D00"}
-                            size={35}
-                            onPress={() => {connexionValidation(); props.sendUpdatedInformations({addresses: addresses})}}
+                            mode="contained"
+                            color={'#FFC960'}
+                            style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2, marginTop:15 }}
+                            size={32}
+                            onPress={() => {connexionValidation(); props.sendUpdatedInformations({addresses: addresses});setAddress("")}}
                         />
                     </View>
+                        
+                    <View >
+                        {listOfAddresses}
+                    </View>
+
                     <View style={{flexDirection:"row",justifyContent:"center"}}>
                     <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
                                mode="outlined"
@@ -377,8 +429,10 @@ function MyAccountScreen(props) {
                     </View>  
                         <IconButton
                             icon="pencil"
-                            color={"#FF3D00"}
-                            size={35}
+                            mode="contained"
+                            color={'#FFC960'}
+                            style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2, marginTop:15 }}
+                            size={32}
                             onPress={() => {connexionValidation(); props.sendUpdatedInformations({phone: phone})}}
                         />
                     </View>
@@ -396,8 +450,10 @@ function MyAccountScreen(props) {
                     />
                         <IconButton
                             icon="pencil"
-                            color={"#FF3D00"}
-                            size={35}
+                            mode="contained"
+                            color={'#FFC960'}
+                            style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2, marginTop:15 }}
+                            size={32}
                             onPress={() => props.sendUpdatedInformations({preference1: preference1})}
                         />
                     </View>
@@ -414,8 +470,10 @@ function MyAccountScreen(props) {
                     />
                         <IconButton
                             icon="pencil"
-                            color={"#FF3D00"}
-                            size={35}
+                            mode="contained"
+                            color={'#FFC960'}
+                            style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2, marginTop:15 }}
+                            size={32}
                             onPress={() => props.sendUpdatedInformations({preference2: preference2})}
                         />
                     </View>
@@ -432,8 +490,10 @@ function MyAccountScreen(props) {
                     />
                         <IconButton
                             icon="pencil"
-                            color={"#FF3D00"}
-                            size={35}
+                            mode="contained"
+                            color={'#FFC960'}
+                            style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2, marginTop:15 }}
+                            size={32}
                             onPress={() => props.sendUpdatedInformations({preference3: preference3})}
                         />
                     </View>
@@ -451,14 +511,16 @@ function MyAccountScreen(props) {
                     />
                         <IconButton
                             icon="pencil"
-                            color={"#FF3D00"}
-                            size={35}
+                            mode="contained"
+                            color={'#FFC960'}
+                            style={{borderColor: "#FFC960", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2, marginTop:15 }}
+                            size={32}
                             onPress={() => props.sendUpdatedInformations({description: description})}
                         />
                     </View>
                     <RadioButton.Group
-                        value={gender}
-                        onValueChange={newValue => setGender(newValue)}
+                        value={userData.gender}
+                        onValueChange={value => updateGender(value)}
                     >
                         <View style={{flexDirection:"row",justifyContent:"space-between",width:"70%",alignItems:"center",marginLeft:60}}>
                             <View >
@@ -475,7 +537,7 @@ function MyAccountScreen(props) {
                             </View>
                         </View>
                     </RadioButton.Group>
-
+                        </KeyboardAvoidingView>
                 </ScrollView>
 
             </View>
@@ -490,14 +552,51 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-    },viewHeader: {
+    },dropDownContainer: {
+        backgroundColor: 'white',
+        padding: 16,
+    },
+    viewHeader: {
         flex: 2,
         left: 0,
         width:"100%",
         top: 0,
         justifyContent:"flex-start",
 
-
+},
+    dropdown: {
+    height: 50,
+        textAlign:'center',width:'70%',alignSelf:"center",
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+},
+icon: {
+    marginRight: 5,
+},
+label: {
+    position: 'absolute',
+        backgroundColor: 'white',
+        left: 22,
+        top: 8,
+        zIndex: 999,
+        paddingHorizontal: 8,
+        fontSize: 14,
+},
+placeholderStyle: {
+    fontSize: 16,
+},
+selectedTextStyle: {
+    fontSize: 16,
+},
+iconStyle: {
+    width: 20,
+        height: 20,
+},
+inputSearchStyle: {
+    height: 40,
+        fontSize: 16,
 },
 });
 

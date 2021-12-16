@@ -4,6 +4,7 @@ import { Appbar, Card, Title, Paragraph, IconButton } from "react-native-paper";
 
 import { connect } from "react-redux";
 
+const FranckLacapsuleIP = "http://172.17.1.118:3000"
 const herokuIP = "https://polar-stream-28883.herokuapp.com"
 const FranckIP = "http://192.168.1.41:3000"
 
@@ -25,7 +26,7 @@ function MyEventsScreen(props) {
         formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)
 
                 return (
-                        <Card key={i} style={{ marginBottom: 8 }} onPress={() => { props.navigation.navigate("MyTable"), props.onCardClick(e._id) }}>
+                        <Card key={i} style={{ marginBottom: 8 }} onPress={() => { props.navigation.navigate("MyTable"), props.saveTableId(e._id) }}>
                                 <Card.Content style={{ alignItems: "center", justifyContent: "center" }}>
                                         <Title>{e.title}</Title>
                                         <Paragraph style={{ alignSelf: "center" }}>{e.description}</Paragraph>
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
 
 function mapDispatchToProps(dispatch) {
         return {
-                onCardClick: function (tableId) {
+                saveTableId: function (tableId) {
                         dispatch({ type: "saveTableId", tableId: tableId })
                 }
         }

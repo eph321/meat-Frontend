@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View, Text, ScrollView, Platform, TouchableOpacity} from 'react-native';
 import { Button, TextInput, Appbar, IconButton } from "react-native-paper"
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -8,6 +8,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { connect } from "react-redux";
 import { Dropdown } from 'react-native-element-dropdown';
 
+const FranckIP = "http://192.168.1.41:3000"
+const herokuIP = "https://polar-stream-28883.herokuapp.com"
 
 // Préférence culinaire Liste
 
@@ -30,7 +32,6 @@ const ageRangeList = [
     { label: "45-55 ans", value: "45-55" },
     { label: "+ 55ans", value: "55+" },
 ];
-
 
 function NewTableScreen(props) {
 
@@ -55,8 +56,9 @@ function NewTableScreen(props) {
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [dateValue, setDateValue] = useState(false); // Pour affichage uniquement
+    const [clickOnTimeBtn, setClickOnTimeBtn] = useState(false)
 
-// AJOUTER UN MINIMUM DATE + TIME
+    // AJOUTER UN MINIMUM DATE + TIME
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -79,7 +81,42 @@ function NewTableScreen(props) {
 
     const showTimepicker = () => {
         showMode('time');
+        setClickOnTimeBtn(true);
     };
+
+    // autocomplete addresse
+
+    const [visibleList, setVisibleList] = useState(false);
+    const [listLabelAddress,setListLabelAddress] = useState([])
+    useEffect(()=>{
+        const fetchAddress = async (val) => {
+            let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
+            let response = await rawResponse.json();
+            let tempList = response.features.map((el) =>{ return {label: el.properties.label, values: el.properties}})
+            setListLabelAddress(tempList)
+            console.log(listLabelAddress)
+
+
+            setVisibleList(true)}
+        fetchAddress(restaurantAddress)
+
+    },[restaurantAddress])
+
+    let addresses = listLabelAddress.map((el,i)=>{
+        return(<TouchableOpacity key={i}  onPress={() => {handlePressAddress(el); }}>
+            <Text style={{ margin:5}}>{el.label}</Text>
+        </TouchableOpacity>)    })
+    let listOfAddresses;
+
+    if (visibleList){
+        listOfAddresses = addresses}
+    else {
+        listOfAddresses = <Text></Text>}
+
+    const handlePressAddress = (el) => {
+        setRestaurantAddress(el.label);
+        setVisibleList(false)
+    }
 
 
     // Capacity
@@ -132,21 +169,36 @@ function NewTableScreen(props) {
 
     // Création de la table
     const createTable = async () => {
-        const tableDataRawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/add-table`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}`
-        });
-        const tableDataResponse = await tableDataRawResponse.json();
-        props.onCreateClick(tableDataResponse.newTable._id);
-        props.navigation.navigate("MyTable");
+
+        if (dateValue === false) {
+            alert("Veuillez renseigner la date")
+        } else if (clickOnTimeBtn === false) {
+            alert("Veuillez renseigner l'heure")
+        } else if (title === "") {
+            alert("Veuillez renseigner le titre de l'évènement")
+        } else if (restaurantName === "") {
+            alert("Veuillez renseigner le nom du restaurant")
+        } else if (restaurantAddress === "") {
+            alert("Veuillez renseigner l'adresse du restaurant")
+        } else if (restaurantType === "") {
+            alert("Veuillez renseigner le type de cuisine")
+        } else {
+            const tableDataRawResponse = await fetch(`${herokuIP}/add-table`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}`
+            });
+            const tableDataResponse = await tableDataRawResponse.json();
+            props.onCreateClick(tableDataResponse.newTable._id);
+            props.navigation.navigate("MyTable");
+        }
     }
 
     return (
         /*   <KeyboardAvoidingView
-  behavior={Platform.OS === "ios" ? "padding" : "height"}
-  style={styles.container}
-> */
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={styles.container}
+    > */
 
         <ScrollView style={{ flex: 1, marginTop: 50 }}>
             <View style={styles.viewHeader}>
@@ -253,6 +305,9 @@ function NewTableScreen(props) {
                     value={restaurantAddress}
                     onChangeText={text => setRestaurantAddress(text)}
                 />
+                <View style={{marginVertical:5}} >
+                    {listOfAddresses}
+                </View>
                 <Dropdown
                     style={[styles.dropdown, isTypeFocus && { borderColor: '#0E9BA4' }]}
                     placeholderStyle={styles.placeholderStyle}
