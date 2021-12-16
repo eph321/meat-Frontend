@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, ScrollView, AsyncStorage, TouchableOpacity } from 'react-native';
-import { Text, Appbar, TextInput, Card, Title, Paragraph, IconButton, Button } from "react-native-paper";
+import { Text, Appbar, TextInput, Card, Title, Paragraph, IconButton, Button, Avatar } from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { connect } from "react-redux"
@@ -229,12 +229,22 @@ function HomeScreen(props) {
 
     var tableList = tableDataList.map((e, i) => {
 
-        let capacityAvatar = []
-        for (let avatar = 0; avatar < e.capacity; avatar++) {
-            capacityAvatar.push(
-                <Ionicons key={avatar} name="person-circle-outline" size={24} color="black" />
-            )
-        }
+        const cardAvatar = []
+        const cardSeats = []
+        const occupiedSeats = e.guests.length + 1
+        const freeSeats = e.capacity - occupiedSeats 
+
+             for (let meaters = 0; meaters < occupiedSeats; meaters++){
+                cardAvatar.push(
+                    <Ionicons key={meaters} name="person-circle-outline" size={24} color="#FFC960" />
+                )
+            }
+           for (let avatar = 0; avatar < freeSeats; avatar++){
+                cardSeats.push(
+                    <Ionicons key={avatar} name="person-circle-outline" size={24} color="gray" />
+                    )
+            }; 
+        
 
         let dateParse = new Date(e.date)
         // let formattedDate = new Intl.DateTimeFormat("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }).format(dateParse)
@@ -271,7 +281,7 @@ function HomeScreen(props) {
                     <Title style={{ alignSelf: "center" }}>{e.title}</Title>
                     <Paragraph style={{ alignSelf: "center" }}>{formattedDate}</Paragraph>
                     <View style={{ flexDirection: "row", alignSelf: "center", marginBottom: 4, marginTop: 4 }}>
-                        {capacityAvatar}
+                       {cardAvatar}{cardSeats} 
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
