@@ -24,7 +24,7 @@ import MyBuddiesScreen from "./screens/MyBuddiesScreen";
 import ChatScreen from "./screens/ChatScreen";
 import BuddyScreen from "./screens/BuddyScreen";
 import MyEventsScreen from "./screens/MyEventsScreen";
-import MyAddressesScreen from "./screens/MyAddressesScreen";
+
 
 import userRegister from './reducers/userRegister'
 import tableId from "./reducers/event"
@@ -65,7 +65,6 @@ export default function App() {
                 <Stack.Screen name="NewTable" component={NewTableScreen} />
                 <Stack.Screen name="BuddyProfile" component={BuddyScreen} />
                 <Stack.Screen name="MyAccount" component={MyAccountScreen} />
-                <Stack.Screen name="MyAddresses" component={MyAddressesScreen} />
                 <Stack.Screen name="MyBuddies" component={MyBuddiesScreen} />
                 <Stack.Screen name="Chat" component={ChatScreen} />
                 <Stack.Screen name="MyEvents" component={MyEventsScreen} />

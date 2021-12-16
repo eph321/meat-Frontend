@@ -33,7 +33,6 @@
     "react-native-element-dropdown": "^1.5.5",
     "react-native-elements": "^3.4.2",
     "react-native-gesture-handler": "~1.10.2",
-    "react-native-google-places-autocomplete": "^2.4.1",
     "react-native-image-picker": "^4.4.0",
     "react-native-pager-view": "^5.4.6",
     "react-native-paper": "^4.10.1",
