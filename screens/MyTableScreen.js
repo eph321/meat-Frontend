@@ -299,7 +299,7 @@ function MyTableScreen(props) {
 
 </Card>
     <View style={{alignItems: "flex-end", marginTop: 100}}> 
-    <Paragraph>Quitter la table  <IconButton icon="door-open" color={'#FFC960'}  size={40}  onPress={() => {leaveTable()}} /></Paragraph>
+    <IconButton icon="door-open" color={'#FFC960'}  size={40}  onPress={() => {leaveTable()}} />
        
                  </View>
             </View>
