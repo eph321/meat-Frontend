@@ -130,7 +130,8 @@ function HomeScreen(props) {
                 // console.log(response.result[0].guests.map(item => item._id), "-----------> RESPONSE RESULT")
                 // console.log(new Date(), "useeffect")
             };
-            getTableList()
+            getTableList();
+            props.saveUserLocation(userLocation);
         }
     }, [isFocused]
     )
@@ -280,7 +281,7 @@ function HomeScreen(props) {
 
                 <Card.Content>
                     <Title style={{ alignSelf: "center" }}>{e.title}</Title>
-                    <Paragraph style={{ alignSelf: "center" }}>{formattedDate}</Paragraph>
+                    <Paragraph style={{ alignSelf: "center", fontWeight:"500" }}>{formattedDate}</Paragraph>
                     <View style={{ flexDirection: "row", alignSelf: "center", marginBottom: 4, marginTop: 4 }}>
                        {cardAvatar}{cardSeats} 
                     </View>
@@ -289,7 +290,7 @@ function HomeScreen(props) {
                             <MaterialCommunityIcons style={{ marginRight: 5 }} name="table-furniture" size={24} color="#0E9BA4" />
                             <View>
                                 <Text>Restaurant</Text>
-                                <Paragraph style={{ color: "#0E9BA4", fontWeight: "bold" }}>{e.placeName}</Paragraph>
+                                <Paragraph style={{ color: "#0E9BA4", fontWeight: "bold", marginTop:-3 }}>{e.placeName}</Paragraph>
                             </View>
                         </View>
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -351,9 +352,9 @@ function HomeScreen(props) {
                     <Text Style={{ color: '#FFC960' }}>Go to join</Text>
                 </Button>*/}
 
-                <TextInput style={{ textAlign: 'center', width: '70%', alignSelf: "center", marginTop: 10 }}
+                <TextInput style={{ textAlign: 'center', width: '70%', alignSelf: "center", marginTop: 10, height: 50, backgroundColor: "white" }}
                     mode="outlined"
-                    label="Où ?"
+                    label="                            Où ?"
                     placeholder="Paris 17"
                     value={address}
                     activeOutlineColor={"#FFC960"}
@@ -367,9 +368,10 @@ function HomeScreen(props) {
                     mode="contained"
                     onPress={showDatepicker}
                     style={styles.datePicker}
-                    labelStyle={{ color: "black", fontWeight: "400", fontSize: 14 }}
+                    labelStyle={{ color: "gray", fontWeight: "400", fontSize: 15 }}
+                    uppercase={false}
                 >
-                    {(dateIsSeleted) ? "Le " + formattedDate : "Choisissez une date"}
+                    {(dateIsSeleted) ? "Le " + formattedDate : "Quand ?"}
                 </Button>
                 <View>
                     {/* <View style={{ flexDirection: "row", justifyContent: "center" }}>
@@ -448,7 +450,7 @@ const styles = StyleSheet.create({
     datePicker: {
         width: "70%",
         height: 50,
-        borderColor: 'gray',
+        borderColor: '#0E9BA4',
         borderWidth: 0.5,
         borderRadius: 8,
         paddingHorizontal: 8,
@@ -459,7 +461,7 @@ const styles = StyleSheet.create({
     dropdown: {
         width: "70%",
         height: 50,
-        borderColor: 'gray',
+        borderColor: '#0E9BA4',
         borderWidth: 0.5,
         borderRadius: 8,
         paddingHorizontal: 8,
@@ -468,6 +470,7 @@ const styles = StyleSheet.create({
     placeholderStyle: {
         fontSize: 16,
         textAlign: "center",
+        color: "gray"
     },
     selectedTextStyle: {
         fontSize: 14,
@@ -487,35 +490,6 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
 });
-
-
-const pickerStyle = {
-    inputIOS: {
-        color: 'white',
-        paddingTop: 13,
-        paddingHorizontal: 10,
-        paddingBottom: 12,
-    },
-    inputAndroid: {
-        color: 'white',
-    },
-    placeholderColor: 'white',
-    underline: { borderTopWidth: 0 },
-    icon: {
-        position: 'absolute',
-        backgroundColor: 'transparent',
-        borderTopWidth: 5,
-        borderTopColor: '#00000099',
-        borderRightWidth: 5,
-        borderRightColor: 'transparent',
-        borderLeftWidth: 5,
-        borderLeftColor: 'transparent',
-        width: 0,
-        height: 0,
-        top: 20,
-        right: 15,
-    },
-};
 
 
 function mapStateToProps(state) {
