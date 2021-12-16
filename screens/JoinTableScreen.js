@@ -37,7 +37,6 @@ function JoinTableScreen(props) {
         //  console.log(guestList, "------> GUEST LIST")
         setPlannerAvatar(response.planner.avatar)
        
-        console.log(response.planner.avatar,"PLANNER AVATAR FROM BACK")
     }
         // setUserData(response.user)
 
@@ -53,9 +52,7 @@ function JoinTableScreen(props) {
         }; */
 
         , [isFocused]);
-        console.log(plannerAvatar, "PLANNER AVATAR STATE")
-        console.log(guestList, " GUEST LIST GUEST GUEST")
-
+   
     var handleJoinTable = async () => {
 
         var dataRaw = await fetch(`${herokuIP}/enter-table`, {
