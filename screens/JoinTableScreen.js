@@ -26,16 +26,18 @@ function JoinTableScreen(props) {
 
     useEffect(async () => {
 
-        var responseRaw = await fetch(`${herokuIP}/join-table/${props.tableId}`)
+        var responseRaw = await fetch(`https:/${herokuIP}/join-table/${props.tableId}`)
         var response = await responseRaw.json();
-        console.log(response.result)
+        console.log(response.result," RESPONSE RESULT")
 
         // console.log(response, 'ok'),
         setTableData(response.result)
         //  console.log(tableData, "=======> TABLE DATA")
         setGuestList(response.result.guests)
         //  console.log(guestList, "------> GUEST LIST")
-        setPlannerAvatar(response.planneravatar)
+        setPlannerAvatar(response.planner.avatar)
+       
+        console.log(response.planner.avatar,"PLANNER AVATAR FROM BACK")
     }
         // setUserData(response.user)
 
@@ -51,6 +53,8 @@ function JoinTableScreen(props) {
         }; */
 
         , [isFocused]);
+        console.log(plannerAvatar, "PLANNER AVATAR STATE")
+        console.log(guestList, " GUEST LIST GUEST GUEST")
 
     var handleJoinTable = async () => {
 
@@ -75,7 +79,7 @@ function JoinTableScreen(props) {
             <Avatar.Image key={i} size={24} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(e.avatar) ? { uri: e.avatar } : require("../assets/picture-4.png")} />
         )
     })
-
+  
     var tabCapacity = []
 
     for (let i = 0; i < tableInfo.capacity - guestList.length - 1; i++) {
@@ -146,9 +150,9 @@ function JoinTableScreen(props) {
 
     return (
 
-        <View style={{ flex: 1}}>
+        <View style={styles.container}>
 
-            <View style={{ flex: 1.5, backgroundColor: "#FFC960", width: "100%", flexDirection: "row", justifyContent: "space-around", alignItems: "flex-end", paddingBottom: 10 }}>
+            <View style={styles.topNavBar}>
                 <IconButton
                     icon="home"
                     color={'#0E9BA4'}
@@ -168,7 +172,7 @@ function JoinTableScreen(props) {
                     onPress={() => props.navigation.navigate('MyEvents')}
                 />
                 <IconButton
-                    icon="message-text"
+                    icon="message"
                     color={'#0E9BA4'}
                     size={25}
                     onPress={() => props.navigation.navigate('MyBuddies')}
@@ -182,7 +186,7 @@ function JoinTableScreen(props) {
 
 
             </View>
-            <View style={{ flex: 11, alignItems: "center", justifyContent:"center",  }}>
+            <View style={styles.contentView}>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: 10 }}>
                     <Title>{tableInfo.title}</Title>
                     <Subheading>{tableInfo.date}</Subheading>
@@ -231,7 +235,26 @@ function JoinTableScreen(props) {
     );
 }
 
-
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#F2F2F2"
+    },
+    topNavBar: {
+        flex: 1.5,
+        backgroundColor: "#FFC960",
+        width: "100%",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "flex-end",
+    },
+    contentView: {
+        flex: 11,
+        backgroundColor: "#F2F2F2",
+        justifyContent: "flex-start",
+        marginBottom: 30,
+    },
+})
 
 
 function mapStateToProps(state) {
