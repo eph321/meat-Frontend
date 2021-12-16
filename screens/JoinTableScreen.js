@@ -17,6 +17,7 @@ function JoinTableScreen(props) {
 
     const [tableData, setTableData] = useState([''])
     const [guestList, setGuestList] = useState([''])
+    const [plannerAvatar, setPlannerAvatar] = useState('')
 
 
     const isFocused = useIsFocused();
@@ -27,13 +28,14 @@ function JoinTableScreen(props) {
 
         var responseRaw = await fetch(`${herokuIP}/join-table/${props.tableId}`)
         var response = await responseRaw.json();
-        // console.log(response.result)
+        console.log(response.result)
 
        // console.log(response, 'ok'),
             setTableData(response.result)
           //  console.log(tableData, "=======> TABLE DATA")
             setGuestList(response.result.guests)
           //  console.log(guestList, "------> GUEST LIST")
+            setPlannerAvatar(response.planneravatar)
           }
        // setUserData(response.user)
 
@@ -58,6 +60,7 @@ function JoinTableScreen(props) {
                             body: `id=${props.tableId}&token=${props.userToken}`
                           });
             props.navigation.navigate('MyTable'); 
+            console.log(props.userToken)
 
             //   var body =  await data.json()
             
@@ -65,6 +68,7 @@ function JoinTableScreen(props) {
 
      
        var tableInfo = tableData;
+       var planneravatar =  <Avatar.Image size={24} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(plannerAvatar)?{uri: plannerAvatar}:require("../assets/picture-1.png")} />
 
       let avatarList = guestList.map((e,i)=> {
           return(
@@ -74,7 +78,7 @@ function JoinTableScreen(props) {
 
        var tabCapacity= []
       
-      for(let i = 0; i < tableInfo.capacity - guestList.length; i++) {
+      for(let i = 0; i < tableInfo.capacity - guestList.length - 1; i++) {
       
        
         tabCapacity.push(<MaterialCommunityIcons key={i}  name="seat" size={24} color="black"/>)
@@ -197,7 +201,7 @@ function JoinTableScreen(props) {
                 <Card style={{ marginLeft : 60, marginBottom : 60, marginTop : 50, height : 250, width : 180 }}>
                         <Card.Content>
                             <Title>M.Eaters : {guestCount}/{tableInfo.capacity}</Title>
-                            <View style={{flexDirection: "row"}}>{avatarList}{tabCapacity}</View>
+                            <View style={{flexDirection: "row"}}>{planneravatar}{avatarList}{tabCapacity}</View>
                             <Title>Budget : {bugdetInfo}</Title>
                             
                             <Title ><FontAwesome5 name="walking" size={24} color="black" />  à 150 mètres</Title>

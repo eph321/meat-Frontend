@@ -20,6 +20,7 @@ function MyTableScreen(props) {
     const [listMessages,setListMessages] = useState([])
     const [author, setAuthor] =useState("");
     const isFocused = useIsFocused();
+    const [plannerAvatar, setPlannerAvatar] = useState('')
     const [guestList, setGuestList] = useState([''])
 
 
@@ -90,7 +91,7 @@ function MyTableScreen(props) {
       
             setTableData(response.result)
             setGuestList(response.result.guests)
-            console.log(response, "okokokok")
+            setPlannerAvatar(response.planneravatar)
           }
   
         , []);
@@ -122,6 +123,7 @@ function MyTableScreen(props) {
        
 
        var tableInfo = tableData;
+       var planneravatar =  <Avatar.Image size={24} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(plannerAvatar)?{uri: plannerAvatar}:require("../assets/picture-1.png")} />
 
     let avatarList = guestList.map((e,i)=> {
         return(
@@ -131,7 +133,7 @@ function MyTableScreen(props) {
 
      var tabCapacity= []
     
-    for(let i = 0; i < tableInfo.capacity - guestList.length; i++) {
+    for(let i = 0; i < tableInfo.capacity - guestList.length -1; i++) {
     
      
       tabCapacity.push(<MaterialCommunityIcons key={i}  name="seat" size={24} color="black"/>)
@@ -240,7 +242,7 @@ function MyTableScreen(props) {
                 <Card style={{ width : "45%" }}>
                         <Card.Content>
                             <Title>M.Eaters : {guestCount}/{tableInfo.capacity}</Title>
-                            <View style={{flexDirection: "row"}}>{avatarList}{tabCapacity}</View>
+                            <View style={{flexDirection: "row"}}>{planneravatar}{avatarList}{tabCapacity}</View>
                             <Title>Budget : {bugdetInfo}</Title>
                             
                             <Title ><FontAwesome5 name="walking" size={24} color="black" />  à 150 mètres</Title>

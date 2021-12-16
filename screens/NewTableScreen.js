@@ -21,6 +21,7 @@ const restaurantTypeList = [
     { label: 'Mexicain', value: 'Mexicain' },
     { label: 'Indien', value: 'Indien' },
     { label: 'Coréen', value: 'Coréen' },
+    { label: 'Africain', value: 'Africain' },
 ];
 
 // Liste déroulante trannche d'age
