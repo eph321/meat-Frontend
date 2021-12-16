@@ -204,12 +204,8 @@ function NewTableScreen(props) {
     style={styles.container}
     > */
 
-        <ScrollView style={{ flex: 1, marginTop: 50 }}>
-            <View style={styles.viewHeader}>
-                <Appbar style={{ flex: 1, backgroundColor: "#FFC960" }}>
-                    <Appbar.Content title="Créer une table" style={{ marginTop: 20, alignItems: "center", size: 17 }} titleStyle={{ fontSize: 22, fontWeight: "700", color: "#009788" }} />
-                </Appbar>
-                <View style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", flexDirection: "row", justifyContent: "space-around" }}>
+        <View style={styles.container}>
+                <View style={styles.topNavBar}>
                     <IconButton
                         icon="home"
                         color={'#0E9BA4'}
@@ -241,15 +237,12 @@ function NewTableScreen(props) {
                         onPress={() => props.navigation.navigate('MyAccount')}
                     />
                 </View>
-            </View>
+           
 
 
 
-            <View
-                style={styles.container}
-            >
-
-                <View>
+            <View style={styles.contentView}>
+              
                     {/*  <Button
                         mode="outlined"
                         color={'#FFC960'}
@@ -270,7 +263,7 @@ function NewTableScreen(props) {
                     )} */}
 
                     <Text style={{ marginTop: 15, height: 30, alignSelf: "center", fontSize: 25 }}>{(dateValue) ? "Le " + formattedDate : "Choisissez une date"} </Text>
-                    <View>
+                  
                         <View style={{ flexDirection: "row", justifyContent: "center" }}>
                             <Button onPress={showDatepicker}> Date </Button>
                             <Button onPress={showTimepicker}> Heure </Button>
@@ -285,8 +278,6 @@ function NewTableScreen(props) {
                                 onChange={onChange}
                             />
                         )}
-                    </View>
-                </View>
 
                 <TextInput
                     style={{ alignSelf: "center", width: '70%' }}
@@ -309,9 +300,9 @@ function NewTableScreen(props) {
                     value={restaurantAddress}
                     onChangeText={text => setRestaurantAddress(text)}
                 />
-                <View style={{marginVertical:5}} >
+
                     {listOfAddresses}
-                </View>
+
                 <Dropdown
                     style={[styles.dropdown, isTypeFocus && { borderColor: '#0E9BA4' }]}
                     placeholderStyle={styles.placeholderStyle}
@@ -393,7 +384,7 @@ function NewTableScreen(props) {
                 <Button mode="contained" onPress={() => createTable()}>Créer la table</Button>
             </View>
 
-        </ScrollView>
+        </View>
         /* </KeyboardAvoidingView> */
 
     )
@@ -402,15 +393,22 @@ function NewTableScreen(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        backgroundColor: "#F2F2F2"
     },
-    viewHeader: {
-        flex: 2,
-        left: 0,
+    topNavBar: {
+        flex: 1.5,
+        backgroundColor: "#FFC960",
         width: "100%",
-        top: 0,
-        justifyContent: "flex-start",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "flex-end",
+    },
+    contentView: {
+        flex: 11,
+        backgroundColor: "#F2F2F2",
+        alignItems:"center",
+        marginBottom: 30,
+
     },
     item: {
         padding: 20,

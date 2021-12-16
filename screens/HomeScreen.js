@@ -270,7 +270,7 @@ function HomeScreen(props) {
             }
         }
 
-        // CARD location - distannce
+        // CARD location - distance
         const filteredDistance = Math.round(haversine(filteredLocation, { latitude: e.latitude, longitude: e.longitude }, { unit: "meter" }))
         const userDistance = Math.round(haversine(userLocation, { latitude: e.latitude, longitude: e.longitude }, { unit: "meter" }))
 
