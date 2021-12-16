@@ -194,7 +194,7 @@ function JoinTableScreen(props) {
                     <Subheading>{formattedDate}</Subheading>
                 </View>
 
-                <View style={{ flex: 4, flexDirection: "row", alignItems: 'center', height: 100 }}>
+                <View style={{ flex: 4, flexDirection: "row", alignItems: 'center'}}>
                     <Card style={{ height: 270, width: 180, marginRight: 10 }}>
                         <Card.Content>
                             <Title>M.Eaters : {guestCount}/{tableInfo.capacity}</Title>

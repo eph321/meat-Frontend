@@ -22,7 +22,6 @@ function MyTableScreen(props) {
     const isFocused = useIsFocused();
     const [plannerAvatar, setPlannerAvatar] = useState('')
     const [guestList, setGuestList] = useState([''])
-    const [planner, setPlanner] = useState('')
 
 
 
@@ -91,7 +90,7 @@ function MyTableScreen(props) {
             setTableData(response.result)
             setGuestList(response.result.guests)
             setPlannerAvatar(response.planner.avatar)
-            setPlanner(result.planner)
+            
           }
   
         , []);
@@ -222,7 +221,7 @@ function MyTableScreen(props) {
         </View>
         <View style={styles.contentView}>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: 10 }}>
-                <Title>{tableInfo.title}</Title>
+                <Title>{tableInfo.title} </Title>
                 <Subheading>{formattedDate}</Subheading>
             </View>
 
@@ -299,13 +298,9 @@ function MyTableScreen(props) {
 
 
 </Card>
-    <View style={{}}>  
-        <IconButton
-                     icon="door-open"
-                     color={'#0E9BA4'}
-                     size={25}
-                     onPress={() => {leaveTable()}}
-                 />
+    <View style={{alignItems: "flex-end", marginTop: 100}}> 
+    <Paragraph>Quitter la table  <IconButton icon="door-open" color={'#FFC960'}  size={40}  onPress={() => {leaveTable()}} /></Paragraph>
+       
                  </View>
             </View>
         </View>
