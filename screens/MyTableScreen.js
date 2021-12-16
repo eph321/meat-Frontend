@@ -72,8 +72,16 @@ function MyTableScreen(props) {
             console.log("getchatmessages",response)
             setAuthor(response.author)}
 
-            getChatMessages();
-
+    //         getChatMessages();
+    //         const getTableInfos = async() => {
+    //         var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
+    //         var responsejoin = await responseRaw.json();
+    //         setTableData(responseJoin.result)
+    //         setGuestList(responseJoin.result.guests)
+    //         setPlannerAvatar(responseJoin.planner.avatar)
+    //         setPlanner(result.planner)
+    // };
+    //         getTableInfos()
 
         },[isFocused]);
 
@@ -94,13 +102,13 @@ function MyTableScreen(props) {
 
         var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
         var response = await responseRaw.json();
-      
+        console.log(response)
             setTableData(response.result)
             setGuestList(response.result.guests)
             setPlannerAvatar(response.planner.avatar)
-            setPlanner(result.planner)
+            // setPlanner(result.planner)
           }
-  
+
         , []);
 
 
@@ -130,15 +138,15 @@ function MyTableScreen(props) {
 
     }
 
-    useEffect( async() => {
-           var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
-           var response = await responseRaw.json();
-
-            setTableData(response.result)
-          }
-
-
-        , []);
+    // useEffect( async() => {
+    //        var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
+    //        var response = await responseRaw.json();
+    //
+    //         setTableData(response.result)
+    //       }
+    //
+    //r
+    //     , []);
        
        
 
@@ -269,19 +277,30 @@ function MyTableScreen(props) {
                     </Card.Content>
 
                 </Card>
+
+
+
             </View>
+
             <View style={{ flex: 4, alignItems: 'center', justifyContent: 'center', marginBottom:20 ,backgroundColor:"rgba(255, 201, 96, 0.22)"}}>
                 <View >
-
-                    <ScrollView style={{ backgroundColor:"rgba(255, 201, 96, 0.22)"}}>
+                    <ScrollView >
+                        <View style={{ flex: 1, alignItems: 'center'}}>
                             {listMessages.map((el,i)=> displayMessage(el,i))}
+                        </View>
                     </ScrollView>
 
 
+
+                    <View style={{ flex: 1, alignItems: 'center'}}>
                     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} >
 
                         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                            <View style={{flexDirection:"row",justifyContent:"center",marginHorizontal:10}}>
+                            <View style={{padding: 24,
+                                flex: 1,
+                                justifyContent: "space-around",
+                                alignItems:"center",
+                                flexDirection:"row"}}>
                                 <TextInput
 
                                     multiline={true}
@@ -304,9 +323,10 @@ function MyTableScreen(props) {
                             </View>
                         </TouchableWithoutFeedback>
                     </KeyboardAvoidingView>
+                    </View>
 
                 </View>
-    <View style={{flex:1, alignItems: "flex-end"}}>  
+    <View style={{flex:1, alignItems: "flex-end"}}>
         <IconButton
                      icon="door-open"
                      color={'#0E9BA4'}
