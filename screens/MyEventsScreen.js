@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, Button, View, Text } from 'react-native';
+import { StyleSheet, ScrollView, Button, View, Text} from 'react-native';
 import { Appbar, Card, Title, Paragraph, IconButton } from "react-native-paper";
 
 import { connect } from "react-redux";

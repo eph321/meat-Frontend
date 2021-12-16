@@ -22,21 +22,22 @@ function JoinTableScreen(props) {
 
     const isFocused = useIsFocused();
 
-
+   
 
     useEffect(async () => {
 
-        var responseRaw = await fetch(`${herokuIP}/join-table/${props.tableId}`)
+        var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
         var response = await responseRaw.json();
         console.log(response.result," RESPONSE RESULT")
 
-        // console.log(response, 'ok'),
+        console.log(response, 'ok'),
         setTableData(response.result)
         //  console.log(tableData, "=======> TABLE DATA")
         setGuestList(response.result.guests)
         //  console.log(guestList, "------> GUEST LIST")
         setPlannerAvatar(response.planner.avatar)
        
+        console.log(response.planner.avatar,"PLANNER AVATAR FROM BACK")
     }
         // setUserData(response.user)
 
@@ -52,7 +53,8 @@ function JoinTableScreen(props) {
         }; */
 
         , [isFocused]);
-   
+        
+
     var handleJoinTable = async () => {
 
         var dataRaw = await fetch(`${herokuIP}/enter-table`, {
@@ -69,6 +71,9 @@ function JoinTableScreen(props) {
 
 
     var tableInfo = tableData;
+    let dateParse = new Date(tableInfo.date)
+    let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
+    formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
     var planneravatar = <Avatar.Image size={24} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(plannerAvatar) ? { uri: plannerAvatar } : require("../assets/picture-1.png")} />
 
     let avatarList = guestList.map((e, i) => {
@@ -186,11 +191,11 @@ function JoinTableScreen(props) {
             <View style={styles.contentView}>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: 10 }}>
                     <Title>{tableInfo.title}</Title>
-                    <Subheading>{tableInfo.date}</Subheading>
+                    <Subheading>{formattedDate}</Subheading>
                 </View>
 
                 <View style={{ flex: 4, flexDirection: "row", alignItems: 'center', height: 100 }}>
-                    <Card style={{ height: 250, width: 180 }}>
+                    <Card style={{ height: 270, width: 180, marginRight: 10 }}>
                         <Card.Content>
                             <Title>M.Eaters : {guestCount}/{tableInfo.capacity}</Title>
                             <View style={{ flexDirection: "row" }}>{planneravatar}{avatarList}{tabCapacity}</View>
@@ -202,7 +207,7 @@ function JoinTableScreen(props) {
                         </Card.Content>
                     </Card>
 
-                    <Card style={{ height: 250, width: 180 }}>
+                    <Card style={{ height: 270, width: 180 }}>
                         <Card.Cover style={{ height: 150, widht: 80 }} source={{ uri: cardImage }} />
 
                         <Card.Content>
@@ -213,7 +218,7 @@ function JoinTableScreen(props) {
 
                     </Card>
                 </View>
-                <View style={{ flex: 4, alignItems: 'center', justifyContent: 'center' }}>
+                <View style={{ flex: 4, alignItems: 'center', justifyContent: 'center', marginBottom:20 }}>
                     <Card style={{width: 350, height: 200 }}>
                         <Card.Content>
                             <Paragraph>{tableInfo.description}</Paragraph>
@@ -222,7 +227,7 @@ function JoinTableScreen(props) {
 
                     <View style={{flex:0.5}}>
 
-                    <Button style={{width: 300, height: 50, backgroundColor: "#0E9BA4" }} type='text' mode="contained" onPress={() => handleJoinTable()}>
+                    <Button style={{width: 300, height: 50, backgroundColor: "#0E9BA4" , marginTop: 20}} type='text' mode="contained" onPress={() => handleJoinTable()}>
                         <Text style={{color: "#FFC960", fontWeight: "bold" }}> Rejoindre la table</Text>
                     </Button>
                     </View>
@@ -249,6 +254,7 @@ const styles = StyleSheet.create({
         flex: 11,
         backgroundColor: "#F2F2F2",
         justifyContent: "flex-start",
+        alignItems:"center",
         marginBottom: 30,
     },
 })
@@ -263,3 +269,6 @@ export default connect(
     null
 
 )(JoinTableScreen);
+
+
+

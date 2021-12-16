@@ -90,7 +90,7 @@ function MyTableScreen(props) {
       
             setTableData(response.result)
             setGuestList(response.result.guests)
-            setPlannerAvatar(response.planneravatar)
+            setPlannerAvatar(response.planner.avatar)
             setPlanner(result.planner)
           }
   
@@ -123,6 +123,9 @@ function MyTableScreen(props) {
        
 
        var tableInfo = tableData;
+       let dateParse = new Date(tableInfo.date)
+       let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
+       formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
        var planneravatar =  <Avatar.Image size={24} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(plannerAvatar)?{uri: plannerAvatar}:require("../assets/picture-1.png")} />
 
     let avatarList = guestList.map((e,i)=> {
@@ -179,175 +182,158 @@ function MyTableScreen(props) {
   var guestCount = guestList.length + 1;
 
 
-    return (    
-    
-    
-    <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>  
-     <View style={{ flex: 2,
-             left: 0,
-             width:"100%",
-             top: 0,
-             justifyContent:"flex-start",}}>
-             <Appbar style={{ backgroundColor: "#FFC960", flex:1}}>
-                 <Appbar.Content title="Ma Table" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
+  return (
 
-             </Appbar>
-             <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
-                 <IconButton
-                     icon="home"
-                     color={'#0E9BA4'}
-                     size={25}
-                     onPress={() => props.navigation.navigate('Home')}
-                 />
-                 <IconButton
-                     icon="plus-circle"
-                     color={'#0E9BA4'}
-                     size={25}
-                     onPress={() => props.navigation.navigate('NewTable')}
-                 />
-                 <IconButton
-                     icon="calendar-month"
-                     color={'#0E9BA4'}
-                     size={25}
-                     onPress={() =>props.navigation.navigate('MyEvents')}
-                 />
-                 <IconButton
-                     icon="message-text"
-                     color={'#0E9BA4'}
-                     size={25}
-                     onPress={() =>  props.navigation.navigate('MyBuddies')}
-                 />
-                 <IconButton
-                     icon="account"
-                     color={'#0E9BA4'}
-                     size={25}
-                     onPress={() =>  props.navigation.navigate('MyAccount')}
-                 />
-                 <IconButton
-                     icon="cancel"
+    <View style={styles.container}>
+
+        <View style={styles.topNavBar}>
+            <IconButton
+                icon="home"
+                color={'#0E9BA4'}
+                size={25}
+                onPress={() => props.navigation.navigate('Home')}
+            />
+            <IconButton
+                icon="plus-circle"
+                color={'#0E9BA4'}
+                size={25}
+                onPress={() => props.navigation.navigate('NewTable')}
+            />
+            <IconButton
+                icon="calendar-month"
+                color={'#0E9BA4'}
+                size={25}
+                onPress={() => props.navigation.navigate('MyEvents')}
+            />
+            <IconButton
+                icon="message"
+                color={'#0E9BA4'}
+                size={25}
+                onPress={() => props.navigation.navigate('MyBuddies')}
+            />
+            <IconButton
+                icon="account"
+                color={'#0E9BA4'}
+                size={25}
+                onPress={() => props.navigation.navigate('MyAccount')}
+            />
+
+
+        </View>
+        <View style={styles.contentView}>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: 10 }}>
+                <Title>{tableInfo.title}</Title>
+                <Subheading>{formattedDate}</Subheading>
+            </View>
+
+            <View style={{ flex: 4, flexDirection: "row", alignItems: 'center', height: 100 }}>
+                <Card style={{ height: 270, width: 180, marginRight: 10 }}>
+                    <Card.Content>
+                        <Title>M.Eaters : {guestCount}/{tableInfo.capacity}</Title>
+                        <View style={{ flexDirection: "row" }}>{planneravatar}{avatarList}{tabCapacity}</View>
+                        <Title>Budget : {bugdetInfo}</Title>
+
+                        <Title ><FontAwesome5 name="walking" size={24} color="black" />  à 150 mètres</Title>
+                        <Title><MaterialIcons name="restaurant" size={24} color="black" />  {tableInfo.placeType}</Title>
+                        <Title><FontAwesome name="birthday-cake" size={24} color="black" />  {tableInfo.age}</Title>
+                    </Card.Content>
+                </Card>
+
+                <Card style={{ height: 270, width: 180 }}>
+                    <Card.Cover style={{ height: 150, widht: 80 }} source={{ uri: cardImage }} />
+
+                    <Card.Content>
+
+                        <Title>{tableInfo.placeName}</Title>
+                        <Paragraph>{tableInfo.placeAddress}</Paragraph>
+                    </Card.Content>
+
+                </Card>
+            </View>
+            <View style={{ flex: 4, alignItems: 'center', justifyContent: 'center', marginBottom:20 }}>
+            <Card style={{width:"100%"}}>
+<Card.Content>
+<ScrollView style={{flex:1, marginTop: 50}}>
+    {listMessages.map((message,i)=>{
+    //     return <ListItem key={i}>
+    //         <ListItem.Content >
+    //                 <ListItem.Title>{message.content}</ListItem.Title>
+    //                 <ListItem.Subtitle>{message.author}</ListItem.Subtitle>
+    //             </ListItem.Content>
+    // </ListItem>
+        <View  key={i} style={{width:"70%",marginHorizontal:20,marginVertical:5,alignSelf:"flex-end"}}>
+    <List.Item  style={{backgroundColor:"rgba(255, 201, 96, 0.22)"}}
+        title={message.author}
+        description={message.content}/>
+        <Text>{message.date}</Text>
+    </View>
+    })}
+
+  </ScrollView>
+
+   <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+       <View style={{flexDirection:"row",justifyContent:"center"}}>
+           <TextInput
+
+               multiline={true}
+               style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
+               mode="outlined"
+               label="Message"
+               onChangeText={(message)=>setCurrentMessage(message)}
+               activeOutlineColor={"#FF3D00"}
+               outlineColor={'#0E9BA4'}
+               containerStyle = {{marginBottom: 5}}
+               placeholder='Ecrire ici...'
+               value={currentMessage}
+           />
+           <IconButton
+               icon="send"
+               color={'#0E9BA4'}
+               size={25}
+               onPress={() => handlePress()}
+           />
+       </View>
+
+   </KeyboardAvoidingView>
+</Card.Content>
+
+
+</Card>
+    <View style={{flex:1, alignItems: "flex-end"}}>  
+        <IconButton
+                     icon="door-open"
                      color={'#0E9BA4'}
                      size={25}
                      onPress={() => {leaveTable()}}
                  />
-
-             </View>
-         </View>
-        <View style={{flex:8,alignItems:"center"}}>
-            <View style={{flex : 1, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
-            <Title>{tableInfo.title}</Title>
-            <Subheading>{tableInfo.date}</Subheading>
+                 </View>
             </View>
-    
-         <View style={{ flex: 5 , flexBasis : "auto", flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', }}>
-                <Card style={{ width : "45%" }}>
-                        <Card.Content>
-                            <Title>M.Eaters : {guestCount}/{tableInfo.capacity}</Title>
-                            <View style={{flexDirection: "row"}}>{planneravatar}{avatarList}{tabCapacity}</View>
-                            <Title>Budget : {bugdetInfo}</Title>
-                            
-                            <Title ><FontAwesome5 name="walking" size={24} color="black" />  à 150 mètres</Title>
-                            <Title><MaterialIcons name="restaurant" size={24} color="black" />  {tableInfo.placeType}</Title>
-                            <Title><FontAwesome name="birthday-cake" size={24} color="black" />  {tableInfo.age}</Title>
-                        </Card.Content>
-                </Card>
-                
-                <Card style={{marginLeft : 10 ,  width : "45%"  }}>
-                <Card.Cover style = {{height : 150}} source={{ uri: cardImage }} />
-                
-                        <Card.Content>
-
-                            <Title>{tableInfo.placeName}</Title>
-                            <Paragraph>{tableInfo.placeAddress}</Paragraph>
-                        </Card.Content>
-
-                </Card>
         </View>
-       
-       <View style={{flex : 4, justifyContent: 'center'}}>
-           <Card style={{width:"100%"}}>
-                   <Card.Content>
-                   <ScrollView style={{flex:1, marginTop: 50}}>
-                       {listMessages.map((message,i)=>{
-                       //     return <ListItem key={i}>
-                       //         <ListItem.Content >
-                       //                 <ListItem.Title>{message.content}</ListItem.Title>
-                       //                 <ListItem.Subtitle>{message.author}</ListItem.Subtitle>
-                       //             </ListItem.Content>
-                       // </ListItem>
-                           <View  key={i} style={{width:"70%",marginHorizontal:20,marginVertical:5,alignSelf:"flex-end"}}>
-                       <List.Item  style={{backgroundColor:"rgba(255, 201, 96, 0.22)"}}
-                           title={message.author}
-                           description={message.content}/>
-                           <Text>{message.date}</Text>
-                       </View>
-                       })}
-
-                     </ScrollView>
-
-                      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                          <View style={{flexDirection:"row",justifyContent:"center"}}>
-                              <TextInput
-
-                                  multiline={true}
-                                  style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
-                                  mode="outlined"
-                                  label="Message"
-                                  onChangeText={(message)=>setCurrentMessage(message)}
-                                  activeOutlineColor={"#FF3D00"}
-                                  outlineColor={'#0E9BA4'}
-                                  containerStyle = {{marginBottom: 5}}
-                                  placeholder='Ecrire ici...'
-                                  value={currentMessage}
-                              />
-                              <IconButton
-                                  icon="send"
-                                  color={'#0E9BA4'}
-                                  size={25}
-                                  onPress={() => handlePress()}
-                              />
-                          </View>
-
-                      </KeyboardAvoidingView>
-                   </Card.Content>
-
-
-           </Card>
-
-
-
-           </View>
-       </View>
-      
-       </View>
-
-    );
+    </View>
+);
 }
-
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        backgroundColor: "#F2F2F2"
     },
-});
-const stylesBar = StyleSheet.create({
-    container: {
-        flex: 0.5,
-        alignItems: 'center',
-        justifyContent: 'center',
-    }, viewHeader: {
-        flex: 2,
-        left: 0,
+    topNavBar: {
+        flex: 1.5,
+        backgroundColor: "#FFC960",
         width: "100%",
-        top: 0,
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "flex-end",
+    },
+    contentView: {
+        flex: 11,
+        backgroundColor: "#F2F2F2",
         justifyContent: "flex-start",
+        alignItems:"center",
+        marginBottom: 30,
     },
-    input: {
-        flex: 0.1
-    },
-});
-
+})
 
 function mapStateToProps(state) {
     return { tableId:  state.tableId,
