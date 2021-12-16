@@ -45,6 +45,7 @@ function NewTableScreen(props) {
     const [restaurantAddress, setRestaurantAddress] = useState("");
     const [description, setDescription] = useState("");
     const [planner, setPlanner] = useState(props.userToken);
+    const [restaurantLocation, setRestaurantLocation] = useState("")
 
     const [isTypeFocus, setIsTypeFocus] = useState(false); // pour style de la liste déroulante type restaurant
     const [isAgeFocus, setIsAgeFocus] = useState(false); // pour style de la liste déroulante tranche d'âge
@@ -93,7 +94,7 @@ function NewTableScreen(props) {
         const fetchAddress = async (val) => {
             let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
             let response = await rawResponse.json();
-            let tempList = response.features.map((el) =>{ return {label: el.properties.label, values: el.properties}})
+            let tempList = response.features.map((el) =>{ return {label: el.properties.label, values: el.geometry}})
             setListLabelAddress(tempList)
             console.log(listLabelAddress)
 
@@ -116,6 +117,8 @@ function NewTableScreen(props) {
 
     const handlePressAddress = (el) => {
         setRestaurantAddress(el.label);
+        setRestaurantLocation({ longitude: el.values.coordinates[0], latitude: el.values.coordinates[1] })
+        console.log(restaurantLocation)
         setVisibleList(false)
     }
 
@@ -187,7 +190,7 @@ function NewTableScreen(props) {
             const tableDataRawResponse = await fetch(`${herokuIP}/add-table`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}`
+                body: `date=${date}&title=${title}&placeName=${restaurantName}&placeAddress=${restaurantAddress}&placeType=${restaurantType}&description=${description}&age=${ageRange}&capacity=${capacity}&budget=${budget}&planner=${planner}&latitude=${restaurantLocation.latitude}&longitude=${restaurantLocation.longitude}`
             });
             const tableDataResponse = await tableDataRawResponse.json();
             props.onCreateClick(tableDataResponse.newTable._id);
