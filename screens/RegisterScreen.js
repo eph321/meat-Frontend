@@ -56,8 +56,9 @@ function RegisterScreen(props) {
                 method: 'POST',
                 body: data});
             var response = await rawResponse.json();
-
             setTempAvatarUri(response.cloud.url);
+            console.log(response.cloud.url)
+
             }
         }
 
