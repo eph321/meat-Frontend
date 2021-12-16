@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text, ScrollView, Platform, TouchableOpacity} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, ScrollView, Platform, TouchableOpacity } from 'react-native';
 import { Button, TextInput, Appbar, IconButton } from "react-native-paper"
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -89,31 +89,35 @@ function NewTableScreen(props) {
     // autocomplete addresse
 
     const [visibleList, setVisibleList] = useState(false);
-    const [listLabelAddress,setListLabelAddress] = useState([])
-    useEffect(()=>{
+    const [listLabelAddress, setListLabelAddress] = useState([])
+    useEffect(() => {
         const fetchAddress = async (val) => {
-            let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
+            let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_', "+")}&limit=5`)
             let response = await rawResponse.json();
-            let tempList = response.features.map((el) =>{ return {label: el.properties.label, values: el.geometry}})
+            let tempList = response.features.map((el) => { return { label: el.properties.label, values: el.geometry } })
             setListLabelAddress(tempList)
             console.log(listLabelAddress)
 
 
-            setVisibleList(true)}
+            setVisibleList(true)
+        }
         fetchAddress(restaurantAddress)
 
-    },[restaurantAddress])
+    }, [restaurantAddress])
 
-    let addresses = listLabelAddress.map((el,i)=>{
-        return(<TouchableOpacity key={i}  onPress={() => {handlePressAddress(el); }}>
-            <Text style={{ margin:5}}>{el.label}</Text>
-        </TouchableOpacity>)    })
+    let addresses = listLabelAddress.map((el, i) => {
+        return (<TouchableOpacity key={i} onPress={() => { handlePressAddress(el); }}>
+            <Text style={{ margin: 5 }}>{el.label}</Text>
+        </TouchableOpacity>)
+    })
     let listOfAddresses;
 
-    if (visibleList){
-        listOfAddresses = addresses}
+    if (visibleList) {
+        listOfAddresses = addresses
+    }
     else {
-        listOfAddresses = <Text></Text>}
+        listOfAddresses = <Text></Text>
+    }
 
     const handlePressAddress = (el) => {
         setRestaurantAddress(el.label);
@@ -204,46 +208,46 @@ function NewTableScreen(props) {
     style={styles.container}
     > */
 
-        <View style={styles.container}>
-                <View style={styles.topNavBar}>
-                    <IconButton
-                        icon="home"
-                        color={'#0E9BA4'}
-                        size={25}
-                        onPress={() => props.navigation.navigate('Home')}
-                    />
-                    <IconButton
-                        icon="plus-circle"
-                        color={'#0E9BA4'}
-                        size={25}
-                        onPress={() => props.navigation.navigate('NewTable')}
-                    />
-                    <IconButton
-                        icon="calendar-month"
-                        color={'#0E9BA4'}
-                        size={25}
-                        onPress={() => props.navigation.navigate('MyEvents')}
-                    />
-                    <IconButton
-                        icon="message-text"
-                        color={'#0E9BA4'}
-                        size={25}
-                        onPress={() => props.navigation.navigate('MyBuddies')}
-                    />
-                    <IconButton
-                        icon="account"
-                        color={'#0E9BA4'}
-                        size={25}
-                        onPress={() => props.navigation.navigate('MyAccount')}
-                    />
-                </View>
-           
+        <ScrollView style={styles.container}>
+            <View style={styles.topNavBar}>
+                <IconButton
+                    icon="home"
+                    color={'#0E9BA4'}
+                    size={25}
+                    onPress={() => props.navigation.navigate('Home')}
+                />
+                <IconButton
+                    icon="plus-circle"
+                    color={'#0E9BA4'}
+                    size={25}
+                    onPress={() => props.navigation.navigate('NewTable')}
+                />
+                <IconButton
+                    icon="calendar-month"
+                    color={'#0E9BA4'}
+                    size={25}
+                    onPress={() => props.navigation.navigate('MyEvents')}
+                />
+                <IconButton
+                    icon="message-text"
+                    color={'#0E9BA4'}
+                    size={25}
+                    onPress={() => props.navigation.navigate('MyBuddies')}
+                />
+                <IconButton
+                    icon="account"
+                    color={'#0E9BA4'}
+                    size={25}
+                    onPress={() => props.navigation.navigate('MyAccount')}
+                />
+            </View>
+
 
 
 
             <View style={styles.contentView}>
-              
-                    {/*  <Button
+
+                {/*  <Button
                         mode="outlined"
                         color={'#FFC960'}
                         style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#FFFFFF", color: '#FFC960' }}
@@ -262,22 +266,22 @@ function NewTableScreen(props) {
                         />
                     )} */}
 
-                    <Text style={{ marginTop: 15, height: 30, alignSelf: "center", fontSize: 25 }}>{(dateValue) ? "Le " + formattedDate : "Choisissez une date"} </Text>
-                  
-                        <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                            <Button onPress={showDatepicker}> Date </Button>
-                            <Button onPress={showTimepicker}> Heure </Button>
-                        </View>
-                        {show && (
-                            <DateTimePicker
-                                testID="dateTimePicker"
-                                value={date}
-                                mode={mode}
-                                is24Hour={true}
-                                display="default"
-                                onChange={onChange}
-                            />
-                        )}
+                <Text style={{ marginTop: 15, height: 30, alignSelf: "center", fontSize: 25 }}>{(dateValue) ? "Le " + formattedDate : "Choisissez une date"} </Text>
+
+                <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                    <Button onPress={showDatepicker}> Date </Button>
+                    <Button onPress={showTimepicker}> Heure </Button>
+                </View>
+                {show && (
+                    <DateTimePicker
+                        testID="dateTimePicker"
+                        value={date}
+                        mode={mode}
+                        is24Hour={true}
+                        display="default"
+                        onChange={onChange}
+                    />
+                )}
 
                 <TextInput
                     style={{ alignSelf: "center", width: '70%' }}
@@ -301,7 +305,7 @@ function NewTableScreen(props) {
                     onChangeText={text => setRestaurantAddress(text)}
                 />
 
-                    {listOfAddresses}
+                {listOfAddresses}
 
                 <Dropdown
                     style={[styles.dropdown, isTypeFocus && { borderColor: '#0E9BA4' }]}
@@ -328,7 +332,7 @@ function NewTableScreen(props) {
                     )}
                 />
                 <TextInput
-                    style={{ alignSelf: "center", width: '70%' }}
+                    style={{ alignSelf: "center", width: '70%', height:120 }}
                     mode="outlined"
                     label="Description"
                     placeholder="Description"
@@ -365,26 +369,33 @@ function NewTableScreen(props) {
 
 
                 <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
-                    <View style={{ flexDirection: "row", alignSelf: "flex-start", alignItems: "center", justifyContent: "flex-end" }}>
 
-                        <Text>Meaters:</Text>
-                        {tabCapacity}
-                        <Button compact mode="contained" onPress={() => setTableCapacity(capacity - 1)}>-</Button>
-                        <Button compact mode="contained" onPress={() => setTableCapacity(capacity + 1)}>+</Button>
-
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", width: "90%" }}>
+                        <Text style={{ fontSize: 16 }}>Meaters:</Text>
+                        <View style={{ flexDirection: "row" }}>
+                            {tabCapacity}
+                        </View>
+                        <View style={{ flexDirection: "row"}}>
+                            <Button color={"#0E9BA4"} compact mode="contained" onPress={() => setTableCapacity(capacity - 1)}>-</Button>
+                            <Button color={"#0E9BA4"} compact mode="contained" onPress={() => setTableCapacity(capacity + 1)}>+</Button>
+                        </View>
                     </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
-                        <Text>Budget:</Text>
-                        {tabBudget}
-                        <Button compact mode="contained" onPress={() => setTableBudget(budget - 1)}>-</Button>
-                        <Button compact mode="contained" onPress={() => setTableBudget(budget + 1)}>+</Button>
 
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", width: "90%" }}>
+                        <Text style={{ fontSize: 16 }}>Budget:</Text>
+                        <View style={{ flexDirection: "row" }}>
+                            {tabBudget}
+                        </View>
+                        <View style={{ flexDirection: "row"}}>
+                            <Button color={"#0E9BA4"} compact mode="contained" onPress={() => setTableBudget(budget - 1)}>-</Button>
+                            <Button color={"#0E9BA4"} compact mode="contained" onPress={() => setTableBudget(budget + 1)}>+</Button>
+                        </View>
                     </View>
                 </View>
-                <Button mode="contained" onPress={() => createTable()}>Créer la table</Button>
+                <Button color={"#0E9BA4"} mode="contained" onPress={() => createTable()}>Créer la table</Button>
             </View>
 
-        </View>
+        </ScrollView>
         /* </KeyboardAvoidingView> */
 
     )
@@ -406,7 +417,7 @@ const styles = StyleSheet.create({
     contentView: {
         flex: 11,
         backgroundColor: "#F2F2F2",
-        alignItems:"center",
+        alignItems: "center",
         marginBottom: 30,
 
     },
