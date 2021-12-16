@@ -8,7 +8,7 @@ import {
     TouchableWithoutFeedback,
     Keyboard
 } from 'react-native';
-import {Title, Card, Paragraph, Subheading, Appbar, IconButton, TextInput, List, Text, Avatar} from 'react-native-paper';
+import {Title, Card, Paragraph, Subheading, IconButton, TextInput, List, Text, Avatar} from 'react-native-paper';
 
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
@@ -18,6 +18,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 import socketIOClient from "socket.io-client";
 import {useIsFocused} from "@react-navigation/native";
+import haversine from "haversine";
 
 const herokuIP = "https://polar-stream-28883.herokuapp.com"
 
@@ -48,7 +49,6 @@ function MyTableScreen(props) {
             console.log(response)
         }
 
-        let formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(today)
 
 
         socket.emit("sendMessage", JSON.stringify({content: currentMessage,
@@ -64,7 +64,6 @@ function MyTableScreen(props) {
 
     useEffect( ()=> {
 
-        const abortController = new AbortController();
 
         const getChatMessages = async () =>{
             let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-table-messages/${props.tableId}/${props.userToken}`)
@@ -254,7 +253,7 @@ function MyTableScreen(props) {
                         <View style={{ flexDirection: "row" }}>{planneravatar}{avatarList}{tabCapacity}</View>
                         <Title>Budget : {bugdetInfo}</Title>
 
-                        <Title ><FontAwesome5 name="walking" size={24} color="black" />  à 150 mètres</Title>
+                        <Title ><FontAwesome5 name="walking" size={24} color="black" />  à {Math.round(haversine(props.userLocation, { latitude: tableInfo.latitude, longitude: tableInfo.longitude }, { unit: "meter" }))} mètres</Title>
                         <Title><MaterialIcons name="restaurant" size={24} color="black" />  {tableInfo.placeType}</Title>
                         <Title><FontAwesome name="birthday-cake" size={24} color="black" />  {tableInfo.age}</Title>
                     </Card.Content>
@@ -346,6 +345,7 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
     return { tableId:  state.tableId,
         userToken: state.userToken,
+        userLocation : state.userLocation,
     }
   }
   

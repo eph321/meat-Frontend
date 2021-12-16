@@ -13,7 +13,6 @@ import HomeScreen from "./screens/HomeScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import RegisterScreenB from "./screens/RegisterScreenB";
 import RegisterScreenC from "./screens/RegisterScreenC";
-import ResultScreen from "./screens/ResultScreen";
 import JoinTableScreen from "./screens/JoinTableScreen";
 import MyTableScreen from "./screens/MyTableScreen";
 import NewTableScreen from "./screens/NewTableScreen";
@@ -58,7 +57,6 @@ export default function App() {
                 <Stack.Screen name="Register" component={RegisterScreen} />
                 <Stack.Screen name="RegisterB" component={RegisterScreenB} />
                 <Stack.Screen name="RegisterC" component={RegisterScreenC} />
-                <Stack.Screen name="Result" component={ResultScreen} />
                 <Stack.Screen name="JoinTable" component={JoinTableScreen} />
                 <Stack.Screen name="MyTable" component={MyTableScreen} />
                 <Stack.Screen name="NewTable" component={NewTableScreen} />

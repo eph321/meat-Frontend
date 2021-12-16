@@ -8,6 +8,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { connect } from "react-redux";
 import { useIsFocused } from '@react-navigation/native';
+import haversine from "haversine";
 
 const FranckLacapsuleIP = "http://172.17.1.118:3000"
 const FranckIP = "http://192.168.1.41:3000"
@@ -28,7 +29,7 @@ function JoinTableScreen(props) {
 
         var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
         var response = await responseRaw.json();
-        console.log(response.result," RESPONSE RESULT")
+        // console.log(response.result," RESPONSE RESULT")
 
         console.log(response, 'ok'),
         setTableData(response.result)
@@ -36,8 +37,9 @@ function JoinTableScreen(props) {
         setGuestList(response.result.guests)
         //  console.log(guestList, "------> GUEST LIST")
         setPlannerAvatar(response.planner.avatar)
-       
-        console.log(response.planner.avatar,"PLANNER AVATAR FROM BACK")
+        //
+        // console.log(response.planner.avatar,"PLANNER AVATAR FROM BACK")
+        console.log(props.userLocation,"USER LOCATION")
     }
         // setUserData(response.user)
 
@@ -147,7 +149,8 @@ function JoinTableScreen(props) {
     //             tableAvatar.push(<Avatar.Image size={24} backgroundColor="#FFFFFF" marginRight="2%" marginLeft="2%" source={(user.avatar)?{uri: user.avatar}:require("../assets/picture-4.png")} />)
 
 
-
+    // const filteredDistance = Math.round(haversine(filteredLocation, { latitude: e.latitude, longitude: e.longitude }, { unit: "meter" }))
+    // const userDistance = Math.round(haversine(props.userLocation, { latitude: tableInfo.latitude, longitude: e.longitude }, { unit: "meter" }))
     var guestCount = guestList.length + 1;
 
     return (
@@ -201,7 +204,7 @@ function JoinTableScreen(props) {
                             <View style={{ flexDirection: "row" }}>{planneravatar}{avatarList}{tabCapacity}</View>
                             <Title>Budget : {bugdetInfo}</Title>
 
-                            <Title ><FontAwesome5 name="walking" size={24} color="black" />  à 150 mètres</Title>
+                            <Title ><FontAwesome5 name="walking" size={24} color="black" />  à {Math.round(haversine(props.userLocation, { latitude: tableInfo.latitude, longitude: tableInfo.longitude }, { unit: "meter" }))} mètres</Title>
                             <Title><MaterialIcons name="restaurant" size={24} color="black" />  {tableInfo.placeType}</Title>
                             <Title><FontAwesome name="birthday-cake" size={24} color="black" />  {tableInfo.age}</Title>
                         </Card.Content>
@@ -261,7 +264,7 @@ const styles = StyleSheet.create({
 
 
 function mapStateToProps(state) {
-    return { tableId: state.tableId, userToken: state.userToken }
+    return { tableId: state.tableId, userToken: state.userToken,userLocation : state.userLocation }
 }
 
 export default connect(

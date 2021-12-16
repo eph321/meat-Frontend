@@ -61,6 +61,7 @@ function HomeScreen(props) {
     const handlePressAddress = (el) => {
         setAddress(el.label);
         setFilteredLocation({ longitude: el.values.coordinates[0], latitude: el.values.coordinates[1] })
+        props.saveUserLocation(filteredLocation)
         setVisibleList(false)
     }
 

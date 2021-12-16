@@ -1,14 +1,14 @@
 import React, { useState,useEffect } from 'react';
 import {
-    AsyncStorage,
+
     KeyboardAvoidingView,
     Platform,
     ScrollView,
-    StyleSheet,
+
     TouchableWithoutFeedback,Keyboard,
     View
 } from 'react-native';
-import {Appbar, IconButton,  List,  TextInput, Text} from "react-native-paper";
+import { IconButton,  List,  TextInput, Text} from "react-native-paper";
 import socketIOClient from "socket.io-client";
 import { useIsFocused } from '@react-navigation/native';
 import {connect} from "react-redux";
@@ -41,7 +41,6 @@ function ChatScreen(props) {
             console.log(response)
 
         }
-        let formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(today)
 
         socket.emit("sendMessage", JSON.stringify({content: currentMessage,
                                                              author: author,
@@ -54,7 +53,6 @@ function ChatScreen(props) {
     }
 
     useEffect( ()=> {
-        const abortController = new AbortController();
         const getChatMessages = async () =>{
             let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-chat-messages/${props.conversationToSend}/${props.userToSend}`)
             let response = await rawResponse.json();
