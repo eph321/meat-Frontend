@@ -11,7 +11,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import socketIOClient from "socket.io-client";
 import {useIsFocused} from "@react-navigation/native";
 
-
+const herokuIP = "https://polar-stream-28883.herokuapp.com"
 
 function MyTableScreen(props) {
 
