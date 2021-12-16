@@ -1,5 +1,13 @@
 import React, { useState,useEffect } from 'react';
-import {AsyncStorage, KeyboardAvoidingView, ScrollView, StyleSheet, View} from 'react-native';
+import {
+    AsyncStorage,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    TouchableWithoutFeedback,Keyboard,
+    View
+} from 'react-native';
 import {Appbar, IconButton,  List,  TextInput, Text} from "react-native-paper";
 import socketIOClient from "socket.io-client";
 import { useIsFocused } from '@react-navigation/native';
@@ -140,8 +148,8 @@ function ChatScreen(props) {
 
 
             </View>
-            <View style={{flex:9.5}}>
-                <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+            <View style={{flex:11}}>
+
             <ScrollView style={{ backgroundColor:"#F2F2F2"}}>
 
                 <View style={{flex:1}}>
@@ -149,17 +157,16 @@ function ChatScreen(props) {
                 </View>
 
             </ScrollView>
-                </KeyboardAvoidingView>
-        </View>
-                <View style={{flex:1.5, backgroundColor:"#F2F2F2", justifyContent: "flex-start",alignItems:"center"}}>
 
 
+                            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} >
 
-                        <View style={{flexDirection:"row",justifyContent:"center"}}>
+                                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                                    <View style={{marginBottom:120,flexDirection:"row",justifyContent:"center",marginHorizontal:10}}>
                             <TextInput
 
                                 multiline={true}
-                                style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
+                                style={{  textAlign:'center',width:'70%',alignSelf:"center" ,}}
                                 mode="outlined"
                                 label="Message"
                                 onChangeText={(message)=>setCurrentMessage(message)}
@@ -175,16 +182,11 @@ function ChatScreen(props) {
                                 size={25}
                                 onPress={() => handlePress()}
                             />
-                        </View>
-
-
-
-
-
-
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </KeyboardAvoidingView>
 
             </View>
-
         </View>
 
     );

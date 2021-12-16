@@ -45,7 +45,7 @@ function MyTableScreen(props) {
 
         socket.emit("sendMessage", JSON.stringify({content: currentMessage,
             author: author,
-            room : props.tableId,date: formattedDate  }));
+            room : props.tableId,date: today  }));
         //envoi d'une copie en databases
         await loadNewMessageToDatabase({content: currentMessage,
             author: author,

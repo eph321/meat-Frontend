@@ -26,7 +26,7 @@ function JoinTableScreen(props) {
 
     useEffect(async () => {
 
-        var responseRaw = await fetch(`https:/${herokuIP}/join-table/${props.tableId}`)
+        var responseRaw = await fetch(`${herokuIP}/join-table/${props.tableId}`)
         var response = await responseRaw.json();
         console.log(response.result," RESPONSE RESULT")
 

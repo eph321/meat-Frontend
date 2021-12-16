@@ -1,13 +1,12 @@
-
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']);
+console.disableYellowBox = true;
 import React from 'react';
-
 import { NavigationContainer} from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider, DefaultTheme} from 'react-native-paper'
 import { Provider as StoreProvider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
-import { LogBox } from 'react-native';  
-LogBox.ignoreLogs(['Warning: ...']);
 
 import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
