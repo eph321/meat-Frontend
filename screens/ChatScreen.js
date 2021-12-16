@@ -41,7 +41,7 @@ function ChatScreen(props) {
         //envoi d'une copie en database
         loadNewMessageToDatabase({content: currentMessage,
             author: author,
-            conversation: props.conversationToSend,date: formattedDate  });
+            conversation: props.conversationToSend,date: today  });
         setCurrentMessage("");
     }
 
@@ -87,19 +87,22 @@ function ChatScreen(props) {
     }, [listMessages]);
 
     const displayMessage = (message,i) => {
+        let dateParse = new Date(message.date)
+        let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
+        formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
         if ( message.author === author ){
             return <View key={i} style={{width:"70%",marginHorizontal:20,marginVertical:5}}><List.Item  style={{backgroundColor:"rgba(14, 155, 164, 0.22)",}}
                               title={message.author}
 
                               description={message.content}/>
-                <Text>{message.date}</Text>
+                <Text>{formattedDate  }</Text>
             </View>
         }else if (message.author !== author){
             return <View  key={i} style={{width:"70%",marginHorizontal:20,marginVertical:5,alignSelf:"flex-end"}}>
             <List.Item  style={{backgroundColor:"rgba(255, 201, 96, 0.22)"}}
                               title={message.author}
                               description={message.content}/>
-                <Text>{message.date}</Text>
+                <Text>{formattedDate              }</Text>
             </View>
         }
         
@@ -109,16 +112,7 @@ function ChatScreen(props) {
 
     return (
         <View style={{flex:1,justifyContent: 'space-evenly'}}>
-            <View style={{ flex: 2,
-                left: 0,
-                width:"100%",
-                top: 0,
-                justifyContent:"flex-start",}}>
-                <Appbar style={{ backgroundColor: "#FFC960", flex:1}}>
-                    <Appbar.Content title="Messages" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
-
-                </Appbar>
-                <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
+                <View style={{flex:1.5,backgroundColor:"#FFC960", width:"100%",flexDirection:"row",justifyContent:"space-around",alignItems:"flex-end"}}>
                     <IconButton
                         icon="home"
                         color={'#0E9BA4'}
@@ -143,27 +137,22 @@ function ChatScreen(props) {
                         size={25}
                         onPress={() =>  props.navigation.navigate('MyAccount')}
                     />
-                    <IconButton
-                        icon="target-account"
-                        color={'#0E9BA4'}
-                        size={25}
-                        onPress={() =>  props.navigation.navigate('BuddyProfile')}
-                    />
-                </View>
+
+
             </View>
+            <View style={{flex:9.5}}>
+                <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+            <ScrollView style={{ backgroundColor:"#F2F2F2"}}>
 
-            <View style={{flex:7, backgroundColor:"#F2F2F2"}}>
                 <View style={{flex:1}}>
-
-                    <ScrollView style={{flex:1, marginTop: 50}}>
-
-
                         {listMessages.map((el,i)=> displayMessage(el,i))}
+                </View>
 
+            </ScrollView>
+                </KeyboardAvoidingView>
+        </View>
+                <View style={{flex:1.5, backgroundColor:"#F2F2F2", justifyContent: "flex-start",alignItems:"center"}}>
 
-                    </ScrollView>
-
-                    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
 
 
                         <View style={{flexDirection:"row",justifyContent:"center"}}>
@@ -187,12 +176,15 @@ function ChatScreen(props) {
                                 onPress={() => handlePress()}
                             />
                         </View>
-                    </KeyboardAvoidingView>
 
-                </View>
+
+
+
+
 
 
             </View>
+
         </View>
 
     );

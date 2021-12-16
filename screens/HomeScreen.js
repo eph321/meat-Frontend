@@ -108,17 +108,17 @@ function HomeScreen(props) {
         showMode('time');
     };
 
-    // useEffect(() => {
-    //     async function askPermissions() {
-    //         var { status } = await Location.requestForegroundPermissionsAsync();
-    //         if (status === 'granted') {
-    //             var location = await Location.getCurrentPositionAsync({});
-    //             setUserLocation({ longitude: location.coords.longitude, latitude: location.coords.latitude })
-    //         }
-    //         props.saveUserLocation(userLocation)
-    //     }
-    //     askPermissions();
-    // }, []);
+    useEffect(() => {
+        async function askPermissions() {
+            var { status } = await Location.requestForegroundPermissionsAsync();
+            if (status === 'granted') {
+                var location = await Location.getCurrentPositionAsync({});
+                setUserLocation({  latitude: location.coords.latitude,longitude: location.coords.longitude })
+            }
+            props.saveUserLocation(userLocation)
+        }
+        askPermissions();
+    }, []);
 
     // Affichage des tables existantes 
 

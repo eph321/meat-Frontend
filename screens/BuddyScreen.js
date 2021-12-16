@@ -54,7 +54,7 @@ function BuddyScreen(props) {
                             color={'#0E9BA4'}
                             style={{borderColor: "#009788", backgroundColor: "#FFFFFF", borderRadius: 15, borderWidth: 2, marginRight: 2 }}
                             size={32}
-                            onPress={() => handleAcceptBuddy(user.token)}
+                            onPress={() => handleAddFriend(user.token)}
                         />
                     </Card.Content>
                 </Card>
