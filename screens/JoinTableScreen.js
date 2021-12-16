@@ -147,7 +147,9 @@ function JoinTableScreen(props) {
              left: 0,
              width:"100%",
              top: 0,
-             justifyContent:"flex-start",}}>
+             justifyContent:"flex-start",
+             marginBottom:50,
+             }}>
              <Appbar style={{ backgroundColor: "#FFC960", flex:1}}>
                  <Appbar.Content title="Rejoindre une table" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
 
@@ -186,12 +188,12 @@ function JoinTableScreen(props) {
 
              </View>
          </View>
-        <View style={{flex : 2, marginBottom:10,alignItems: 'center', justifyContent: 'center', height: 10}}>
+        <View style={{flex : 1, marginBottom:100,alignItems: 'center', justifyContent: 'center', height:10}}>
         <Title>{tableInfo.title}</Title>
         <Subheading>{tableInfo.date}</Subheading>
         </View>
     
-         <View style={{ flex: 2, flexBasis : "auto", flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', }}>
+         <View style={{ flex: 4, flexBasis : "auto", flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', height:100 }}>
                 <Card style={{ marginLeft : 60, marginBottom : 60, marginTop : 50, height : 250, width : 180 }}>
                         <Card.Content>
                             <Title>M.Eaters : {guestCount}/{tableInfo.capacity}</Title>
