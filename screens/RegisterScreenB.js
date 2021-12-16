@@ -1,6 +1,6 @@
 import React, { useState,useEffect} from 'react';
 
-import {Platform, StyleSheet, View} from 'react-native';
+import {Platform, StyleSheet, TouchableOpacity, View} from 'react-native';
 import { TextInput,Appbar, Button,ProgressBar,Text,RadioButton} from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { connect } from 'react-redux';
@@ -13,12 +13,10 @@ import * as Location from 'expo-location';
 function RegisterScreenB(props) {
 
 
-    const [location, setLocation] = useState(null);
-    const [errorMsg, setErrorMsg] = useState(null);
     const [firstName,setFirstName] =useState('');
     const [lastName, setLastName] = useState('');
 
-    const [userAddress, setUserAddress] = useState('');
+
     const [phone, setPhone] = useState('');
     const [gender, setGender] =useState("male")
     const [dateOfBirth, setDateOfBirth] = useState(new Date(Date.now()));
@@ -27,6 +25,40 @@ function RegisterScreenB(props) {
     const [show, setShow] = useState(false);
     const [dateIsSelected, setDateIsSelected] = useState(false); // Pour changer le texte dans le button
     const formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(dateOfBirth)
+
+    const [address,setAddress] = useState("");
+    const [visibleList, setVisibleList] = useState(false);
+    const [listLabelAddress,setListLabelAddress] = useState([])
+    useEffect(()=>{
+        const fetchAddress = async (val) => {
+            let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
+            let response = await rawResponse.json();
+            let tempList = response.features.map((el) =>{ return {label: el.properties.label, values: el.properties}})
+            setListLabelAddress(tempList)
+            console.log(listLabelAddress)
+
+
+            setVisibleList(true)}
+        fetchAddress(address)
+
+    },[address])
+
+    let addresses = listLabelAddress.map((el,i)=>{
+        return(<TouchableOpacity key={i}  onPress={() => {handlePressAddress(el); }}>
+            <Text style={{ margin:5}}>{el.label}</Text>
+        </TouchableOpacity>)    })
+    let listOfAddresses;
+
+    if (visibleList){
+        listOfAddresses = addresses}
+    else {
+        listOfAddresses = <Text></Text>}
+
+    const handlePressAddress = (el) => {
+        setAddress(el.label);
+        setVisibleList(false)
+    }
+
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || dateOfBirth;
@@ -54,7 +86,7 @@ function RegisterScreenB(props) {
     const [inputErrorDateOfBirth, setInputErrorDateOfBirth] = useState("");
 
     const connexionValidation = () => {
-        if (firstName && lastName && userAddress && phone && phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/) && dateOfBirth) {
+        if (firstName && lastName && address && phone && phone.match(/^((\+)33|0)[1-9](\d{2}){4}$/) && dateOfBirth) {
             props.navigation.navigate('RegisterC')
         } else {
         
@@ -70,7 +102,7 @@ function RegisterScreenB(props) {
             setInputErrorLastname("")
         }
 
-        if (userAddress === "") {
+        if (address === "") {
             setInputErrorUserAddress("*Adresse requise!")
         } else {
             setInputErrorUserAddress("")
@@ -94,41 +126,41 @@ function RegisterScreenB(props) {
 
 
 
-    const getCurrentLocation = async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-
-        if (status !== 'granted') {
-            setErrorMsg('Permission to access location was denied');
-            return;
-        }
-
-        let { coords } = await Location.getCurrentPositionAsync();
-
-        if (coords) {
-            const { latitude, longitude } = coords;
-            let response = await Location.reverseGeocodeAsync({
-                latitude,
-                longitude
-            });
-
-            for (let item of response) {
-                let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
-                if (address.length > 0) {
-                    //attend 2 secondes avant de définir l'adresse
-                    setTimeout(() => {
-                        setUserAddress(address);
-                    }, 2000);
-                }
-
-            }
-        }
-    };
-
-
-    
-    useEffect(() => {
-        getCurrentLocation();
-    }, []);
+    // const getCurrentLocation = async () => {
+    //     let { status } = await Location.requestForegroundPermissionsAsync();
+    //
+    //     if (status !== 'granted') {
+    //         setErrorMsg('Permission to access location was denied');
+    //         return;
+    //     }
+    //
+    //     let { coords } = await Location.getCurrentPositionAsync();
+    //
+    //     if (coords) {
+    //         const { latitude, longitude } = coords;
+    //         let response = await Location.reverseGeocodeAsync({
+    //             latitude,
+    //             longitude
+    //         });
+    //
+    //         for (let item of response) {
+    //             let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
+    //             if (address.length > 0) {
+    //                 //attend 2 secondes avant de définir l'adresse
+    //                 setTimeout(() => {
+    //                     setUserAddress(address);
+    //                 }, 2000);
+    //             }
+    //
+    //         }
+    //     }
+    // };
+    //
+    //
+    //
+    // useEffect(() => {
+    //     getCurrentLocation();
+    // }, []);
 
 
 
@@ -140,7 +172,7 @@ function RegisterScreenB(props) {
                 </Appbar>
 
             <TextInput
-                style={{marginTop: 80, textAlign:'center',width:'70%',alignSelf:"center" }}
+                style={{marginTop: 80, textAlign:'center',width:'70%',alignSelf:"center",marginVertical:5 }}
                 mode="outlined"
                 label="Prénom"
                 onChangeText={(firstNameValue)=> {setFirstName(firstNameValue);setInputProgress(inputProgress + 0.01)}}
@@ -153,7 +185,7 @@ function RegisterScreenB(props) {
                 <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorFirstname}</Text>
             </View>         
 
-            <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
+            <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center",marginVertical:5 }}
                        mode="outlined"
                        label="Nom de famille"
                        onChangeText={(lastNameValue)=> {setLastName(lastNameValue);setInputProgress(inputProgress + 0.01)}}
@@ -166,11 +198,11 @@ function RegisterScreenB(props) {
                 <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorLastname}</Text>
             </View>
 
-            <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
+            <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center",marginVertical:5 }}
                        mode="outlined"
-                       value={userAddress}
+                       value={address}
                        label="Adresse Postale"
-                       onChangeText={(userAddressValue)=> {setUserAddress(userAddressValue); setInputProgress(inputProgress + 0.01)}}
+                       onChangeText={(userAddressValue)=> {setAddress(userAddressValue); setInputProgress(inputProgress + 0.01)}}
                        placeholder ="56 boulevard Pereire, 75017 Paris"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
@@ -180,8 +212,11 @@ function RegisterScreenB(props) {
             <View style={{alignItems: "center", justifyContent: "flex-end"}}>
                 <Text style={{fontSize: 11, fontStyle: 'italic', color: '#FF0000'}}>{inputErrorUserAddress}</Text>
             </View>
+            <View style={{marginVertical:5}} >
+                {listOfAddresses}
+            </View>
 
-            <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center" }}
+            <TextInput style={{textAlign:'center',width:'70%',alignSelf:"center",marginVertical:5 }}
                        mode="outlined"
                        label="Numéro de mobile"
                        onChangeText={(phoneValue)=> {setPhone(phoneValue); setInputProgress(inputProgress + 0.01)}}
@@ -195,7 +230,7 @@ function RegisterScreenB(props) {
             </View>
 
             <View>
-                <View>
+                <View style={{marginVertical:5}}>
                     <Button
                         mode="outlined"
                         color={"#0E9BA4"}
@@ -223,7 +258,7 @@ function RegisterScreenB(props) {
                     value={gender}
                     onValueChange={newValue => setGender(newValue)}
                     >
-                    <View style={{flexDirection:"row",justifyContent:"space-between",width:"70%",alignItems:"center",marginLeft:60}}>
+                    <View style={{flexDirection:"row",marginVertical:5,justifyContent:"space-between",width:"70%",alignItems:"center",marginLeft:60}}>
                     <View >
                         <RadioButton value="male" />
                         <Text>Homme</Text>
@@ -242,8 +277,8 @@ function RegisterScreenB(props) {
                 </RadioButton.Group>
 
             <Button
-                style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960' }}
-                mode="contained" onPress={() =>{ connexionValidation();props.sendPersonalData({firstName : firstName, lastName:lastName, userAddress:userAddress, inputPhone:phone, gender:gender, dateOfBirth:dateOfBirth}) }}>
+                style={{ padding:10, textAlign:'center',width:'70%',alignSelf:"center",backgroundColor:"#0E9BA4",color:'#FFC960',marginVertical:5 }}
+                mode="contained" onPress={() =>{ connexionValidation();props.sendPersonalData({firstName : firstName, lastName:lastName, userAddress:address, inputPhone:phone, gender:gender, dateOfBirth:dateOfBirth}) }}>
                 <Text Style={{color:'#FFC960'}}>Press me</Text>
             </Button>
 

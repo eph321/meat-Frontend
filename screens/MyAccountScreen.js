@@ -12,12 +12,10 @@ function MyAccountScreen(props) {
     const [image, setImage] = useState(null);
     const [visible, setVisible] = useState(true);
 
-    const [isTypeFocus, setIsTypeFocus] = useState(false); // pour style de la liste déroulante type restaurant
-    const [listAddress,setListAddress] = useState([])
 
-    const [address,setAddress] = useState("");
-    const [visibleList, setVisibleList] = useState(false);
-    const [listLabelAddress,setListLabelAddress] = useState([])
+
+
+
     const [errorEmail, setErrorEmail] = useState("");
     const [errorPassword, setErrorPassword] = useState("");
     const [inputErrorFirstname, setInputErrorFirstname] = useState("");
@@ -121,15 +119,17 @@ function MyAccountScreen(props) {
 
 
 
-
+    const [address,setAddress] = useState("");
+    const [visibleList, setVisibleList] = useState(false);
+    const [listLabelAddress,setListLabelAddress] = useState([])
     useEffect(()=>{
         const fetchAddress = async (val) => {
             let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
             let response = await rawResponse.json();
-            let tempList = response.features
-            setListLabelAddress(tempList.map((el) =>{ return {label: el.properties.label, values: el.properties}}))
+            let tempList = response.features.map((el) =>{ return {label: el.properties.label, values: el.properties}})
+            setListLabelAddress(tempList)
             console.log(listLabelAddress)
-            setListAddress(tempList)
+
 
             setVisibleList(true)}
         fetchAddress(address)

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {StyleSheet, View, Text, ScrollView, Platform} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View, Text, ScrollView, Platform, TouchableOpacity} from 'react-native';
 import { Button, TextInput, Appbar, IconButton } from "react-native-paper"
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -83,6 +83,40 @@ function NewTableScreen(props) {
         showMode('time');
         setClickOnTimeBtn(true);
     };
+
+    // autocomplete addresse
+
+    const [visibleList, setVisibleList] = useState(false);
+    const [listLabelAddress,setListLabelAddress] = useState([])
+    useEffect(()=>{
+        const fetchAddress = async (val) => {
+            let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
+            let response = await rawResponse.json();
+            let tempList = response.features.map((el) =>{ return {label: el.properties.label, values: el.properties}})
+            setListLabelAddress(tempList)
+            console.log(listLabelAddress)
+
+
+            setVisibleList(true)}
+        fetchAddress(restaurantAddress)
+
+    },[restaurantAddress])
+
+    let addresses = listLabelAddress.map((el,i)=>{
+        return(<TouchableOpacity key={i}  onPress={() => {handlePressAddress(el); }}>
+            <Text style={{ margin:5}}>{el.label}</Text>
+        </TouchableOpacity>)    })
+    let listOfAddresses;
+
+    if (visibleList){
+        listOfAddresses = addresses}
+    else {
+        listOfAddresses = <Text></Text>}
+
+    const handlePressAddress = (el) => {
+        setRestaurantAddress(el.label);
+        setVisibleList(false)
+    }
 
 
     // Capacity
@@ -271,6 +305,9 @@ function NewTableScreen(props) {
                     value={restaurantAddress}
                     onChangeText={text => setRestaurantAddress(text)}
                 />
+                <View style={{marginVertical:5}} >
+                    {listOfAddresses}
+                </View>
                 <Dropdown
                     style={[styles.dropdown, isTypeFocus && { borderColor: '#0E9BA4' }]}
                     placeholderStyle={styles.placeholderStyle}

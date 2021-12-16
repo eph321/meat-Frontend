@@ -29,14 +29,17 @@ const restaurantTypeList = [
 
 function HomeScreen(props) {
 
+    const [address,setAddress] = useState("");
+    const [visibleList, setVisibleList] = useState(false);
+    const [listLabelAddress,setListLabelAddress] = useState([])
     useEffect(()=>{
         const fetchAddress = async (val) => {
             let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
             let response = await rawResponse.json();
-            let tempList = response.features
-            setListLabelAddress(tempList.map((el) =>{ return {label: el.properties.label, values: el.properties}}))
+            let tempList = response.features.map((el) =>{ return {label: el.properties.label, values: el.properties}})
+            setListLabelAddress(tempList)
             console.log(listLabelAddress)
-            setListAddress(tempList)
+
 
             setVisibleList(true)}
         fetchAddress(address)
@@ -44,7 +47,7 @@ function HomeScreen(props) {
     },[address])
 
     let addresses = listLabelAddress.map((el,i)=>{
-        return(<TouchableOpacity key={i}  onPress={() => {handlePressAddress(el); }}>
+        return(<TouchableOpacity key={i}  onPress={() => {handlePressAddress(el); console.log("clic sur addr")}}>
             <Text style={{ margin:5}}>{el.label}</Text>
         </TouchableOpacity>)    })
     let listOfAddresses;
@@ -59,15 +62,12 @@ function HomeScreen(props) {
         setVisibleList(false)
     }
 
-
     const isFocused = useIsFocused();
     const [tableDataList, setTableDataList] = useState([]);
     const [restaurantType, setRestaurantType] = useState([]); // Pour filtre Type Restaurant
     const [dateFilter, setDateFilter] = useState("") // Pour filtre Date
     const [userLocation, setUserLocation] = useState("")
-    const [address,setAddress] = useState("");
-    const [visibleList, setVisibleList] = useState(false);
-    const [listLabelAddress,setListLabelAddress] = useState([])
+
 
     const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
 
@@ -361,7 +361,7 @@ function HomeScreen(props) {
                     outlineColor={'#0E9BA4'}
                     onChangeText={(val)=> setAddress(val)}
                 />
-                <View >
+                <View style={{marginVertical:20}}>
                     {listOfAddresses}
                 </View>
                 <Button
