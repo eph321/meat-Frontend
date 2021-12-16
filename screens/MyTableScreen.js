@@ -22,6 +22,7 @@ function MyTableScreen(props) {
     const isFocused = useIsFocused();
     const [plannerAvatar, setPlannerAvatar] = useState('')
     const [guestList, setGuestList] = useState([''])
+    const [planner, setPlanner] = useState('')
 
 
 
@@ -45,10 +46,10 @@ function MyTableScreen(props) {
         socket.emit("sendMessage", JSON.stringify({content: currentMessage,
             author: author,
             room : props.tableId,date: formattedDate  }));
-        //envoi d'une copie en database
+        //envoi d'une copie en databases
         await loadNewMessageToDatabase({content: currentMessage,
             author: author,
-            room: props.tableId,date: formattedDate  });
+            room: props.tableId,date: today  });
         setCurrentMessage("");
     }
 
@@ -61,13 +62,11 @@ function MyTableScreen(props) {
             let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-table-messages/${props.tableId}/${props.userToken}`)
             let response = await rawResponse.json();
             setListMessages(response.chatMessages)
-           // console.log(response)
+            console.log("getchatmessages",response)
             setAuthor(response.author)}
-        if(isFocused){
+
             getChatMessages();
-        } else {
-            abortController.abort()
-        }
+
 
         },[isFocused]);
 
@@ -86,12 +85,13 @@ function MyTableScreen(props) {
 
     useEffect(async () => {
 
-        var responseRaw = await fetch(`${herokuIP}/join-table/${props.tableId}`)
+        var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
         var response = await responseRaw.json();
       
             setTableData(response.result)
             setGuestList(response.result.guests)
             setPlannerAvatar(response.planneravatar)
+            setPlanner(result.planner)
           }
   
         , []);
@@ -102,7 +102,7 @@ function MyTableScreen(props) {
 
     const leaveTable = async () => {
     
-        var dataRaw = await fetch(`https://polar-stream-28883.herokuapp.com/delete-guest/${props.tableId}/${props.userToken}`,{
+        var dataRaw = await fetch(`http://172.17.1.164:3000/delete-guest/${props.tableId}/${props.userToken}`,{
             method: 'DELETE' 
         }) ;
      //   console.log("guest delete");
@@ -268,12 +268,18 @@ function MyTableScreen(props) {
                    <Card.Content>
                    <ScrollView style={{flex:1, marginTop: 50}}>
                        {listMessages.map((message,i)=>{
-                           return <ListItem key={i}>
-                               <ListItem.Content >
-                                       <ListItem.Title>{message.content}</ListItem.Title>
-                                       <ListItem.Subtitle>{message.author}</ListItem.Subtitle>
-                                   </ListItem.Content>
-                       </ListItem>
+                       //     return <ListItem key={i}>
+                       //         <ListItem.Content >
+                       //                 <ListItem.Title>{message.content}</ListItem.Title>
+                       //                 <ListItem.Subtitle>{message.author}</ListItem.Subtitle>
+                       //             </ListItem.Content>
+                       // </ListItem>
+                           <View  key={i} style={{width:"70%",marginHorizontal:20,marginVertical:5,alignSelf:"flex-end"}}>
+                       <List.Item  style={{backgroundColor:"rgba(255, 201, 96, 0.22)"}}
+                           title={message.author}
+                           description={message.content}/>
+                           <Text>{message.date}</Text>
+                       </View>
                        })}
 
                      </ScrollView>

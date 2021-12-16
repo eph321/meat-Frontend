@@ -411,12 +411,12 @@ function HomeScreen(props) {
                         selectedStyle={styles.selectedStyle}
                     />
                 </View>
-       
+
                     <ScrollView >
 
                         {tableList}
 
-                    </ScrollView>   
+                    </ScrollView>
             </View>
 
         </View>

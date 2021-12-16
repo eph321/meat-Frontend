@@ -42,10 +42,7 @@ function MyEventsScreen(props) {
 
 
                 <View style={styles.viewHeader}>
-                        <Appbar style={{ flex: 1, backgroundColor: "#FFC960" }}>
-                                <Appbar.Content title="Planning" style={{ marginTop: 20, alignItems: "center", size: 17 }} titleStyle={{ fontSize: 22, fontWeight: "700", color: "#009788" }} />
-                        </Appbar>
-                        <View style={{ flex: 1, backgroundColor: "#F2F2F2", width: "100%", flexDirection: "row", justifyContent: "space-around" }}>
+                        <View style={{ flex:1.5,backgroundColor:"#FFC960", width:"100%",flexDirection:"row",justifyContent:"space-around",alignItems:"flex-end"}}>
                                 <IconButton
                                         icon="home"
                                         color={'#0E9BA4'}
@@ -62,7 +59,7 @@ function MyEventsScreen(props) {
                                         icon="message-text"
                                         color={'#0E9BA4'}
                                         size={25}
-                                        onPress={() => props.navigation.navigate('Chat')}
+                                        onPress={() => props.navigation.navigate('MyBuddies')}
                                 />
                                 <IconButton
                                         icon="account"
@@ -71,7 +68,7 @@ function MyEventsScreen(props) {
                                         onPress={() => props.navigation.navigate('MyAccount')}
                                 />
                         </View>
-                        <View style={{alignItems:"center", flex:6}}>
+                        <View style={{alignItems:"center", flex:11}}>
                         <Text style={{ fontSize: 26, marginBottom: 20, marginTop: 20 }}>
                                 Mes participations
                         </Text>
@@ -100,10 +97,9 @@ const styles = StyleSheet.create({
                 justifyContent: 'center',
         },
         viewHeader: {
-                flex: 2,
+                flex: 1,
                 left: 0,
                 width: "100%",
-                top: 0,
                 justifyContent: "flex-start",
         },
 });

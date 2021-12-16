@@ -228,15 +228,7 @@ function MyAccountScreen(props) {
     }
 
     return (   <View style={{flex:1,justifyContent: 'space-evenly'}}>
-            <View style={{ flex: 2,
-                left: 0,
-                width:"100%",
-                top: 0,
-                justifyContent:"flex-start",}}>
-                <Appbar style={{ backgroundColor: "#FFC960", flex:1}}>
-                    <Appbar.Content title="Mon profil" style={{marginTop: 20,alignItems:"center", size: 17}} titleStyle={{fontSize: 22, fontWeight: "700", color: "#009788"}} />
-                </Appbar>
-                <View style={{flex:1,backgroundColor:"#F2F2F2", width:"100%",flexDirection:"row",justifyContent:"space-around"}}>
+                <View style={{flex:1.5,backgroundColor:"#FFC960", width:"100%",flexDirection:"row",justifyContent:"space-around",alignItems:"flex-end"}}>
                     <IconButton
                         icon="home"
                         color={'#0E9BA4'}
@@ -247,7 +239,7 @@ function MyAccountScreen(props) {
                         icon="plus-circle"
                         color={'#0E9BA4'}
                         size={25}
-                        onPress={() => props.navigation.navigate('MyAdresses')}
+                        onPress={() => props.navigation.navigate('NewTable')}
                     />
                     <IconButton
                         icon="calendar-month"
@@ -273,9 +265,10 @@ function MyAccountScreen(props) {
                         size={25}
                         onPress={() =>  {AsyncStorage.clear();props.navigation.navigate('Login')}}
                     />
+
                 </View>
-            </View>
-            <View style={{flex:7, backgroundColor:"#F2F2F2"}}>
+
+            <View style={{flex:11, backgroundColor:"#F2F2F2"}}>
                 <ScrollView>
                     <KeyboardAvoidingView
                         behavior={Platform.OS === "ios" ? "padding" : "height"}
