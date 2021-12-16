@@ -56,7 +56,7 @@ function MyEventsScreen(props) {
                                         onPress={() => props.navigation.navigate('NewTable')}
                                 />
                                 <IconButton
-                                        icon="message-text"
+                                        icon="message"
                                         color={'#0E9BA4'}
                                         size={25}
                                         onPress={() => props.navigation.navigate('MyBuddies')}
