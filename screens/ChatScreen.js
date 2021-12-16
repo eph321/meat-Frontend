@@ -33,13 +33,11 @@ function ChatScreen(props) {
             console.log(response)
 
         }
-
         let formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(today)
-
 
         socket.emit("sendMessage", JSON.stringify({content: currentMessage,
                                                              author: author,
-                                                             conversation: props.conversationToSend,date: formattedDate  }));
+                                                             conversation: props.conversationToSend,date: today }));
         //envoi d'une copie en database
         loadNewMessageToDatabase({content: currentMessage,
             author: author,
@@ -54,12 +52,13 @@ function ChatScreen(props) {
             let response = await rawResponse.json();
 
             setListMessages(response.chatMessages)
+            console.log("messages recupérés")
+            console.log(props.conversationToSend)
+            console.log(props.userToSend)
             setAuthor(response.author)}
-        if(isFocused){
+
             getChatMessages();
-        } else {
-            abortController.abort()
-        }
+
     },[isFocused])
 
 

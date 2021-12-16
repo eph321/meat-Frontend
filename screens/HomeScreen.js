@@ -36,11 +36,8 @@ function HomeScreen(props) {
         const fetchAddress = async (val) => {
             let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_', "+")}&limit=5`)
             let response = await rawResponse.json();
-            let tempList = response.features.map((el) =>{ return {label: el.properties.label, values: el.geometry}})
+            let tempList = response.features.map((el) => { return { label: el.properties.label, values: el.geometry } })
             setListLabelAddress(tempList)
-            console.log(listLabelAddress)
-
-
             setVisibleList(true)
         }
         fetchAddress(address)
@@ -48,7 +45,7 @@ function HomeScreen(props) {
     }, [address])
 
     let addresses = listLabelAddress.map((el, i) => {
-        return (<TouchableOpacity key={i} onPress={() => { handlePressAddress(el); console.log("clic sur addr") }}>
+        return (<TouchableOpacity key={i} onPress={() => { handlePressAddress(el); }}>
             <Text style={{ margin: 5 }}>{el.label}</Text>
         </TouchableOpacity>)
     })
@@ -63,7 +60,7 @@ function HomeScreen(props) {
 
     const handlePressAddress = (el) => {
         setAddress(el.label);
-        setUserLocation({ longitude: el.values.coordinates[0], latitude: el.values.coordinates[1] })
+        setFilteredLocation({ longitude: el.values.coordinates[0], latitude: el.values.coordinates[1] })
         setVisibleList(false)
     }
 
@@ -72,7 +69,7 @@ function HomeScreen(props) {
     const [restaurantType, setRestaurantType] = useState([]); // Pour filtre Type Restaurant
     const [dateFilter, setDateFilter] = useState(0) // Pour filtre Date
     const [userLocation, setUserLocation] = useState("")
-
+    const [filteredLocation, setFilteredLocation] = useState("")
 
     const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
 
@@ -81,6 +78,7 @@ function HomeScreen(props) {
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [dateIsSeleted, setDateIsSelected] = useState(false); // Pour changer le texte dans le button
+    // const [userId, setUserId] = useState("")
 
     /* let formattedDate = date.toLocaleString("fr-FR", options);
     const options = { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' } */
@@ -214,13 +212,13 @@ function HomeScreen(props) {
                 body: `date=${dateFilter}&type=${restaurantType}`
             })
             let dataFilterResponse = await rawDataFilterResponse.json()
-            // console.log(dataFilterResponse)
             setTableDataList(dataFilterResponse.result)
         } else {
             let rawResponse = await fetch(`${herokuIP}/search-table`);
             let response = await rawResponse.json();
             setTableDataList(response.result)
         }
+
     }, [restaurantType, dateFilter])
 
     // Conditions du useEffect
@@ -244,26 +242,12 @@ function HomeScreen(props) {
         formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
 
         var redirect = false
-        // console.log(e.guests.map(item => item._id), "--------> E GUEST")
-        // console.log(new Date(), "e guest")
 
-        //haversine : calcul de distance
-
-        const start = {
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude
-        }
-
-        const end = {
-            latitude: 48.858370,
-            longitude: 2.294481
-        }
-
-        console.log(haversine(start, end, { unit: "meter" }))
 
 
         const onCardClick = () => {
             props.saveTableId(e._id);
+
             let guestCheck = e.guests.some(el => el.token === props.userToken)
             if (e.planner === props.userToken || guestCheck === true) {
                 redirect = true
@@ -276,6 +260,9 @@ function HomeScreen(props) {
             }
         }
 
+        // CARD location - distannce
+        const filteredDistance = Math.round(haversine(filteredLocation, { latitude: e.latitude, longitude: e.longitude }, { unit: "meter" }))
+        const userDistance = Math.round(haversine(userLocation, { latitude: e.latitude, longitude: e.longitude }, { unit: "meter" }))
 
         return (
             <Card key={i} style={{ marginBottom: 8 }} onPress={() => { onCardClick() }}>
@@ -301,7 +288,7 @@ function HomeScreen(props) {
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", alignSelf: "center", marginTop: 3 }}>
                         <FontAwesome5 style={{ marginRight: 8 }} name="walking" size={24} color="#0E9BA4" />
-                        <Text>à ... m</Text>
+                        <Text>à {(filteredLocation != "") ? filteredDistance : userDistance} m</Text>
                     </View>
                 </Card.Content>
             </Card>
@@ -311,19 +298,8 @@ function HomeScreen(props) {
 
     return (
 
-        <View style={{ flex: 1, justifyContent: 'space-evenly' }}>
-            {/* <View style={{
-                flex: 1,
-                left: 0,
-                width: "100%",
-                top: 0,
-                justifyContent: "flex-start",
-            }}> */}
-            {/* <Appbar style={{ backgroundColor: "#FFC960", flex: 1 }}>
-                    <Appbar.Content title="Home Screen" style={{ marginTop: 20, alignItems: "center", size: 17 }} titleStyle={{ fontSize: 22, fontWeight: "700", color: "#009788" }} />
-
-                </Appbar> */}
-            <View style={{ flex: 1, marginTop: 40, marginBottom: 20, backgroundColor: "#FFC960", width: "100%", flexDirection: "row", justifyContent: "space-around" }}>
+        <View style={styles.container}>
+            <View style={styles.topNavBar}>
                 <IconButton
                     icon="home"
                     color={'#0E9BA4'}
@@ -356,7 +332,7 @@ function HomeScreen(props) {
                 />
                 {/* </View> */}
             </View>
-            <View style={{ flex: 2, backgroundColor: "#F2F2F2", justifyContent: "flex-start", marginBottom: 150 }}>
+            <View style={styles.contentView}>
 
                 {/*                <Button
                     style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#0E9BA4", color: '#FFC960',marginBottom:5 }}
@@ -364,15 +340,16 @@ function HomeScreen(props) {
                     <Text Style={{ color: '#FFC960' }}>Go to join</Text>
                 </Button>*/}
 
-                <TextInput style={{ textAlign: 'center', width: '70%', marginBottom: 5, alignSelf: "center",marginTop:5 }}
+                <TextInput style={{ textAlign: 'center', width: '70%', alignSelf: "center", marginTop: 10 }}
                     mode="outlined"
                     label="Où ?"
                     placeholder="Paris 17"
+                    value={address}
                     activeOutlineColor={"#FFC960"}
                     outlineColor={'#0E9BA4'}
                     onChangeText={(val) => setAddress(val)}
                 />
-                <View style={{ marginVertical: 20 }}>
+                <View style={{ maxHeight: 150 }}>
                     {listOfAddresses}
                 </View>
                 <Button
@@ -414,7 +391,6 @@ function HomeScreen(props) {
                         searchPlaceholder="Search..."
                         /* value={restaurantType} */
                         onChange={item => {
-                            console.log(item, ")--> ITEM")
                             setRestaurantType([item]);
                             setIsFocus(false);
                         }}
@@ -425,14 +401,12 @@ function HomeScreen(props) {
                         selectedStyle={styles.selectedStyle}
                     />
                 </View>
+       
+                    <ScrollView >
 
-            </View>
-            <View style={{ flex: 10 }}>
-                <ScrollView >
+                        {tableList}
 
-                    {tableList}
-
-                </ScrollView>
+                    </ScrollView>   
             </View>
 
         </View>
@@ -443,15 +417,22 @@ function HomeScreen(props) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 0.5,
-        alignItems: 'center',
-        justifyContent: 'center',
-    }, viewHeader: {
-        flex: 2,
-        left: 0,
+        flex: 1,
+        backgroundColor: "#F2F2F2"
+    },
+    topNavBar: {
+        flex: 1.5,
+        backgroundColor: "#FFC960",
         width: "100%",
-        top: 0,
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "flex-end",
+    },
+    contentView: {
+        flex: 11,
+        backgroundColor: "#F2F2F2",
         justifyContent: "flex-start",
+        marginBottom: 30,
     },
     datePicker: {
         width: "70%",
@@ -460,7 +441,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderRadius: 8,
         paddingHorizontal: 8,
-        backgroundColor: "transparent",
+        backgroundColor: "white",
         alignSelf: "center",
         justifyContent: "center"
     },
@@ -471,7 +452,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderRadius: 8,
         paddingHorizontal: 8,
-        backgroundColor: "transparent",
+        backgroundColor: "white",
     },
     placeholderStyle: {
         fontSize: 16,
