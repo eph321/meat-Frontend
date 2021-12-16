@@ -239,7 +239,7 @@ function MyAccountScreen(props) {
                         icon="plus-circle"
                         color={'#0E9BA4'}
                         size={25}
-                        onPress={() => props.navigation.navigate('MyAdresses')}
+                        onPress={() => props.navigation.navigate('NewTable')}
                     />
                     <IconButton
                         icon="calendar-month"

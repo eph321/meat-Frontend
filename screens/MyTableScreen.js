@@ -22,6 +22,7 @@ function MyTableScreen(props) {
     const isFocused = useIsFocused();
     const [plannerAvatar, setPlannerAvatar] = useState('')
     const [guestList, setGuestList] = useState([''])
+    const [planner, setPlanner] = useState('')
 
 
 
@@ -45,7 +46,7 @@ function MyTableScreen(props) {
         socket.emit("sendMessage", JSON.stringify({content: currentMessage,
             author: author,
             room : props.tableId,date: formattedDate  }));
-        //envoi d'une copie en database
+        //envoi d'une copie en databases
         await loadNewMessageToDatabase({content: currentMessage,
             author: author,
             room: props.tableId,date: today  });
@@ -84,12 +85,13 @@ function MyTableScreen(props) {
 
     useEffect(async () => {
 
-        var responseRaw = await fetch(`${herokuIP}/join-table/${props.tableId}`)
+        var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
         var response = await responseRaw.json();
       
             setTableData(response.result)
             setGuestList(response.result.guests)
             setPlannerAvatar(response.planneravatar)
+            setPlanner(result.planner)
           }
   
         , []);
@@ -100,7 +102,7 @@ function MyTableScreen(props) {
 
     const leaveTable = async () => {
     
-        var dataRaw = await fetch(`https://polar-stream-28883.herokuapp.com/delete-guest/${props.tableId}/${props.userToken}`,{
+        var dataRaw = await fetch(`http://172.17.1.164:3000/delete-guest/${props.tableId}/${props.userToken}`,{
             method: 'DELETE' 
         }) ;
      //   console.log("guest delete");
