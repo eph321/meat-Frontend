@@ -4,7 +4,6 @@ import {StyleSheet, View, TouchableOpacity, Platform} from 'react-native';
 import {TextInput, Appbar, Button, ProgressBar, Text, Avatar} from "react-native-paper";
 import { connect } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
-import { renderNode } from 'react-native-elements/dist/helpers';
 
 
 
