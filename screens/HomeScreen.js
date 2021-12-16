@@ -36,7 +36,7 @@ function HomeScreen(props) {
         const fetchAddress = async (val) => {
             let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_', "+")}&limit=5`)
             let response = await rawResponse.json();
-            let tempList = response.features.map((el) => { return { label: el.properties.label, values: el.properties } })
+            let tempList = response.features.map((el) =>{ return {label: el.properties.label, values: el.geometry}})
             setListLabelAddress(tempList)
             console.log(listLabelAddress)
 
@@ -63,6 +63,7 @@ function HomeScreen(props) {
 
     const handlePressAddress = (el) => {
         setAddress(el.label);
+        setUserLocation({ longitude: el.values.coordinates[0], latitude: el.values.coordinates[1] })
         setVisibleList(false)
     }
 
@@ -362,7 +363,8 @@ function HomeScreen(props) {
                     mode="contained" onPress={() => { props.navigation.navigate('JoinTable'); }}>
                     <Text Style={{ color: '#FFC960' }}>Go to join</Text>
                 </Button>*/}
-                <TextInput style={{ textAlign: 'center', width: '70%', marginBottom: 5, alignSelf: "center", }}
+
+                <TextInput style={{ textAlign: 'center', width: '70%', marginBottom: 5, alignSelf: "center",marginTop:5 }}
                     mode="outlined"
                     label="Où ?"
                     placeholder="Paris 17"
