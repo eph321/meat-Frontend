@@ -38,7 +38,7 @@ function HomeScreen(props) {
             let response = await rawResponse.json();
             let tempList = response.features.map((el) =>{ return {label: el.properties.label, values: el.geometry}})
             setListLabelAddress(tempList)
-            console.log(listLabelAddress)
+
 
 
             setVisibleList(true)}
@@ -47,7 +47,7 @@ function HomeScreen(props) {
     },[address])
 
     let addresses = listLabelAddress.map((el,i)=>{
-        return(<TouchableOpacity key={i}  onPress={() => {handlePressAddress(el); console.log("clic sur addr")}}>
+        return(<TouchableOpacity key={i}  onPress={() => {handlePressAddress(el);}}>
             <Text style={{ margin:5}}>{el.label}</Text>
         </TouchableOpacity>)    })
     let listOfAddresses;
@@ -105,17 +105,17 @@ function HomeScreen(props) {
         showMode('time');
     };
 
-    useEffect(() => {
-        async function askPermissions() {
-            var { status } = await Location.requestForegroundPermissionsAsync();
-            if (status === 'granted') {
-                var location = await Location.getCurrentPositionAsync({});
-                setUserLocation({ longitude: location.coords.longitude, latitude: location.coords.latitude })
-            }
-            props.saveUserLocation(userLocation)
-        }
-        askPermissions();
-    }, []);
+    // useEffect(() => {
+    //     async function askPermissions() {
+    //         var { status } = await Location.requestForegroundPermissionsAsync();
+    //         if (status === 'granted') {
+    //             var location = await Location.getCurrentPositionAsync({});
+    //             setUserLocation({ longitude: location.coords.longitude, latitude: location.coords.latitude })
+    //         }
+    //         props.saveUserLocation(userLocation)
+    //     }
+    //     askPermissions();
+    // }, []);
 
     // Affichage des tables existantes 
 
@@ -235,26 +235,12 @@ function HomeScreen(props) {
         formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
 
         var redirect = false
-        // console.log(e.guests.map(item => item._id), "--------> E GUEST")
-        // console.log(new Date(), "e guest")
 
-        //haversine : calcul de distance
-
-        const start = {
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude
-        }
-
-        const end = {
-            latitude: 48.858370,
-            longitude: 2.294481
-        }
-
-        console.log(haversine(start, end, { unit: "meter" }))
 
 
         const onCardClick = () => {
             props.saveTableId(e._id);
+
             let guestCheck = e.guests.some(el => el.token === props.userToken)
             if (e.planner === props.userToken || guestCheck === true) {
                 redirect = true
@@ -267,7 +253,7 @@ function HomeScreen(props) {
             }
         }
 
-
+        let DisplayDistance = ``
         return (
             <Card key={i} style={{ marginBottom: 8 }} onPress={() => { onCardClick() }}>
 
@@ -292,7 +278,7 @@ function HomeScreen(props) {
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", alignSelf: "center", marginTop: 3 }}>
                         <FontAwesome5 style={{ marginRight: 8 }} name="walking" size={24} color="#0E9BA4" />
-                        <Text>à ... m</Text>
+                        <Text>à {Math.round(haversine(userLocation, {latitude: e.latitude, longitude: e.longitude}, { unit: "meter" }))} mètres</Text>
                     </View>
                 </Card.Content>
             </Card>
@@ -359,10 +345,14 @@ function HomeScreen(props) {
                     mode="outlined"
                     label="Où ?"
                     placeholder="Paris 17"
+                           value={address}
                     activeOutlineColor={"#FFC960"}
                     outlineColor={'#0E9BA4'}
                     onChangeText={(val)=> setAddress(val)}
                 />
+                <View >
+                    {listOfAddresses}
+                </View>
 
                 <Button
                     mode="contained"
