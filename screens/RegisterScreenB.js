@@ -184,7 +184,7 @@ function RegisterScreenB(props) {
                        mode="outlined"
                        label="Numéro de mobile"
                        onChangeText={(phoneValue)=> {setPhone(phoneValue); setInputProgress(inputProgress + 0.01)}}
-                       placeholder ="+33 6 23 45 67 89"
+                       placeholder ="0623456789"
                        activeOutlineColor={"#FF3D00"}
                        outlineColor={'#0E9BA4'}
             />
