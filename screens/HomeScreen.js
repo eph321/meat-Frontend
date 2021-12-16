@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {StyleSheet, View, ScrollView, AsyncStorage, TouchableOpacity} from 'react-native';
+import { StyleSheet, View, ScrollView, AsyncStorage, TouchableOpacity } from 'react-native';
 import { Text, Appbar, TextInput, Card, Title, Paragraph, IconButton, Button } from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
@@ -29,22 +29,23 @@ const restaurantTypeList = [
 
 function HomeScreen(props) {
 
-    const [address,setAddress] = useState("");
+    const [address, setAddress] = useState("");
     const [visibleList, setVisibleList] = useState(false);
-    const [listLabelAddress,setListLabelAddress] = useState([])
-    useEffect(()=>{
+    const [listLabelAddress, setListLabelAddress] = useState([])
+    useEffect(() => {
         const fetchAddress = async (val) => {
-            let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_',"+") }&limit=5`)
+            let rawResponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${val.replace('_', "+")}&limit=5`)
             let response = await rawResponse.json();
             let tempList = response.features.map((el) =>{ return {label: el.properties.label, values: el.geometry}})
             setListLabelAddress(tempList)
+            console.log(listLabelAddress)
 
 
-
-            setVisibleList(true)}
+            setVisibleList(true)
+        }
         fetchAddress(address)
 
-    },[address])
+    }, [address])
 
     let addresses = listLabelAddress.map((el,i)=>{
         return(<TouchableOpacity key={i}  onPress={() => {handlePressAddress(el);}}>
@@ -52,10 +53,12 @@ function HomeScreen(props) {
         </TouchableOpacity>)    })
     let listOfAddresses;
 
-    if (visibleList){
-        listOfAddresses = addresses}
+    if (visibleList) {
+        listOfAddresses = addresses
+    }
     else {
-        listOfAddresses = <Text></Text>}
+        listOfAddresses = <Text></Text>
+    }
 
     const handlePressAddress = (el) => {
         setAddress(el.label);
@@ -66,7 +69,7 @@ function HomeScreen(props) {
     const isFocused = useIsFocused();
     const [tableDataList, setTableDataList] = useState([]);
     const [restaurantType, setRestaurantType] = useState([]); // Pour filtre Type Restaurant
-    const [dateFilter, setDateFilter] = useState("") // Pour filtre Date
+    const [dateFilter, setDateFilter] = useState(0) // Pour filtre Date
     const [userLocation, setUserLocation] = useState("")
 
 
@@ -197,7 +200,14 @@ function HomeScreen(props) {
              const dataFilterResponse = await rawDataFilterResponse.json();
              setTableDataList(dataFilterResponse.result)  */
 
-        if (restaurantType[0] || dateFilter !== "") {
+        var typeFilterExists = false
+        if (restaurantType[0]) {
+            if (restaurantType[0].length > 0) {
+                typeFilterExists = true
+            }
+        }
+
+        if (typeFilterExists == true || dateFilter !== 0) {
             let rawDataFilterResponse = await fetch(`${herokuIP}/filters`, {
                 method: "POST",
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -253,7 +263,7 @@ function HomeScreen(props) {
             }
         }
 
-        let DisplayDistance = ``
+
         return (
             <Card key={i} style={{ marginBottom: 8 }} onPress={() => { onCardClick() }}>
 
@@ -296,41 +306,41 @@ function HomeScreen(props) {
                 top: 0,
                 justifyContent: "flex-start",
             }}> */}
-                {/* <Appbar style={{ backgroundColor: "#FFC960", flex: 1 }}>
+            {/* <Appbar style={{ backgroundColor: "#FFC960", flex: 1 }}>
                     <Appbar.Content title="Home Screen" style={{ marginTop: 20, alignItems: "center", size: 17 }} titleStyle={{ fontSize: 22, fontWeight: "700", color: "#009788" }} />
 
                 </Appbar> */}
-                <View style={{ flex: 1,marginTop:40, marginBottom:20, backgroundColor: "#FFC960", width: "100%", flexDirection: "row", justifyContent: "space-around" }}>
-                    <IconButton
-                        icon="home"
-                        color={'#0E9BA4'}
-                        size={25}
-                        onPress={() => props.navigation.navigate('Home')}
-                    />
-                    <IconButton
-                        icon="plus-circle"
-                        color={'#0E9BA4'}
-                        size={25}
-                        onPress={() => props.navigation.navigate('NewTable')}
-                    />
-                    <IconButton
-                        icon="message"
-                        color={'#0E9BA4'}
-                        size={25}
-                        onPress={() => props.navigation.navigate('MyBuddies')}
-                    />
-                    <IconButton
-                        icon="calendar-month"
-                        color={'#0E9BA4'}
-                        size={25}
-                        onPress={() => props.navigation.navigate('MyEvents')}
-                    />
-                    <IconButton
-                        icon="account"
-                        color={'#0E9BA4'}
-                        size={25}
-                        onPress={() => props.navigation.navigate('MyAccount')}
-                    />
+            <View style={{ flex: 1, marginTop: 40, marginBottom: 20, backgroundColor: "#FFC960", width: "100%", flexDirection: "row", justifyContent: "space-around" }}>
+                <IconButton
+                    icon="home"
+                    color={'#0E9BA4'}
+                    size={25}
+                    onPress={() => props.navigation.navigate('Home')}
+                />
+                <IconButton
+                    icon="plus-circle"
+                    color={'#0E9BA4'}
+                    size={25}
+                    onPress={() => props.navigation.navigate('NewTable')}
+                />
+                <IconButton
+                    icon="message"
+                    color={'#0E9BA4'}
+                    size={25}
+                    onPress={() => props.navigation.navigate('MyBuddies')}
+                />
+                <IconButton
+                    icon="calendar-month"
+                    color={'#0E9BA4'}
+                    size={25}
+                    onPress={() => props.navigation.navigate('MyEvents')}
+                />
+                <IconButton
+                    icon="account"
+                    color={'#0E9BA4'}
+                    size={25}
+                    onPress={() => props.navigation.navigate('MyAccount')}
+                />
                 {/* </View> */}
             </View>
             <View style={{ flex: 2, backgroundColor: "#F2F2F2", justifyContent: "flex-start", marginBottom: 150 }}>
@@ -348,12 +358,11 @@ function HomeScreen(props) {
                            value={address}
                     activeOutlineColor={"#FFC960"}
                     outlineColor={'#0E9BA4'}
-                    onChangeText={(val)=> setAddress(val)}
+                    onChangeText={(val) => setAddress(val)}
                 />
-                <View >
+                <View style={{ marginVertical: 20 }}>
                     {listOfAddresses}
                 </View>
-
                 <Button
                     mode="contained"
                     onPress={showDatepicker}
@@ -393,6 +402,7 @@ function HomeScreen(props) {
                         searchPlaceholder="Search..."
                         /* value={restaurantType} */
                         onChange={item => {
+                            console.log(item, ")--> ITEM")
                             setRestaurantType([item]);
                             setIsFocus(false);
                         }}
