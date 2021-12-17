@@ -70,7 +70,7 @@ function HomeScreen(props) {
     const [tableDataList, setTableDataList] = useState([]);
     const [restaurantType, setRestaurantType] = useState([]); // Pour filtre Type Restaurant
     const [dateFilter, setDateFilter] = useState(0) // Pour filtre Date
-    const [userLocation, setUserLocation] = useState("")
+    const [userLocation, setUserLocation] = useState({latitude: 48.8875552, longitude: 2.30374})
     const [filteredLocation, setFilteredLocation] = useState("")
 
     const [isFocus, setIsFocus] = useState(false); // pour style de la liste déroulante
