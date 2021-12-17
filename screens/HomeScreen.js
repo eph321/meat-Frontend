@@ -17,6 +17,7 @@ const FranckIP = "http://192.168.1.41:3000"
 const herokuIP = "https://polar-stream-28883.herokuapp.com"
 
 const restaurantTypeList = [
+    { label: 'Traditionnel', value: 'Traditionnel'},
     { label: 'Italien', value: 'Italien' },
     { label: 'Japonais', value: 'Japonais' },
     { label: 'Fast-food', value: 'Fast-food' },
@@ -391,7 +392,7 @@ function HomeScreen(props) {
 
                 <View style={{ alignItems: "center", marginTop: 12, marginBottom: 8 }}>
                     <MultiSelect
-                        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                        style={[styles.dropdown, isFocus && { borderColor: '#FFC960' }]}
                         placeholderStyle={styles.placeholderStyle}
                         selectedTextStyle={styles.selectedTextStyle}
                         inputSearchStyle={styles.inputSearchStyle}
@@ -402,7 +403,8 @@ function HomeScreen(props) {
                         valueField="value"
                         placeholder="Quel type de cuisine ?"
                         searchPlaceholder="Search..."
-                        /* value={restaurantType} */
+                        onFocus={() => setIsFocus(true)}
+                        onBlur={() => setIsFocus(false)}
                         onChange={item => {
                             setRestaurantType([item]);
                             setIsFocus(false);

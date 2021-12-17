@@ -14,6 +14,7 @@ const herokuIP = "https://polar-stream-28883.herokuapp.com"
 // Préférence culinaire Liste
 
 const restaurantTypeList = [
+    { label: 'Traditionnel', value: 'Traditionnel'},
     { label: 'Italien', value: 'Italien' },
     { label: 'Japonais', value: 'Japonais' },
     { label: 'Fast-food', value: 'Fast-food' },
@@ -294,6 +295,7 @@ function NewTableScreen(props) {
                         mode="outlined"
                         label="Titre"
                         value={title}
+                        outlineColor={"#0E9BA4"}
                         activeOutlineColor={"#FFC960"}
                         onChangeText={text => setTitle(text)}
                     />
@@ -302,6 +304,7 @@ function NewTableScreen(props) {
                         mode="outlined"
                         label="Nom du restaurant"
                         value={restaurantName}
+                        outlineColor={"#0E9BA4"}
                         activeOutlineColor={"#FFC960"}
                         onChangeText={text => setRestaurantName(text)}
                     />
@@ -310,6 +313,7 @@ function NewTableScreen(props) {
                         mode="outlined"
                         label="Adresse du restaurant"
                         value={restaurantAddress}
+                        outlineColor={"#0E9BA4"}
                         activeOutlineColor={"#FFC960"}
                         onChangeText={text => setRestaurantAddress(text)}
                     />
@@ -317,7 +321,7 @@ function NewTableScreen(props) {
                     {listOfAddresses}
 
                     <Dropdown
-                        style={[styles.dropdown, isTypeFocus && { borderColor: '#0E9BA4' }]}
+                        style={[styles.dropdown, isTypeFocus && { borderColor: '#FFC960' }]}
                         placeholderStyle={styles.placeholderStyle}
                         selectedTextStyle={styles.selectedTextStyle}
                         inputSearchStyle={styles.inputSearchStyle}
@@ -351,12 +355,13 @@ function NewTableScreen(props) {
                         right={<TextInput.Affix text="/280" />}
                         maxLength={280}
                         value={description}
+                        outlineColor={"#0E9BA4"}
                         activeOutlineColor={"#FFC960"}
                         onChangeText={text => setDescription(text)}
                     />
       
                     <Dropdown
-                        style={[styles.dropdown, isAgeFocus && { borderColor: '#0E9BA4' }]}
+                        style={[styles.dropdown, isAgeFocus && { borderColor: '#FFC960' }]}
                         placeholderStyle={styles.placeholderStyle}
                         selectedTextStyle={styles.selectedTextStyle}
                         inputSearchStyle={styles.inputSearchStyle}
@@ -383,7 +388,7 @@ function NewTableScreen(props) {
                     <View style={{ flexDirection: "column", alignItems: "flex-end", marginLeft:13 }}>
 
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", width: "90%", marginTop:10 }}>
-                            <Text style={{ fontSize: 16 }}>Meaters:</Text>
+                            <Text style={{ fontSize: 16, fontWeight:"500" }}>M.eaters:</Text>
                             <View style={{ flexDirection: "row" }}>
                                 {tabCapacity}
                             </View>
@@ -394,11 +399,11 @@ function NewTableScreen(props) {
                         </View>
 
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", width: "90%" }}>
-                            <Text style={{ fontSize: 16 }}>Budget:</Text>
-                            <View style={{ flexDirection: "row", marginLeft:30 }}>
+                            <Text style={{ fontSize: 16, fontWeight:"500" }}>Budget:</Text>
+                            <View style={{ flexDirection: "row", marginLeft:35 }}>
                                 {tabBudget}
                             </View>
-                            <View style={{marginLeft:24, flexDirection: "row" }}>
+                            <View style={{marginLeft:25, flexDirection: "row" }}>
                                 <Button style={{margin:3}} color={"#0E9BA4"} compact mode="contained" onPress={() => setTableBudget(budget - 1)}>-</Button>
                                 <Button style={{margin:3}} color={"#0E9BA4"} compact mode="contained" onPress={() => setTableBudget(budget + 1)}>+</Button>
                             </View>
@@ -447,7 +452,7 @@ const styles = StyleSheet.create({
     dropdown: {
         width: "70%",
         height: 50,
-        borderColor: 'gray',
+        borderColor: '#0E9BA4',
         borderWidth: 0.5,
         borderRadius: 8,
         paddingHorizontal: 8,
@@ -460,6 +465,7 @@ const styles = StyleSheet.create({
     placeholderStyle: {
         fontSize: 16,
         textAlign: "center",
+        color: "gray",
     },
     selectedTextStyle: {
         fontSize: 16,
