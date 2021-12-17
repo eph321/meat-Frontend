@@ -130,7 +130,7 @@ function MyTableScreen(props) {
         formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
 
             return <View key={i} style={{marginHorizontal:20,marginVertical:5}}><List.Item
-                                                                                                        title={message.author}
+                                                                                                        title={"Anne-sophie"}
 
                                                                                                         description={message.content}/>
                 <Text>{formattedDate  }</Text>
