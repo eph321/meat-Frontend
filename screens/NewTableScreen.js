@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, Platform, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-import { Button, TextInput, Appbar, IconButton } from "react-native-paper"
+import { Button, TextInput, Appbar, IconButton, Modal, Portal, Provider} from "react-native-paper"
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -14,7 +14,7 @@ const herokuIP = "https://polar-stream-28883.herokuapp.com"
 // Préférence culinaire Liste
 
 const restaurantTypeList = [
-    { label: 'Traditionnel', value: 'Traditionnel'},
+    { label: 'Traditionnel', value: 'Traditionnel' },
     { label: 'Italien', value: 'Italien' },
     { label: 'Japonais', value: 'Japonais' },
     { label: 'Fast-food', value: 'Fast-food' },
@@ -51,6 +51,14 @@ function NewTableScreen(props) {
     const [isTypeFocus, setIsTypeFocus] = useState(false); // pour style de la liste déroulante type restaurant
     const [isAgeFocus, setIsAgeFocus] = useState(false); // pour style de la liste déroulante tranche d'âge
 
+
+    // MODAL
+    const [visible, setVisible] = useState(false);
+
+    const showModal = () => setVisible(true);
+    const hideModal = () => setVisible(false);
+    const containerStyle = { backgroundColor: 'white', padding: 20 };
+
     // const [newTableCreated, setNewTableCreated ] = useState(false)
 
     // Date Picker
@@ -80,11 +88,13 @@ function NewTableScreen(props) {
 
     const showDatepicker = () => {
         showMode('date');
+        setVisible(true)
     };
 
     const showTimepicker = () => {
         showMode('time');
         setClickOnTimeBtn(true);
+        setVisible(true)
     };
 
     // autocomplete addresse
@@ -244,17 +254,13 @@ function NewTableScreen(props) {
             </View>
 
 
+            <View style={styles.contentView}>
 
-
-
-            <ScrollView>
-                <View style={styles.contentView}> 
-
-                  {/* <KeyboardAvoidingView
+                {/* <KeyboardAvoidingView
     behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.contentView}
     >   */}
 
-                    {/*  <Button
+                {/*  <Button
                         mode="outlined"
                         color={'#FFC960'}
                         style={{ padding: 10, textAlign: 'center', width: '70%', alignSelf: "center", backgroundColor: "#FFFFFF", color: '#FFC960' }}
@@ -273,148 +279,153 @@ function NewTableScreen(props) {
                         />
                     )} */}
 
-                    <Text style={{ marginTop: 15, height: 30, alignSelf: "center", fontSize: 25 }}>{(dateValue) ? "Le " + formattedDate : "Choisissez une date"} </Text>
+                <Text style={{ marginTop: 15, height: 30, alignSelf: "center", fontSize: 25 }}>{(dateValue) ? "Le " + formattedDate : "Choisissez une date"} </Text>
 
-                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                        <Button color={"#0E9BA4"} onPress={showDatepicker}> Date </Button>
-                        <Button color={"#0E9BA4"} onPress={showTimepicker}> Heure </Button>
-                    </View>
-                    {show && (
-                        <DateTimePicker
-                            testID="dateTimePicker"
-                            value={date}
-                            mode={mode}
-                            is24Hour={true}
-                            display="default"
-                            onChange={onChange}
-                        />
+                <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                    <Button color={"#0E9BA4"} onPress={showDatepicker}> Date </Button>
+                    <Button color={"#0E9BA4"} onPress={showTimepicker}> Heure </Button>
+                </View>
+
+                <TextInput
+                    style={{ alignSelf: "center", width: '70%' }}
+                    mode="outlined"
+                    label="Titre"
+                    value={title}
+                    outlineColor={"#0E9BA4"}
+                    activeOutlineColor={"#FFC960"}
+                    onChangeText={text => setTitle(text)}
+                />
+                <TextInput
+                    style={{ alignSelf: "center", width: '70%' }}
+                    mode="outlined"
+                    label="Nom du restaurant"
+                    value={restaurantName}
+                    outlineColor={"#0E9BA4"}
+                    activeOutlineColor={"#FFC960"}
+                    onChangeText={text => setRestaurantName(text)}
+                />
+                <TextInput
+                    style={{ alignSelf: "center", width: '70%' }}
+                    mode="outlined"
+                    label="Adresse du restaurant"
+                    value={restaurantAddress}
+                    outlineColor={"#0E9BA4"}
+                    activeOutlineColor={"#FFC960"}
+                    onChangeText={text => setRestaurantAddress(text)}
+                />
+
+                {listOfAddresses}
+               
+                <Dropdown
+                    style={[styles.dropdown, isTypeFocus && { borderColor: '#FFC960' }]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={restaurantTypeList}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Quel type de cuisine ?"
+                    searchPlaceholder="Search..."
+                    value={restaurantType}
+                    onFocus={() => setIsTypeFocus(true)}
+                    onBlur={() => setIsTypeFocus(false)}
+                    onChange={item => {
+                        setRestaurantType(item.value);
+                        setIsTypeFocus(false);
+                    }}
+                    renderLeftIcon={() => (
+                        <MaterialIcons style={styles.icon} name="restaurant" size={24} color="#0E9BA4" />
                     )}
+                />
 
-                    <TextInput
-                        style={{ alignSelf: "center", width: '70%' }}
-                        mode="outlined"
-                        label="Titre"
-                        value={title}
-                        outlineColor={"#0E9BA4"}
-                        activeOutlineColor={"#FFC960"}
-                        onChangeText={text => setTitle(text)}
-                    />
-                    <TextInput
-                        style={{ alignSelf: "center", width: '70%' }}
-                        mode="outlined"
-                        label="Nom du restaurant"
-                        value={restaurantName}
-                        outlineColor={"#0E9BA4"}
-                        activeOutlineColor={"#FFC960"}
-                        onChangeText={text => setRestaurantName(text)}
-                    />
-                    <TextInput
-                        style={{ alignSelf: "center", width: '70%' }}
-                        mode="outlined"
-                        label="Adresse du restaurant"
-                        value={restaurantAddress}
-                        outlineColor={"#0E9BA4"}
-                        activeOutlineColor={"#FFC960"}
-                        onChangeText={text => setRestaurantAddress(text)}
-                    />
+                <TextInput
+                    style={{ alignSelf: "center", width: '70%', height: 120, marginBottom: 12 }}
+                    mode="outlined"
+                    label="Description"
+                    placeholder="Description"
+                    multiline={true}
+                    dense={true}
+                    right={<TextInput.Affix text="/280" />}
+                    maxLength={280}
+                    value={description}
+                    outlineColor={"#0E9BA4"}
+                    activeOutlineColor={"#FFC960"}
+                    onChangeText={text => setDescription(text)}
+                />
 
-                    {listOfAddresses}
+                <Dropdown
+                    style={[styles.dropdown, isAgeFocus && { borderColor: '#FFC960' }]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={ageRangeList}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Tranche d'âge (optionnel)"
+                    searchPlaceholder="Search..."
+                    onFocus={() => setIsAgeFocus(true)}
+                    onBlur={() => setIsAgeFocus(false)}
+                    onChange={item => {
+                        setAgeRange(item.value);
+                        setIsAgeFocus(false);
+                    }}
+                    renderLeftIcon={() => (
+                        <Ionicons name="options-outline" size={24} color="#0E9BA4" />
+                    )}
+                />
 
-                    <Dropdown
-                        style={[styles.dropdown, isTypeFocus && { borderColor: '#FFC960' }]}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={restaurantTypeList}
-                        search
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Quel type de cuisine ?"
-                        searchPlaceholder="Search..."
-                        value={restaurantType}
-                        onFocus={() => setIsTypeFocus(true)}
-                        onBlur={() => setIsTypeFocus(false)}
-                        onChange={item => {
-                            setRestaurantType(item.value);
-                            setIsTypeFocus(false);
-                        }}
-                        renderLeftIcon={() => (
-                            <MaterialIcons style={styles.icon} name="restaurant" size={24} color="#0E9BA4" />
-                        )}
-                    />
-                    
-                    <TextInput
-                        style={{ alignSelf: "center", width: '70%', height: 120, marginBottom: 12 }}
-                        mode="outlined"
-                        label="Description"
-                        placeholder="Description"
-                        multiline={true}
-                        dense={true}
-                        right={<TextInput.Affix text="/280" />}
-                        maxLength={280}
-                        value={description}
-                        outlineColor={"#0E9BA4"}
-                        activeOutlineColor={"#FFC960"}
-                        onChangeText={text => setDescription(text)}
-                    />
-      
-                    <Dropdown
-                        style={[styles.dropdown, isAgeFocus && { borderColor: '#FFC960' }]}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={ageRangeList}
-                        search
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Tranche d'âge (optionnel)"
-                        searchPlaceholder="Search..."
-                        onFocus={() => setIsAgeFocus(true)}
-                        onBlur={() => setIsAgeFocus(false)}
-                        onChange={item => {
-                            setAgeRange(item.value);
-                            setIsAgeFocus(false);
-                        }}
-                        renderLeftIcon={() => (
-                            <Ionicons name="options-outline" size={24} color="#0E9BA4" />
-                        )}
-                    />
+                <View style={{ flexDirection: "column", alignItems: "flex-end", marginLeft: 13 }}>
 
-
-                    <View style={{ flexDirection: "column", alignItems: "flex-end", marginLeft:13 }}>
-
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", width: "90%", marginTop:10 }}>
-                            <Text style={{ fontSize: 16, fontWeight:"500" }}>M.eaters:</Text>
-                            <View style={{ flexDirection: "row" }}>
-                                {tabCapacity}
-                            </View>
-                            <View style={{ flexDirection: "row" }}>
-                                <Button style={{margin:3}} color={"#0E9BA4"} compact mode="contained" onPress={() => setTableCapacity(capacity - 1)}>-</Button>
-                                <Button style={{margin:3}}  color={"#0E9BA4"} compact mode="contained" onPress={() => setTableCapacity(capacity + 1)}>+</Button>
-                            </View>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", width: "90%", marginTop: 10 }}>
+                        <Text style={{ fontSize: 16, fontWeight: "500" }}>M.eaters:</Text>
+                        <View style={{ flexDirection: "row" }}>
+                            {tabCapacity}
                         </View>
-
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", width: "90%" }}>
-                            <Text style={{ fontSize: 16, fontWeight:"500" }}>Budget:</Text>
-                            <View style={{ flexDirection: "row", marginLeft:35 }}>
-                                {tabBudget}
-                            </View>
-                            <View style={{marginLeft:25, flexDirection: "row" }}>
-                                <Button style={{margin:3}} color={"#0E9BA4"} compact mode="contained" onPress={() => setTableBudget(budget - 1)}>-</Button>
-                                <Button style={{margin:3}} color={"#0E9BA4"} compact mode="contained" onPress={() => setTableBudget(budget + 1)}>+</Button>
-                            </View>
+                        <View style={{ flexDirection: "row" }}>
+                            <Button style={{ margin: 3 }} color={"#0E9BA4"} compact mode="contained" onPress={() => setTableCapacity(capacity - 1)}>-</Button>
+                            <Button style={{ margin: 3 }} color={"#0E9BA4"} compact mode="contained" onPress={() => setTableCapacity(capacity + 1)}>+</Button>
                         </View>
                     </View>
-                    <Button style={{marginTop:20}} color={"#0E9BA4"} mode="contained" onPress={() => createTable()}>Créer la table</Button>
 
-               </View>
-            </ScrollView> 
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", width: "90%" }}>
+                        <Text style={{ fontSize: 16, fontWeight: "500" }}>Budget:</Text>
+                        <View style={{ flexDirection: "row", marginLeft: 35 }}>
+                            {tabBudget}
+                        </View>
+                        <View style={{ marginLeft: 25, flexDirection: "row" }}>
+                            <Button style={{ margin: 3 }} color={"#0E9BA4"} compact mode="contained" onPress={() => setTableBudget(budget - 1)}>-</Button>
+                            <Button style={{ margin: 3 }} color={"#0E9BA4"} compact mode="contained" onPress={() => setTableBudget(budget + 1)}>+</Button>
+                        </View>
+                    </View>
+                </View>
+                <Button style={{ marginTop: 20 }} color={"#0E9BA4"} mode="contained" onPress={() => createTable()}>Créer la table</Button>
 
-           {/*  </KeyboardAvoidingView> */}
+            </View>
+
+            <Provider>
+                    <Portal>
+                        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+                            {show && (
+                                <DateTimePicker
+                                    testID="dateTimePicker"
+                                    value={date}
+                                    mode={mode}
+                                    is24Hour={true}
+                                    display="default"
+                                    onChange={onChange}
+                                />
+                            )}
+                        </Modal>
+                        </Portal>
+                        </Provider>
+
+            {/*  </KeyboardAvoidingView> */}
 
         </View>
 
@@ -440,11 +451,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#F2F2F2",
         alignItems: "center",
         marginBottom: 30,
-    },
-    item: {
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
     },
     title: {
         fontSize: 32,
