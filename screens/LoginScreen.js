@@ -66,7 +66,7 @@ function LoginScreen(props) {
 
             <Image
                 style={styles.imageLogin}
-                source={require('../assets/loginBackground.jpg')}
+                source={{uri:"https://res.cloudinary.com/da3gufsec/image/upload/v1639738741/loginBackground_pkvyfn.jpg"}}
             />
             <Text style={{fontSize: 20, fontStyle: 'italic', fontWeight: 'bold', marginTop: 20}}>Rejoignez la communauté</Text>
             <Text style={{fontSize: 20, fontStyle: 'italic', fontWeight: 'bold', marginBottom: 20}}>des M.eaters.</Text>
