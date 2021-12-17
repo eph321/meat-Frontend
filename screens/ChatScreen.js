@@ -208,11 +208,12 @@ const styles = StyleSheet.create({
         flex: 1
     },
     inner: {
-        padding: 24,
+        padding:24,
         flex: 1,
         justifyContent: "space-around",
         alignItems:"center",
-        flexDirection:"row"
+        flexDirection:"row",
+
     },
     header: {
         fontSize: 36,

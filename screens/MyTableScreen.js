@@ -117,7 +117,7 @@ function MyTableScreen(props) {
 
     const leaveTable = async () => {
     
-        var dataRaw = await fetch(`http://172.17.1.164:3000/delete-guest/${props.tableId}/${props.userToken}`,{
+        var dataRaw = await fetch(`https://polar-stream-28883.herokuapp.com/delete-guest/${props.tableId}/${props.userToken}`,{
             method: 'DELETE' 
         }) ;
      //   console.log("guest delete");
