@@ -1,20 +1,18 @@
-
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']);
+console.disableYellowBox = true;
 import React from 'react';
-
 import { NavigationContainer} from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider, DefaultTheme} from 'react-native-paper'
 import { Provider as StoreProvider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
-import { LogBox } from 'react-native';  
-LogBox.ignoreLogs(['Warning: ...']);
 
 import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import RegisterScreenB from "./screens/RegisterScreenB";
 import RegisterScreenC from "./screens/RegisterScreenC";
-import ResultScreen from "./screens/ResultScreen";
 import JoinTableScreen from "./screens/JoinTableScreen";
 import MyTableScreen from "./screens/MyTableScreen";
 import NewTableScreen from "./screens/NewTableScreen";
@@ -59,7 +57,6 @@ export default function App() {
                 <Stack.Screen name="Register" component={RegisterScreen} />
                 <Stack.Screen name="RegisterB" component={RegisterScreenB} />
                 <Stack.Screen name="RegisterC" component={RegisterScreenC} />
-                <Stack.Screen name="Result" component={ResultScreen} />
                 <Stack.Screen name="JoinTable" component={JoinTableScreen} />
                 <Stack.Screen name="MyTable" component={MyTableScreen} />
                 <Stack.Screen name="NewTable" component={NewTableScreen} />

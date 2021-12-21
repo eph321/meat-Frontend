@@ -61,6 +61,7 @@ function HomeScreen(props) {
     const handlePressAddress = (el) => {
         setAddress(el.label);
         setFilteredLocation({ longitude: el.values.coordinates[0], latitude: el.values.coordinates[1] })
+        props.saveUserLocation(filteredLocation)
         setVisibleList(false)
     }
 
@@ -270,7 +271,7 @@ function HomeScreen(props) {
             }
         }
 
-        // CARD location - distannce
+        // CARD location - distance
         const filteredDistance = Math.round(haversine(filteredLocation, { latitude: e.latitude, longitude: e.longitude }, { unit: "meter" }))
         const userDistance = Math.round(haversine(userLocation, { latitude: e.latitude, longitude: e.longitude }, { unit: "meter" }))
 

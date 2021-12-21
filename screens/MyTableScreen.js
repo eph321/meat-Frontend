@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import {StyleSheet, View, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
-import {Title, Card, Paragraph, Subheading, Appbar, IconButton, TextInput, List, Text, Avatar} from 'react-native-paper';
+import {
+    StyleSheet,
+    View,
+    ScrollView,
+    KeyboardAvoidingView,
+    Platform,
+    TouchableWithoutFeedback,
+    Keyboard
+} from 'react-native';
+import {Title, Card, Paragraph, Subheading, IconButton, TextInput, List, Text, Avatar} from 'react-native-paper';
 
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
@@ -10,6 +18,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 import socketIOClient from "socket.io-client";
 import {useIsFocused} from "@react-navigation/native";
+import haversine from "haversine";
 
 const herokuIP = "https://polar-stream-28883.herokuapp.com"
 
@@ -39,12 +48,11 @@ function MyTableScreen(props) {
             console.log(response)
         }
 
-        let formattedDate = new Intl.DateTimeFormat('fr-FR', { weekday: "long", day: '2-digit', month: '2-digit', year: '2-digit' }).format(today)
 
 
         socket.emit("sendMessage", JSON.stringify({content: currentMessage,
             author: author,
-            room : props.tableId,date: formattedDate  }));
+            room : props.tableId,date: today  }));
         //envoi d'une copie en databases
         await loadNewMessageToDatabase({content: currentMessage,
             author: author,
@@ -55,7 +63,6 @@ function MyTableScreen(props) {
 
     useEffect( ()=> {
 
-        const abortController = new AbortController();
 
         const getChatMessages = async () =>{
             let rawResponse = await fetch(`https://polar-stream-28883.herokuapp.com/interactions/list-table-messages/${props.tableId}/${props.userToken}`)
@@ -101,13 +108,26 @@ function MyTableScreen(props) {
 
     const leaveTable = async () => {
     
-        var dataRaw = await fetch(`http://172.17.1.164:3000/delete-guest/${props.tableId}/${props.userToken}`,{
+        var dataRaw = await fetch(`http://polar-stream-28883.herokuapp.com/delete-guest/${props.tableId}/${props.userToken}`,{
             method: 'DELETE' 
         }) ;
      //   console.log("guest delete");
         props.navigation.navigate('Home')
 
     };
+    const displayMessage = (message,i) => {
+        let dateParse = new Date(message.date)
+        let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
+        formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)  // Première lettre en Maj sur la card
+
+            return <View key={i} style={{marginHorizontal:20,marginVertical:5}}><List.Item
+                                                                                                        title={message.author}
+
+                                                                                                        description={message.content}/>
+                <Text>{formattedDate  }</Text>
+            </View>
+
+    }
 
     useEffect( async() => {
            var responseRaw = await fetch(`https://polar-stream-28883.herokuapp.com/join-table/${props.tableId}`)
@@ -225,14 +245,14 @@ function MyTableScreen(props) {
                 <Subheading>{formattedDate}</Subheading>
             </View>
 
-            <View style={{ flex: 4, flexDirection: "row", alignItems: 'center', height: 100 }}>
+            <View style={{ flex: 4, flexDirection: "row", alignItems: 'center', height: 100 ,}}>
                 <Card style={{ height: 270, width: 180, marginRight: 10 }}>
                     <Card.Content>
                         <Title>M.Eaters : {guestCount}/{tableInfo.capacity}</Title>
                         <View style={{ flexDirection: "row" }}>{planneravatar}{avatarList}{tabCapacity}</View>
                         <Title>Budget : {bugdetInfo}</Title>
 
-                        <Title ><FontAwesome5 name="walking" size={24} color="black" />  à 150 mètres</Title>
+                        <Title ><FontAwesome5 name="walking" size={24} color="black" />  à {Math.round(haversine(props.userLocation, { latitude: tableInfo.latitude, longitude: tableInfo.longitude }, { unit: "meter" }))} mètres</Title>
                         <Title><MaterialIcons name="restaurant" size={24} color="black" />  {tableInfo.placeType}</Title>
                         <Title><FontAwesome name="birthday-cake" size={24} color="black" />  {tableInfo.age}</Title>
                     </Card.Content>
@@ -249,58 +269,49 @@ function MyTableScreen(props) {
 
                 </Card>
             </View>
-            <View style={{ flex: 4, alignItems: 'center', justifyContent: 'center', marginBottom:20 }}>
-            <Card style={{width:"100%"}}>
-<Card.Content>
-<ScrollView style={{flex:1, marginTop: 50}}>
-    {listMessages.map((message,i)=>{
-    //     return <ListItem key={i}>
-    //         <ListItem.Content >
-    //                 <ListItem.Title>{message.content}</ListItem.Title>
-    //                 <ListItem.Subtitle>{message.author}</ListItem.Subtitle>
-    //             </ListItem.Content>
-    // </ListItem>
-        <View  key={i} style={{width:"70%",marginHorizontal:20,marginVertical:5,alignSelf:"flex-end"}}>
-    <List.Item  style={{backgroundColor:"rgba(255, 201, 96, 0.22)"}}
-        title={message.author}
-        description={message.content}/>
-        <Text>{message.date}</Text>
-    </View>
-    })}
+            <View style={{ flex: 4, alignItems: 'center', justifyContent: 'center', marginBottom:20 ,backgroundColor:"rgba(255, 201, 96, 0.22)"}}>
+                <View >
 
-  </ScrollView>
-
-   <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-       <View style={{flexDirection:"row",justifyContent:"center"}}>
-           <TextInput
-
-               multiline={true}
-               style={{  textAlign:'center',width:'70%',alignSelf:"center" }}
-               mode="outlined"
-               label="Message"
-               onChangeText={(message)=>setCurrentMessage(message)}
-               activeOutlineColor={"#FF3D00"}
-               outlineColor={'#0E9BA4'}
-               containerStyle = {{marginBottom: 5}}
-               placeholder='Ecrire ici...'
-               value={currentMessage}
-           />
-           <IconButton
-               icon="send"
-               color={'#0E9BA4'}
-               size={25}
-               onPress={() => handlePress()}
-           />
-       </View>
-
-   </KeyboardAvoidingView>
-</Card.Content>
+                    <ScrollView style={{ backgroundColor:"rgba(255, 201, 96, 0.22)"}}>
+                            {listMessages.map((el,i)=> displayMessage(el,i))}
+                    </ScrollView>
 
 
-</Card>
-    <View style={{alignItems: "flex-end", marginTop: 100}}> 
-    <IconButton icon="door-open" color={'#FFC960'}  size={40}  onPress={() => {leaveTable()}} />
-       
+                    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} >
+
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                            <View style={{flexDirection:"row",justifyContent:"center",marginHorizontal:10}}>
+                                <TextInput
+
+                                    multiline={true}
+                                    style={{  textAlign:'center',width:'70%',alignSelf:"center" ,}}
+                                    mode="outlined"
+                                    label="Message"
+                                    onChangeText={(message)=>setCurrentMessage(message)}
+                                    activeOutlineColor={"#FF3D00"}
+                                    outlineColor={'#0E9BA4'}
+                                    containerStyle = {{marginBottom: 5}}
+                                    placeholder='Ecrire ici...'
+                                    value={currentMessage}
+                                />
+                                <IconButton
+                                    icon="send"
+                                    color={'#0E9BA4'}
+                                    size={25}
+                                    onPress={() => handlePress()}
+                                />
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </KeyboardAvoidingView>
+
+                </View>
+    <View style={{flex:1, alignItems: "flex-end"}}>  
+        <IconButton
+                     icon="door-open"
+                     color={'#0E9BA4'}
+                     size={25}
+                     onPress={() => {leaveTable()}}
+                 />
                  </View>
             </View>
         </View>
@@ -333,6 +344,7 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
     return { tableId:  state.tableId,
         userToken: state.userToken,
+        userLocation : state.userLocation,
     }
   }
   
