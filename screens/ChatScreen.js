@@ -5,8 +5,8 @@ import {
     Platform,
     ScrollView,
 
-    TouchableWithoutFeedback,Keyboard,
-    View
+    TouchableWithoutFeedback, Keyboard,
+    View, StyleSheet
 } from 'react-native';
 import { IconButton,  List,  TextInput, Text} from "react-native-paper";
 import socketIOClient from "socket.io-client";
@@ -157,10 +157,11 @@ function ChatScreen(props) {
             </ScrollView>
 
 
-                            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} >
+                            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}  style={styles.container}>
 
                                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                                    <View style={{marginBottom:120,flexDirection:"row",justifyContent:"center",marginHorizontal:10}}>
+                                    {/*<View style={{marginBottom:120,flexDirection:"row",justifyContent:"center",marginHorizontal:10}}>*/}
+                                        <View style={styles.inner}>
                             <TextInput
 
                                 multiline={true}
@@ -202,3 +203,30 @@ export default connect(
     null
 )(ChatScreen);
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+    inner: {
+        padding:24,
+        flex: 1,
+        justifyContent: "space-around",
+        alignItems:"center",
+        flexDirection:"row",
+
+    },
+    header: {
+        fontSize: 36,
+        marginBottom: 48
+    },
+    textInput: {
+        height: 40,
+        borderColor: "#000000",
+        borderBottomWidth: 1,
+        marginBottom: 36
+    },
+    btnContainer: {
+        backgroundColor: "white",
+        marginTop: 12
+    }
+});

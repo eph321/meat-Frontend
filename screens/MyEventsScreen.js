@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, Button, View, Text} from 'react-native';
+import { StyleSheet, ScrollView, Button, View, Text } from 'react-native';
 import { Appbar, Card, Title, Paragraph, IconButton } from "react-native-paper";
 
 import { connect } from "react-redux";
@@ -15,23 +15,23 @@ function MyEventsScreen(props) {
         useEffect(async () => {
                 var rawResponse = await fetch(`${herokuIP}/my-events/${props.userToken}`);
                 var response = await rawResponse.json();
-                setMyEventsList(response.result)           
+                setMyEventsList(response.result)
         }, [])
 
- 
+
         var eventsList = myEventsList.map((e, i) => {
 
                 let dateParse = new Date(e.date)
                 let formattedDate = dateParse.toLocaleString("fr-FR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })
-        formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)
+                formattedDate = formattedDate[0].toUpperCase() + formattedDate.slice(1)
 
                 return (
                         <Card key={i} style={{ marginBottom: 8 }} onPress={() => { props.navigation.navigate("MyTable"), props.saveTableId(e._id) }}>
                                 <Card.Content style={{ alignItems: "center", justifyContent: "center" }}>
-                                        <Title>{e.title}</Title>
+                                        <Title style={{ marginBottom: 8 }}>{e.title}</Title>
+                                        <Paragraph style={{ fontWeight: "500", marginBottom: 8 }}>{formattedDate}</Paragraph>
                                         <Paragraph style={{ alignSelf: "center" }}>{e.description}</Paragraph>
-                                        <Paragraph>M.eaters : {`${e.guests.length+1}`}</Paragraph>
-                                        <Paragraph>{formattedDate}</Paragraph>
+                                        <Paragraph style={{ fontWeight: "500", alignSelf: "flex-end" }}>M.eaters : {`${e.guests.length + 1}`}</Paragraph>
                                 </Card.Content>
                         </Card>
                 )
@@ -41,8 +41,8 @@ function MyEventsScreen(props) {
         return (
 
 
-                <View style={styles.viewHeader}>
-                        <View style={{ flex:1.5,backgroundColor:"#FFC960", width:"100%",flexDirection:"row",justifyContent:"space-around",alignItems:"flex-end"}}>
+                <View style={styles.container}>
+                        <View style={styles.topNavBar}>
                                 <IconButton
                                         icon="home"
                                         color={'#0E9BA4'}
@@ -68,23 +68,17 @@ function MyEventsScreen(props) {
                                         onPress={() => props.navigation.navigate('MyAccount')}
                                 />
                         </View>
-                        <View style={{alignItems:"center", flex:11}}>
-                        <Text style={{ fontSize: 26, marginBottom: 20, marginTop: 20 }}>
-                                Mes participations
-                        </Text>
+                        <View style={styles.contentView}>
+                                <Text style={{ fontSize: 26, marginBottom: 20, marginTop: 20 }}>
+                                        Mes tables
+                                </Text>
 
-                        <ScrollView style={{ width: "70%" }}>
-
-                                <View style={{ justifyContent: "center" }}>
-
+                                <ScrollView>
                                         {eventsList}
-
-                                </View>
-
-                        </ScrollView>
+                                </ScrollView>
                         </View>
 
-                        </View>
+                </View>
 
 
         );
@@ -93,14 +87,23 @@ function MyEventsScreen(props) {
 const styles = StyleSheet.create({
         container: {
                 flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
+                backgroundColor: "#F2F2F2"
         },
-        viewHeader: {
-                flex: 1,
-                left: 0,
+        topNavBar: {
+                flex: 1.5,
+                backgroundColor: "#FFC960",
                 width: "100%",
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "flex-end",
+        },
+        contentView: {
+                flex: 11,
+                backgroundColor: "#F2F2F2",
                 justifyContent: "flex-start",
+                marginBottom: 30,
+                alignItems: "center",
+                width: "100%"
         },
 });
 
@@ -112,9 +115,9 @@ function mapDispatchToProps(dispatch) {
         }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state) {
         return {
-                userToken : state.userToken
+                userToken: state.userToken
         }
 }
 
